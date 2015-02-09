@@ -1,0 +1,255 @@
+\documentclass[a4paper, notitlepage, 10pt]{article}
+\usepackage{geometry}
+\geometry{verbose,tmargin=30mm,bmargin=25mm,lmargin=25mm,rmargin=25mm}
+\usepackage{setspace,relsize}               
+\usepackage{moreverb}                        
+\usepackage{url}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true,citecolor=blue}
+\usepackage{amsmath}
+\usepackage{mathtools} 
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage{indentfirst}
+\usepackage[authoryear,round]{natbib}
+\bibliographystyle{apalike}
+\usepackage[pdftex]{lscape}
+\usepackage[utf8]{inputenc}
+
+% Title Page
+\title{\vspace{-9ex}\centering \bf Choosing the weights for the logarithmic pooling of probability distributions}
+\author{
+Luiz Max F. de Carvalho$^{a,b}$, Daniel Villela$^a$, Flavio Coelho$^b$ \& Leonardo S. Bastos$^a$ \\
+a -- Program for Scientific Computing (PROCC), Oswaldo Cruz Foundation. \\
+b -- School of Applied Mathematics, Getulio Vargas Foundation (FGV).
+}
+\DeclareMathOperator*{\argmin}{arg\,min}
+\DeclareMathOperator*{\argmax}{arg\,max}
+\newtheorem{theo}{Theorem}[]
+\newtheorem{proposition}{Proposition}[]
+\newtheorem{remark}{Remark}[]
+\setcounter{theo}{0} % assign desired value to theorem counter
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Combining different prior distributions is an important issue in decision theory and Bayesian inference.
+Logarithmic pooling is a popular method to aggregate expert opinions by using a set of weights that reflect the reliability of each information source.
+The resulting pooled distribution however heavily depends set of weights given to each opinion/prior.
+In this paper we explore three objective approaches to obtaining the weights, two based on loss functions and one using a hierarchical prior that accounts for uncertainty on the weights. 
+Examples of general interest, like the estimation of proportions and rates are provided.
+We show that [WHAAAAT?]
+blablablablablabla
+blablablablablabla
+
+Key-words: logarithmic pooling; expert opinion; maximum entropy; Kullback-Liebler divergence; Dirichlet prior. 
+\end{abstract}
+
+\section*{Background}
+
+Combining probability distributions is a topic of general interest, both in the statistical~\citep{genest1986A,genest1986B} and decision theory literatures~\citep{genest1984}.
+On the theoretical front, studying opinion pooling operators may give important insights on consensus belief formation and group decision making~\citep{genest1986B}.
+Among the various opinion pooling operators proposed in the literature, logarithmic pooling has enjoyed much popularity, mainly due to its many desirable properties such as relative propensity consistency (RPC) and external Bayesianity (EB)~\citep{genest1986A}. 
+In a practical setting, logarithmic pooling finds use in a range of fields, from infectious disease modelling~\citep{Coelho2009} and wildlife conservation~\citep{poole2000} to engineering~\citep{lind1988, savchuk1994}.
+
+A common situation of interest is that of combining expert opinions, represented as proper probability distributions, about a quantity of interest $\theta \in \mathbf{\Theta} \subseteq \mathbb{R}^n$.
+To combine these opinions using logarithmic pooling it is necessary to assign each expert a weight, which should represent the reliability of each opinion~\citep{genest1984}.
+This requirement naturally leads to the question of how to choose the weights in an objective fashion, according to some well-accepted optimality criterion.
+Many authors have touched upon this issue, proposing methods that maximise the entropy the pooled distribution~\cite{myung1996}, minimise Kullback-Liebler (KL) divergence between the pooled distribution and the individual opinions~\citep{abbas2009} or between the pooled (prior) distribution and the posterior distribution~\citep{rufo2012A, rufo2012B}.
+
+These approaches, while moving away from the problem of subjectively assigning the weights, arrive at single point solutions, similar to point estimates in Statistical theory.
+Albeit acknowledging that these approaches have merit, we argue that in many settings, where one has substantial prior information on the relative reliabilities of the information sources (experts), it would be desirable to incorporate this information into the pooling procedure while accommodating uncertainty about the weights~\citep{poole2000}.
+Moreover, assigning a probability distribution to the weights allows learning about them in a Bayesian fashion, therefore making it possible to sequentially update knowledge about the reliability of each expert/source in the face of new data.
+
+In this paper we explore previous approaches for deriving the weights for logarithmic pooling, namely by maximising the entropy of the resulting distribution and minimising the KL divergence between the pooled distribution and each individual distribution.
+Additionally, we propose a hierarchical prior approach in which we place a Dirichlet prior on the weights.
+We present two examples of general interest: proportion and rate estimation by combining Beta and Gamma priors respectively.
+
+In what follows we introduce the necessary theory and extend a previous result~\citep{poole2000} for combining more than two distributions.
+
+Let $\mathbf{F(\theta)} = \{f_0(\theta), f_1(\theta), f_2(\theta), \ldots, f_K(\theta)\}$ be the set of prior distributions representing the opinions of $K+1$ experts and let $\boldsymbol\alpha =\{\alpha_0, \alpha_1, \alpha_2, \ldots, \alpha_K \}$ be the vector of weights, such that $\alpha_i > 0\: \forall i$ and $\sum_{i=0}^K \alpha_i = 1$.
+Then the log-pooled prior is
+\begin{equation}
+\label{eq:logpool}
+ \pi(\theta) = t(\boldsymbol\alpha) \prod_{i=0}^K f_i(\theta)^{\alpha_i} 
+\end{equation}
+
+Logarithmic pooling will only yield proper probability distributions if it is possible to normalise the expression in (\ref{eq:logpool}).
+This condition is usually assumed implicitly, without proof.
+\citet{poole2000} provide a proof for the case of two densities (see Theorem 1 therein), which we extend for the case of a finite number of densities.
+\begin{theo}
+\label{thm:normalisation}
+Let $A$ be the $(K+1)$-dimensional open simplex on $[0,1]$.
+For all $\boldsymbol\alpha \in A$ there exists a constant $t(\boldsymbol\alpha)$ such that $\int_{\boldsymbol\Theta}\pi(\theta) = 1$.
+\end{theo}
+
+Here we provide a simple proof using H\"{o}lder's inequality.
+\begin{proof}
+We begin by noting that $\pi(\theta)$ can be re-written as:
+\begin{equation}
+\label{eq:pirewritten}
+ \pi(\theta) \propto f_0(\theta)\prod_{j=1}^{K} \left(\frac{f_j(\theta)}{f_0(\theta)}\right)^{\alpha_j}
+\end{equation}
+Let $X_j = \frac{f_j(\theta)}{f_0(\theta)}, j=1, 2,\ldots, K$. 
+Then integrating the expression in (\ref{eq:pirewritten}) is equivalent to finding 
+\begin{equation}
+\label{eq:expectations}
+E_{0}\left[\prod_{j=1}^KX_j^{\alpha_j}\right] \leq \prod_{j=1}^KE_{0}[X_j]^{\alpha_j}
+\end{equation}
+where $E_{0}[\cdot]$ is the expectation w.r.t $f_0$ and (\ref{eq:expectations}) follows from H\"{o}lder's inequality for expectations~\citep{yeh2011}.
+Since $ E_{0}[X_j]^{\alpha_j} = \left(\int_{\boldsymbol\Theta}f_0(\theta)\frac{f_j(\theta)}{f_0(\theta)}\right)^{\alpha_j}d\theta=1^{\alpha_j}=1\;\forall j$, Theorem~\ref{thm:normalisation} is proven.
+\end{proof}
+
+We now move on to study three approaches to assigning the weights.
+
+\section*{Choosing the weights based on optimality criteria}
+\subsection*{Maximum entropy}
+
+In order to choose $\boldsymbol\alpha$ so as to maximize prior diffusiveness, we propose to maximize the entropy of the log-pooled prior
+\begin{equation}
+\label{eq:entropypiA}
+H_{\pi}(\theta) = E_{\pi}\left[-\ln\pi(\theta) \right] =-\int_{\boldsymbol\Theta}\pi(\theta)\ln\pi(\theta)d\theta 
+\end{equation}
+
+For some cases it may be useful to express $H_{\pi}(\theta)$ as
+\begin{equation}
+\label{eq:entropypiB}
+ H_{\pi}(\theta; \boldsymbol\alpha) = \sum_{i=0}^{K} \alpha_i E_{\pi}[ - \ln f_i(\theta)] - \ln t(\boldsymbol\alpha)
+\end{equation}
+Formally, we want to find $\hat{\boldsymbol\alpha}$ such that
+\begin{equation}
+\label{eq:argmaxEnt}
+ \hat{\boldsymbol\alpha}:= \argmax H_{\pi}(\theta; \boldsymbol\alpha)  
+\end{equation}
+
+This approach, however, does not result in a convex optimisation problem, therefore one is not guaranteed to find a unique solution. 
+See Proposition~\ref{prop:uniqueness} for intuition as to why.
+\subsection*{Minimizing Kullback-Liebler divergence}
+
+One could also want to choose the pooling weights so as to minimize the total Kullback-Liebler divergence between each elicited distribution and the pooled distribution.
+Let $d_i = \text{KL}(f_i || \pi)$ and let $L(\boldsymbol\alpha)$ be a loss function such that
+\begin{align}
+L(\boldsymbol\alpha) &= \sum_{i=0}^Kd_i \\
+ \label{eq:argminKL}
+     &= -K\ln t(\boldsymbol\alpha) + \sum_{i=0}^K\sum_{j\neq i}^K\alpha_j\text{KL}(f_i||f_j)
+\end{align}
+
+\begin{proposition}
+\label{prop:uniqueness}
+ The distribution obtained following~(\ref{eq:argminKL}) is unique, i.e., there is only one aggregated prior $\pi(\theta)$ that minimizes $L(\boldsymbol\alpha)$.
+\end{proposition}
+This property is proven in~\cite{rufo2012A}.
+One can get some intuition into the proof  of proposition~\ref{}by noting that maximising~(\ref{eq:entropypiB}) is equivalent to minimizing $\ln t(\boldsymbol\alpha) = -\ln\int_{\boldsymbol\Theta}\prod_{i=0}^{K}f_i(\theta)^{\alpha_i}d\theta$ and therefore maximising  $t(\boldsymbol\alpha)^{-1} = \int_{\boldsymbol\Theta}\prod_{i=0}^{K}f_i(\theta)^{\alpha_i}d\theta$.
+All that remains is to show that $t(\boldsymbol\alpha)^{-1}$ has a unique global maximum: %concave or, equivalently, that $t(\boldsymbol\alpha)$ is convex.
+[COMPLETE THE PROOF OR OMIT IT]
+
+\section*{Specifying a prior distribution for $\boldsymbol\alpha$}
+
+In this section we propose a hierarchical prior for $\theta$ conditional on $\boldsymbol\alpha$ in order to incorporate uncertainty on the weights.
+A natural choice for a prior distribution for $\boldsymbol\alpha$ is the $(K+1)-$dimensional Dirichlet distribution.
+The conditional distribution $\pi(\theta|\boldsymbol\alpha)$ is of the form in~\ref{eq:logpool} and the prior density for $\boldsymbol\alpha$ is 
+\begin{equation}
+ \label{eq:generalcondprior}
+ \pi(\boldsymbol\alpha) = \frac{1}{\mathcal{B}(X)}\prod_{i=0}^K \alpha_i^{x_i-1}
+\end{equation}
+where $X = \{ x_0, x_1, \ldots, x_K\}$ is the vector of hyperparameters for the Dirichlet prior and $\mathcal{B}(X)$ is the multinomial beta function.
+The marginal prior for $\theta$ is then
+\begin{align}
+ \label{eq:marginalhierprior}
+ \pi(\theta) &= \int_{A}\pi(\theta|\boldsymbol\alpha)\pi(\boldsymbol\alpha)d\boldsymbol\alpha \\
+             &= \frac{1}{\mathcal{B}(X)}\int_{A}t(\boldsymbol\alpha)\prod_{i=0}^K f_i(\theta)^{\alpha_i}\alpha_i^{x_i-1}d\boldsymbol\alpha 
+\end{align}
+
+\section*{Applications}
+In what follows we showcase the proposed methods for some common problems in practice.
+blablabla
+
+\subsection*{Poisson rate $\lambda$}
+Suppose we are interested in a certain count $Y\sim Poisson(\lambda)$ and $K + 1$ experts are called upon to elicit prior distributions for $\lambda$.
+A convenient parametric choice for $\mathbf{F}(\lambda)$ is the Gamma family of distributions, for which densities are of the form
+$$ f_i(\lambda;a_i,b_i) = \frac{b_i^{a_i}}{\Gamma(a_i)} \lambda^{a_i-1} e^{-b_i\lambda}$$
+The log-pooled prior $\pi(\lambda)$ is then
+\begin{align}
+\pi(\lambda)&=\prod_{i=0}^{K}f_i(\lambda;a_i,b_i)^{\alpha_i}\\
+&\propto \prod_{i=0}^{K} \left(\lambda^{a_i-1} e^{-b_i\lambda}\right)^{\alpha_i}\\
+\label{eq:gammapois}
+&\propto \lambda^{a^*-1} e^{-b^*\lambda}
+\end{align}
+where $a^* =\sum_{i=0}^{K}\alpha_ia_i$ and $b^* = \sum_{i=0}^{K}\alpha_ib_i$.
+Noticing (\ref{eq:gammapois}) is the kernel of a gamma distribution with parameters $a^*$ and $b^*$, $H_{\pi}(\lambda)$ becomes
+\begin{equation}
+\label{eq:entropygamma}
+H_{\pi}(\lambda) = a^* - \ln b^* + \ln \Gamma(a^*) + (1-a^*)\psi(a^*)
+\end{equation}
+where $\psi(\cdot)$ is the digamma function.
+
+LOOK AT THE VARIANCES AND EXPECTATIONS
+
+The Kullback-Liebler divergence between each density and the pooled density is:
+\begin{equation}
+ \label{eq:KLgamma}
+ d_i = \text{KL}(f_i||\pi) = (a_i-a^*)\psi(a_i) - \ln\Gamma(a_i) + \ln\Gamma(a^*) + a^*(\ln\frac{b_i}{b^*}) + a_i\frac{b^*-b_i}{b_i}
+\end{equation}
+
+blablablablablabla
+
+blablablablablabla
+
+blablablablablabla
+
+
+The marginal prior is then
+\begin{equation}
+\label{eq:marginalgamma}
+\pi(\lambda) = \frac{1}{\mathcal{B}(X)}\int_{A} \frac{{b^*}^{a^*}}{\Gamma(a^*)}\lambda^{a^* - 1} e^{-b^*\lambda} \alpha_i^{x_i-1}d\boldsymbol\alpha 
+\end{equation}
+
+\subsection*{Binomial probabilities}
+
+We now turn our attention to the ubiquitous problem of combining expert opinions about probabilities and proportions.
+In this setting we are interested in the random variable $Y\sim Bernoulli(\theta)$.
+Again assume we want to obtain a combined prior for a proportion $\theta$.
+A common choice for $\mathbf{F}(\theta)$ is the Beta family of distributions:
+$$f_i(\theta;a_i, b_i) = \frac{\Gamma(a_i + b_i)}{\Gamma(a_i b_i)} \theta^{a_i-1}(1-\theta)^{b_i-1}$$
+The log-pooled prior is then
+\begin{align}
+\pi(\theta)&=\prod_{i=0}^{K}f_i(\theta;a_i,b_i)^{\alpha_i}\\
+&\propto \prod_{i=0}^{K} \left(\theta^{a_i-1}(1-\theta)^{b_i-1} \right)^{\alpha_i}\\
+\label{eq:betabern}
+&\propto \theta^{a^*-1}(1-\theta)^{b^*-1}
+\end{align}
+with $a^* =\sum_{i=0}^{K}\alpha_ia_i$ and $b^* = \sum_{i=0}^{K}\alpha_ib_i$.
+Again, (\ref{eq:betabern}) is the kernel of a Beta distribution with parameters $a^*$ and $b^*$, thus 
+\begin{equation}
+ \label{eq:entropybeta}
+ H_{\pi}(\theta) = \ln B(a^*,b^*) - (a^*-1)\psi(a^*) - (b^*-1)\psi(b^*) + (a^*+b^* -2)\psi(a^*+b^*)
+\end{equation}
+LOOK AT THE VARIANCES AND EXPECTATIONS
+
+For the beta family of distributions, the KL divergence between $f_i(\theta)$ and $\pi(\theta)$ is
+\begin{equation}
+\begin{split}
+ \label{eq:KLbeta}
+ d_i = KL(f_i||\pi) = \ln\left(\frac{\mathcal{B}(a^*, b^*)}{\mathcal{B}(a_i, b_i)}\right) &+ (a_i-a^*)\psi(a_i)+ (b_i-b^*)\psi(b_i) \\
+ &+ (a^*-a_i + b^* - b_i)\psi(a_i+b_i)
+\end{split}
+ \end{equation}
+
+ blablablablablabla
+ 
+ blablablablablabla
+
+The marginal prior for $\theta$ is
+\begin{equation}
+\label{eq:marginalbeta}
+\pi(\theta) = \frac{1}{\mathcal{B}(X)}\int_{A} \frac{1}{\mathcal{B}(a^*, b^*)} \theta^{a^* -1}(1-\theta)^{b^* -1}\alpha_i^{x_i-1}d\boldsymbol\alpha 
+\end{equation}
+which can also be efficiently approximated through Monte Carlo sampling.
+
+Data from~\citep{savchuk1994}, also analysed in~\cite{rufo2012B}
+
+\section*{Final remarks and avenues of future research}
+\section*{Acknowledgements}
+PUT YOUR FUNDING STATEMENTS HERE, BOYZ
+\bibliography{WSC2015}
+\end{document}          
