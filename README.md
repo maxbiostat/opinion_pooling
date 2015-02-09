@@ -3,7 +3,7 @@ Bits and pieces on (logarithmic) opinion pooling.
 
 ## [ISI 2015, Brazil July 26-31](https://github.com/maxbiostat/opinion_pooling/tree/master/WSC2015)
 - [ ] Decide which examples;
-- [ ] Prove claims on uniqueness of maximum entropy #1;
+- [ ] Prove claims on uniqueness of maximum entropy #1
 - [ ] Manuscript;
 
 ## General Manuscript
