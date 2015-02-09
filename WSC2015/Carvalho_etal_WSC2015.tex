@@ -139,9 +139,9 @@ L(\boldsymbol\alpha) &= \sum_{i=0}^Kd_i \\
  The distribution obtained following~(\ref{eq:argminKL}) is unique, i.e., there is only one aggregated prior $\pi(\theta)$ that minimizes $L(\boldsymbol\alpha)$.
 \end{proposition}
 This property is proven in~\cite{rufo2012A}.
-One can get some intuition into the proof  of proposition~\ref{}by noting that maximising~(\ref{eq:entropypiB}) is equivalent to minimizing $\ln t(\boldsymbol\alpha) = -\ln\int_{\boldsymbol\Theta}\prod_{i=0}^{K}f_i(\theta)^{\alpha_i}d\theta$ and therefore maximising  $t(\boldsymbol\alpha)^{-1} = \int_{\boldsymbol\Theta}\prod_{i=0}^{K}f_i(\theta)^{\alpha_i}d\theta$.
-All that remains is to show that $t(\boldsymbol\alpha)^{-1}$ has a unique global maximum: %concave or, equivalently, that $t(\boldsymbol\alpha)$ is convex.
-[COMPLETE THE PROOF OR OMIT IT]
+One can get some intuition into the proof  of this claim by noting that minimising~(\ref{eq:argminKL}) is equivalent to maximising $\ln t(\boldsymbol\alpha) = -\ln\int_{\boldsymbol\Theta}\prod_{i=0}^{K}f_i(\theta)^{\alpha_i}d\theta$. 
+\cite{rufo2012A} show that $t(\boldsymbol\alpha)$ is concave, therefore the problem in~(\ref{eq:argminKL}) has a unique solution.
+In contrast, the problem in~(\ref{eq:entropypiB}) is exactly to minimise $\ln t(\boldsymbol\alpha)$ hence making it difficult to determine the existence of a unique solution.
 
 \section*{Specifying a prior distribution for $\boldsymbol\alpha$}
 
