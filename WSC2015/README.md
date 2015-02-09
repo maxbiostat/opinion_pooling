@@ -6,6 +6,7 @@
 <sup>2</sup> School of Applied Mathematics, Getulio Vargas Foundation (FGV), Rio de Janeiro -- RJ, Brazil.
 
 ## Abstract
-[![PDF
-Status](https://www.sharelatex.com/project/54d8cefc01a0c9412027ff59/output/output.pdf?cache_bust=1423494915357&compileGroup=priority)
+[PDF](https://www.sharelatex.com/project/54d8cefc01a0c9412027ff59/output/output.pdf?cache_bust=1423494915357&compileGroup=priority)
+
+
 [Arxiv]
