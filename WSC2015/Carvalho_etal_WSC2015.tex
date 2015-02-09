@@ -183,20 +183,11 @@ H_{\pi}(\lambda) = a^* - \ln b^* + \ln \Gamma(a^*) + (1-a^*)\psi(a^*)
 \end{equation}
 where $\psi(\cdot)$ is the digamma function.
 
-LOOK AT THE VARIANCES AND EXPECTATIONS
-
 The Kullback-Liebler divergence between each density and the pooled density is:
 \begin{equation}
  \label{eq:KLgamma}
  d_i = \text{KL}(f_i||\pi) = (a_i-a^*)\psi(a_i) - \ln\Gamma(a_i) + \ln\Gamma(a^*) + a^*(\ln\frac{b_i}{b^*}) + a_i\frac{b^*-b_i}{b_i}
 \end{equation}
-
-blablablablablabla
-
-blablablablablabla
-
-blablablablablabla
-
 
 The marginal prior is then
 \begin{equation}
@@ -224,7 +215,6 @@ Again, (\ref{eq:betabern}) is the kernel of a Beta distribution with parameters 
  \label{eq:entropybeta}
  H_{\pi}(\theta) = \ln B(a^*,b^*) - (a^*-1)\psi(a^*) - (b^*-1)\psi(b^*) + (a^*+b^* -2)\psi(a^*+b^*)
 \end{equation}
-LOOK AT THE VARIANCES AND EXPECTATIONS
 
 For the beta family of distributions, the KL divergence between $f_i(\theta)$ and $\pi(\theta)$ is
 \begin{equation}
@@ -234,10 +224,6 @@ For the beta family of distributions, the KL divergence between $f_i(\theta)$ an
  &+ (a^*-a_i + b^* - b_i)\psi(a_i+b_i)
 \end{split}
  \end{equation}
-
- blablablablablabla
- 
- blablablablablabla
 
 The marginal prior for $\theta$ is
 \begin{equation}
