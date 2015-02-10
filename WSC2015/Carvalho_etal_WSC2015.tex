@@ -38,7 +38,7 @@ Combining different prior distributions is an important issue in decision theory
 Logarithmic pooling is a popular method to aggregate expert opinions by using a set of weights that reflect the reliability of each information source.
 The resulting pooled distribution however heavily depends set of weights given to each opinion/prior.
 In this paper we explore three objective approaches to obtaining the weights, two based on loss functions and one using a hierarchical prior that accounts for uncertainty on the weights. 
-Examples of general interest, like the estimation of proportions and rates are provided.
+An example with proportion estimation is given.
 We show that [WHAAAAT?]
 blablablablablabla
 blablablablablabla
@@ -64,7 +64,7 @@ Moreover, assigning a probability distribution to the weights allows learning ab
 
 In this paper we explore previous approaches for deriving the weights for logarithmic pooling, namely by maximising the entropy of the resulting distribution and minimising the KL divergence between the pooled distribution and each individual distribution.
 Additionally, we propose a hierarchical prior approach in which we place a Dirichlet prior on the weights.
-We present two examples of general interest: proportion and rate estimation by combining Beta and Gamma priors respectively.
+We present an example on proportion estimation by combining Beta priors.
 
 In what follows, we introduce the necessary theory and extend a previous 
 result~\citep{poole2000} for combining more than two distributions.
@@ -167,42 +167,7 @@ The marginal prior for $\theta$ is then
              &= \frac{1}{\mathcal{B}(X)}\int_{A}t(\boldsymbol\alpha)\prod_{i=0}^K f_i(\theta)^{\alpha_i}\alpha_i^{x_i-1}d\boldsymbol\alpha 
 \end{align}
 
-\section*{Applications}
-In what follows we showcase the proposed methods for some common problems in practice.
-blablabla
-
-\subsection*{Poisson rate $\lambda$}
-Suppose we are interested in a certain count $Y\sim Poisson(\lambda)$ and $K + 1$ experts are called upon to elicit prior distributions for $\lambda$.
-A convenient parametric choice for $\mathbf{F}(\lambda)$ is the Gamma family of distributions, for which densities are of the form
-$$ f_i(\lambda;a_i,b_i) = \frac{b_i^{a_i}}{\Gamma(a_i)} \lambda^{a_i-1} e^{-b_i\lambda}$$
-The log-pooled prior $\pi(\lambda)$ is then
-\begin{align}
-\pi(\lambda)&=\prod_{i=0}^{K}f_i(\lambda;a_i,b_i)^{\alpha_i}\\
-&\propto \prod_{i=0}^{K} \left(\lambda^{a_i-1} e^{-b_i\lambda}\right)^{\alpha_i}\\
-\label{eq:gammapois}
-&\propto \lambda^{a^*-1} e^{-b^*\lambda}
-\end{align}
-where $a^* =\sum_{i=0}^{K}\alpha_ia_i$ and $b^* = \sum_{i=0}^{K}\alpha_ib_i$.
-Noticing (\ref{eq:gammapois}) is the kernel of a gamma distribution with parameters $a^*$ and $b^*$, $H_{\pi}(\lambda)$ becomes
-\begin{equation}
-\label{eq:entropygamma}
-H_{\pi}(\lambda) = a^* - \ln b^* + \ln \Gamma(a^*) + (1-a^*)\psi(a^*)
-\end{equation}
-where $\psi(\cdot)$ is the digamma function.
-
-The Kullback-Liebler divergence between each density and the pooled density is:
-\begin{equation}
- \label{eq:KLgamma}
- d_i = \text{KL}(f_i||\pi) = (a_i-a^*)\psi(a_i) - \ln\Gamma(a_i) + \ln\Gamma(a^*) + a^*(\ln\frac{b_i}{b^*}) + a_i\frac{b^*-b_i}{b_i}
-\end{equation}
-
-The marginal prior is then
-\begin{equation}
-\label{eq:marginalgamma}
-\pi(\lambda) = \frac{1}{\mathcal{B}(X)}\int_{A} \frac{{b^*}^{a^*}}{\Gamma(a^*)}\lambda^{a^* - 1} e^{-b^*\lambda} \alpha_i^{x_i-1}d\boldsymbol\alpha 
-\end{equation}
-
-\subsection*{Binomial probabilities}
+\section*{Application: binomial probabilities}
 
 We now turn our attention to the ubiquitous problem of combining expert opinions about probabilities and proportions.
 In this setting we are interested in the random variable $Y\sim Bernoulli(\theta)$.
