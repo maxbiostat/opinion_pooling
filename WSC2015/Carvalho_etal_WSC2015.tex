@@ -11,6 +11,7 @@
 \usepackage{amsthm}
 \usepackage{amssymb}
 \usepackage{indentfirst}
+\usepackage{todonotes}
 \usepackage[authoryear,round]{natbib}
 \bibliographystyle{apalike}
 \usepackage[pdftex]{lscape}
@@ -54,10 +55,16 @@ In a practical setting, logarithmic pooling finds use in a range of fields, from
 
 A common situation of interest is that of combining expert opinions, represented as proper probability distributions, about a quantity of interest $\theta \in \mathbf{\Theta} \subseteq \mathbb{R}^n$.
 To combine these opinions using logarithmic pooling it is necessary to assign each expert a weight, which should represent the reliability of each opinion~\citep{genest1984}.
-This requirement naturally leads to the question of how to choose the weights in an objective fashion, according to some well-accepted optimality criterion.
+This requirement naturally leads to the question of how to choose the weights in 
+an objective \todo{acho que objectividade não é adequado aqui, talvez um melhor 
+adjetivo seja ``meaningful'', ou ``useful''} fashion, according to some 
+well-accepted optimality criterion.
 Many authors have touched upon this issue, proposing methods that maximise the entropy the pooled distribution~\cite{myung1996}, minimise Kullback-Liebler (KL) divergence between the pooled distribution and the individual opinions~\citep{abbas2009} or between the pooled (prior) distribution and the posterior distribution~\citep{rufo2012A, rufo2012B}.
 
-These approaches, while moving away from the problem of subjectively assigning the weights, arrive at single point solutions, similar to point estimates in Statistical theory.
+These approaches, while moving away from the problem of 
+subjectively\todo{Bayesianos não acham que subjetividade seja um problema. ;-)} 
+assigning the weights, arrive at single point solutions, similar to point 
+estimates in Statistical theory.
 Albeit acknowledging that these approaches have merit, we argue that in many settings, where one has substantial prior information on the relative reliabilities of the information sources (experts), it would be desirable to incorporate this information into the pooling procedure while accommodating uncertainty about the weights~\citep{poole2000}.
 Moreover, assigning a probability distribution to the weights allows learning about them in a Bayesian fashion, therefore making it possible to sequentially update knowledge about the reliability of each expert/source in the face of new data.
 
@@ -65,14 +72,15 @@ In this paper we explore previous approaches for deriving the weights for logari
 Additionally, we propose a hierarchical prior approach in which we place a Dirichlet prior on the weights.
 We present two examples of general interest: proportion and rate estimation by combining Beta and Gamma priors respectively.
 
-In what follows we introduce the necessary theory and extend a previous result~\citep{poole2000} for combining more than two distributions.
+In what follows, we introduce the necessary theory and extend a previous 
+result~\citep{poole2000} for combining more than two distributions.
 
 Let $\mathbf{F(\theta)} = \{f_0(\theta), f_1(\theta), f_2(\theta), \ldots, f_K(\theta)\}$ be the set of prior distributions representing the opinions of $K+1$ experts and let $\boldsymbol\alpha =\{\alpha_0, \alpha_1, \alpha_2, \ldots, \alpha_K \}$ be the vector of weights, such that $\alpha_i > 0\: \forall i$ and $\sum_{i=0}^K \alpha_i = 1$.
 Then the log-pooled prior is
 \begin{equation}
 \label{eq:logpool}
  \pi(\theta) = t(\boldsymbol\alpha) \prod_{i=0}^K f_i(\theta)^{\alpha_i} 
-\end{equation}
+\end{equation}\todo{faltou definir $t(\alpha)$}
 
 Logarithmic pooling will only yield proper probability distributions if it is possible to normalise the expression in (\ref{eq:logpool}).
 This condition is usually assumed implicitly, without proof.
@@ -105,7 +113,10 @@ We now move on to study three approaches to assigning the weights.
 \section*{Choosing the weights based on optimality criteria}
 \subsection*{Maximum entropy}
 
-In order to choose $\boldsymbol\alpha$ so as to maximize prior diffusiveness, we propose to maximize the entropy of the log-pooled prior
+In order to choose $\boldsymbol\alpha$ so as to maximize prior 
+diffusiveness\todo{talvez seja interessante discutir porque maximizar a 
+entropia é desejável, neste contexto}, we propose to maximize the entropy of 
+the log-pooled prior
 \begin{equation}
 \label{eq:entropypiA}
 H_{\pi}(\theta) = E_{\pi}\left[-\ln\pi(\theta) \right] =-\int_{\boldsymbol\Theta}\pi(\theta)\ln\pi(\theta)d\theta 
