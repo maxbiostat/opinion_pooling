@@ -55,16 +55,10 @@ In a practical setting, logarithmic pooling finds use in a range of fields, from
 
 A common situation of interest is that of combining expert opinions, represented as proper probability distributions, about a quantity of interest $\theta \in \mathbf{\Theta} \subseteq \mathbb{R}^n$.
 To combine these opinions using logarithmic pooling it is necessary to assign each expert a weight, which should represent the reliability of each opinion~\citep{genest1984}.
-This requirement naturally leads to the question of how to choose the weights in 
-an objective \todo{acho que objectividade não é adequado aqui, talvez um melhor 
-adjetivo seja ``meaningful'', ou ``useful''} fashion, according to some 
-well-accepted optimality criterion.
+This requirement naturally leads to the question of how to choose the weights in a meaningful fashion, according to some well-accepted optimality criterion.
 Many authors have touched upon this issue, proposing methods that maximise the entropy the pooled distribution~\cite{myung1996}, minimise Kullback-Liebler (KL) divergence between the pooled distribution and the individual opinions~\citep{abbas2009} or between the pooled (prior) distribution and the posterior distribution~\citep{rufo2012A, rufo2012B}.
 
-These approaches, while moving away from the problem of 
-subjectively\todo{Bayesianos não acham que subjetividade seja um problema. ;-)} 
-assigning the weights, arrive at single point solutions, similar to point 
-estimates in Statistical theory.
+These approaches, while moving away from the problem of arbitrarily assigning the weights, arrive at single point solutions, similar to point estimates in Statistical theory.
 Albeit acknowledging that these approaches have merit, we argue that in many settings, where one has substantial prior information on the relative reliabilities of the information sources (experts), it would be desirable to incorporate this information into the pooling procedure while accommodating uncertainty about the weights~\citep{poole2000}.
 Moreover, assigning a probability distribution to the weights allows learning about them in a Bayesian fashion, therefore making it possible to sequentially update knowledge about the reliability of each expert/source in the face of new data.
 
@@ -80,7 +74,8 @@ Then the log-pooled prior is
 \begin{equation}
 \label{eq:logpool}
  \pi(\theta) = t(\boldsymbol\alpha) \prod_{i=0}^K f_i(\theta)^{\alpha_i} 
-\end{equation}\todo{faltou definir $t(\alpha)$}
+\end{equation}
+where $t(\alpha) = \int_{\boldsymbol\Theta}\prod_{i=0}^K f_i(\theta)^{\alpha_i}d\theta$.
 
 Logarithmic pooling will only yield proper probability distributions if it is possible to normalise the expression in (\ref{eq:logpool}).
 This condition is usually assumed implicitly, without proof.
@@ -88,7 +83,7 @@ This condition is usually assumed implicitly, without proof.
 \begin{theo}
 \label{thm:normalisation}
 Let $A$ be the $(K+1)$-dimensional open simplex on $[0,1]$.
-For all $\boldsymbol\alpha \in A$ there exists a constant $t(\boldsymbol\alpha)$ such that $\int_{\boldsymbol\Theta}\pi(\theta) = 1$.
+For all $\boldsymbol\alpha \in A$ there exists a constant $t(\boldsymbol\alpha)$ such that $\int_{\boldsymbol\Theta}\pi(\theta)d\theta = 1$.
 \end{theo}
 
 Here we provide a simple proof using H\"{o}lder's inequality.
