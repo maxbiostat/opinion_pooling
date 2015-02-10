@@ -108,16 +108,16 @@ We now move on to study three approaches to assigning the weights.
 \section*{Choosing the weights based on optimality criteria}
 \subsection*{Maximum entropy}
 
-In order to choose $\boldsymbol\alpha$ so as to maximize prior 
-diffusiveness\todo{talvez seja interessante discutir porque maximizar a 
-entropia é desejável, neste contexto}, we propose to maximize the entropy of 
-the log-pooled prior
+In a context of near complete ignorance about the relative reliabilities of the experts (information sources) it may be desirable to combine the prior distributions such that $\pi(\theta)$ is maximally uninformative.
+Such approach would ensure that, given the constraints imposed by $\mathbf{F(\theta)}$, the pooled distribution is the one which best represents the current state of knowledge~\citep{jaynes1957}.
+In order to choose $\boldsymbol\alpha$ so as to maximise prior 
+diffuseness, one can maximise the entropy of the log-pooled prior:
 \begin{equation}
 \label{eq:entropypiA}
 H_{\pi}(\theta) = E_{\pi}\left[-\ln\pi(\theta) \right] =-\int_{\boldsymbol\Theta}\pi(\theta)\ln\pi(\theta)d\theta 
 \end{equation}
 
-For some cases it may be useful to express $H_{\pi}(\theta)$ as
+In some cases it may be useful to express $H_{\pi}(\theta)$ as
 \begin{equation}
 \label{eq:entropypiB}
  H_{\pi}(\theta; \boldsymbol\alpha) = \sum_{i=0}^{K} \alpha_i E_{\pi}[ - \ln f_i(\theta)] - \ln t(\boldsymbol\alpha)
@@ -130,9 +130,10 @@ Formally, we want to find $\hat{\boldsymbol\alpha}$ such that
 
 This approach, however, does not result in a convex optimisation problem, therefore one is not guaranteed to find a unique solution. 
 See Proposition~\ref{prop:uniqueness} for intuition as to why.
-\subsection*{Minimizing Kullback-Liebler divergence}
 
-One could also want to choose the pooling weights so as to minimize the total Kullback-Liebler divergence between each elicited distribution and the pooled distribution.
+\subsection*{Minimising Kullback-Liebler divergence}
+
+One could also want to choose the pooling weights so as to minimise the total Kullback-Liebler divergence between each proposed distribution and the pooled distribution.
 Let $d_i = \text{KL}(f_i || \pi)$ and let $L(\boldsymbol\alpha)$ be a loss function such that
 \begin{align}
 L(\boldsymbol\alpha) &= \sum_{i=0}^Kd_i \\
