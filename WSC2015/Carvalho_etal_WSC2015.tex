@@ -20,7 +20,7 @@
 % Title Page
 \title{\vspace{-9ex}\centering \bf Choosing the weights for the logarithmic pooling of probability distributions}
 \author{
-Luiz Max F. de Carvalho$^{a,b}$, Daniel Villela$^a$, Flavio Coelho$^b$ \& Leonardo S. Bastos$^a$ \\
+Luiz Max F. de Carvalho$^{a,b}$, Daniel A. M. Villela$^a$, Flavio Coelho$^b$ \& Leonardo S. Bastos$^a$ \\
 a -- Program for Scientific Computing (PROCC), Oswaldo Cruz Foundation. \\
 b -- School of Applied Mathematics, Getulio Vargas Foundation (FGV).
 }
@@ -54,13 +54,13 @@ Among the various opinion pooling operators proposed in the literature, logarith
 In a practical setting, logarithmic pooling finds use in a range of fields, from infectious disease modelling~\citep{Coelho2009} and wildlife conservation~\citep{poole2000} to engineering~\citep{lind1988, savchuk1994}.
 
 A common situation of interest is that of combining expert opinions, represented as proper probability distributions, about a quantity of interest $\theta \in \mathbf{\Theta} \subseteq \mathbb{R}^n$.
-To combine these opinions using logarithmic pooling it is necessary to assign each expert a weight, which should represent the reliability of each opinion~\citep{genest1984}.
+To combine these opinions using logarithmic pooling requires assigning weights to each of the experts.  These weights represent the reliability of each opinion~\citep{genest1984}.
 This requirement naturally leads to the question of how to choose the weights in a meaningful fashion, according to some well-accepted optimality criterion.
-Many authors have touched upon this issue, proposing methods that maximise the entropy the pooled distribution~\cite{myung1996}, minimise Kullback-Liebler (KL) divergence between the pooled distribution and the individual opinions~\citep{abbas2009} or between the pooled (prior) distribution and the posterior distribution~\citep{rufo2012A, rufo2012B}.
+There are a few proposals in the literature that build methods using different approaches.  One proposal is to maximise the entropy the pooled distribution~\cite{myung1996}, whereas another one is to minimise Kullback-Liebler (KL) divergence between the pooled distribution and the individual opinions~\citep{abbas2009} or between the pooled (prior) distribution and the posterior distribution~\citep{rufo2012A, rufo2012B}.
 
 These approaches, while moving away from the problem of arbitrarily assigning the weights, arrive at single point solutions, similar to point estimates in Statistical theory.
 Albeit acknowledging that these approaches have merit, we argue that in many settings, where one has substantial prior information on the relative reliabilities of the information sources (experts), it would be desirable to incorporate this information into the pooling procedure while accommodating uncertainty about the weights~\citep{poole2000}.
-Moreover, assigning a probability distribution to the weights allows learning about them in a Bayesian fashion, therefore making it possible to sequentially update knowledge about the reliability of each expert/source in the face of new data.
+Moreover, assigning a probability distribution to the weights permits us to obtain a posterior distribution using a Bayesian procedure (analysis or computing methods such as MCMC), which enables us to learn about these weights.  Therefore, it makes possible to sequentially update knowledge about the reliability of each expert/source in the face of new data.
 
 In this paper we explore previous approaches for deriving the weights for logarithmic pooling, namely by maximising the entropy of the resulting distribution and minimising the KL divergence between the pooled distribution and each individual distribution.
 Additionally, we propose a hierarchical prior approach in which we place a Dirichlet prior on the weights.
@@ -100,15 +100,15 @@ Then integrating the expression in (\ref{eq:pirewritten}) is equivalent to findi
 E_{0}\left[\prod_{j=1}^KX_j^{\alpha_j}\right] \leq \prod_{j=1}^KE_{0}[X_j]^{\alpha_j}
 \end{equation}
 where $E_{0}[\cdot]$ is the expectation w.r.t $f_0$ and (\ref{eq:expectations}) follows from H\"{o}lder's inequality for expectations~\citep{yeh2011}.
-Since $ E_{0}[X_j]^{\alpha_j} = \left(\int_{\boldsymbol\Theta}f_0(\theta)\frac{f_j(\theta)}{f_0(\theta)}\right)^{\alpha_j}d\theta=1^{\alpha_j}=1\;\forall j$, Theorem~\ref{thm:normalisation} is proven.
+Since we have, $\forall j$, $ E_{0}[X_j]^{\alpha_j} = \left(\int_{\boldsymbol\Theta}f_0(\theta)\frac{f_j(\theta)}{f_0(\theta)}\right)^{\alpha_j}d\theta=1^{\alpha_j}=1$, Theorem~\ref{thm:normalisation} is proven.
 \end{proof}
 
-We now move on to study three approaches to assigning the weights.
+We now move on to study three approaches to assign weights, the first two approaches based on optimality criteria and a proposal based on pooling Dirichlet prior distributions.
 
 \section*{Choosing the weights based on optimality criteria}
 \subsection*{Maximum entropy}
 
-In a context of near complete ignorance about the relative reliabilities of the experts (information sources) it may be desirable to combine the prior distributions such that $\pi(\theta)$ is maximally uninformative.
+In a context of near complete uncertainty about the relative reliabilities of the experts (information sources) it may be desirable to combine the prior distributions such that $\pi(\theta)$ is maximally uninformative.
 Such approach would ensure that, given the constraints imposed by $\mathbf{F(\theta)}$, the pooled distribution is the one which best represents the current state of knowledge~\citep{jaynes1957}.
 In order to choose $\boldsymbol\alpha$ so as to maximise prior 
 diffuseness, one can maximise the entropy of the log-pooled prior:
@@ -148,13 +148,13 @@ L(\boldsymbol\alpha) &= \sum_{i=0}^Kd_i \\
 This property is proven in~\cite{rufo2012A}.
 One can get some intuition into the proof  of this claim by noting that minimising~(\ref{eq:argminKL}) is equivalent to maximising $\ln t(\boldsymbol\alpha) = \ln\int_{\boldsymbol\Theta}\prod_{i=0}^{K}f_i(\theta)^{\alpha_i}d\theta$. 
 \cite{rufo2012A} show that $t(\boldsymbol\alpha)$ is concave, therefore the problem in~(\ref{eq:argminKL}) has a unique solution.
-In contrast, the problem in~(\ref{eq:entropypiB}) is exactly to minimise $\ln t(\boldsymbol\alpha)$ hence making it difficult to determine the existence of a unique solution.
+By contrast, the problem in~(\ref{eq:argmaxEnt}) requires to minimise $\ln t(\boldsymbol\alpha)$ hence lacking a sufficient condition for the existence of a unique solution.
 
 \section*{Specifying a prior distribution for $\boldsymbol\alpha$}
 
 In this section we propose a hierarchical prior for $\theta$ conditional on $\boldsymbol\alpha$ in order to incorporate uncertainty on the weights.
 A natural choice for a prior distribution for $\boldsymbol\alpha$ is the $(K+1)-$dimensional Dirichlet distribution.
-The conditional distribution $\pi(\theta|\boldsymbol\alpha)$ is of the form in~\ref{eq:logpool} and the prior density for $\boldsymbol\alpha$ is 
+The conditional distribution $\pi(\theta|\boldsymbol\alpha)$ is of the form in~(\ref{eq:logpool}) and the prior density for $\boldsymbol\alpha$ is 
 \begin{equation}
  \label{eq:generalcondprior}
  \pi(\boldsymbol\alpha) = \frac{1}{\mathcal{B}(X)}\prod_{i=0}^K \alpha_i^{x_i-1}
@@ -169,9 +169,9 @@ The marginal prior for $\theta$ is then
 
 \section*{Application: binomial probabilities}
 
-We now turn our attention to the ubiquitous problem of combining expert opinions about probabilities and proportions.
+We now turn our attention to combining expert opinions about probabilities and proportions.
 In this setting we are interested in the random variable $Y\sim Bernoulli(\theta)$.
-Again assume we want to obtain a combined prior for a proportion $\theta$.
+Again let us assume that we want to obtain a combined prior for a proportion $\theta$.
 A common choice for $\mathbf{F}(\theta)$ is the Beta family of distributions:
 $$f_i(\theta;a_i, b_i) = \frac{\Gamma(a_i + b_i)}{\Gamma(a_i b_i)} \theta^{a_i-1}(1-\theta)^{b_i-1}$$
 The log-pooled prior is then
@@ -193,7 +193,7 @@ For the beta family of distributions, the KL divergence between $f_i(\theta)$ an
 \begin{split}
  \label{eq:KLbeta}
  d_i = KL(f_i||\pi) = \ln\left(\frac{\mathcal{B}(a^*, b^*)}{\mathcal{B}(a_i, 
-b_i)}\right) &+ (a_i-a^*)\psi(a_i)+ (b_i-b^* 720765625)\psi(b_i) \\
+b_i)}\right) &+ (a_i-a^*)\psi(a_i)+ (b_i-b^*)\psi(b_i) \\
  &+ (a^*-a_i + b^* - b_i)\psi(a_i+b_i)
 \end{split}
  \end{equation}
@@ -209,8 +209,9 @@ Data from~\citep{savchuk1994}, also analysed in~\cite{rufo2012B}
 
 \section*{Final remarks and avenues of future research}
 \section*{Acknowledgements}
+DAMV was supported in part by Capes under Capes/Cofecub project (N. 833/15).
 FCC is grateful to Funda\c{c}\~ao Getulio Vargas for funding during this 
-project.
+project. 
 PUT YOUR FUNDING STATEMENTS HERE, BOYZ
 \bibliography{WSC2015}
 \end{document}          
