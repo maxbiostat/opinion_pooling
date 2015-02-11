@@ -58,7 +58,7 @@ To combine these opinions using logarithmic pooling requires assigning weights t
 These weights represent the reliability of each opinion~\citep{genest1984}.
 This requirement naturally leads to the question of how to choose the weights in a meaningful fashion, according to some well-accepted optimality criterion.
 There are a few proposals in the literature that build methods using different approaches.
-One proposal is to maximise the entropy the pooled distribution~\cite{myung1996}, whereas another one is to minimise Kullback-Liebler (KL) divergence between the pooled distribution and the individual opinions~\citep{abbas2009} or between the pooled (prior) distribution and the posterior distribution~\citep{rufo2012A,rufo2012B}.
+One proposal is to maximise the entropy the pooled distribution~\citep{myung1996}, whereas another one is to minimise Kullback-Liebler (KL) divergence between the pooled distribution and the individual opinions~\citep{abbas2009} or between the pooled (prior) distribution and the posterior distribution~\citep{rufo2012A,rufo2012B}.
 
 These approaches, while moving away from the problem of arbitrarily assigning the weights, arrive at single point solutions, similar to point estimates in Statistical theory.
 Albeit acknowledging that these approaches have merit, we argue that in many settings, where one has substantial prior information on the relative reliabilities of the information sources (experts), it would be desirable to incorporate this information into the pooling procedure while accommodating uncertainty about the weights~\citep{poole2000}.
@@ -112,7 +112,7 @@ We now move on to study three approaches to assign weights, the first two approa
 \subsection*{Maximum entropy}
 
 In a context of near complete uncertainty about the relative reliabilities of the experts (information sources) it may be desirable to combine the prior distributions such that $\pi(\theta)$ is maximally uninformative.
-Such approach would ensure that, given the constraints imposed by $\mathbf{F(\theta)}$, the pooled distribution is the one which best represents the current state of knowledge~\citep{jaynes1957}.
+Such approach would ensure that, given the constraints imposed by $\mathbf{F(\theta)}$, the pooled distribution is the one which best represents the current state of knowledge~\citep{jaynes1957,savchuk1994}.
 In order to choose $\boldsymbol\alpha$ so as to maximise prior 
 diffuseness, one can maximise the entropy of the log-pooled prior:
 \begin{equation}
@@ -210,8 +210,11 @@ The marginal prior for $\theta$ is
 \end{equation}
 which can also be efficiently approximated through Monte Carlo sampling.
 
-Data from~\citep{savchuk1994}, also analysed in~\cite{rufo2012B}
-[BETTER DESCRIPTION]
+Here we analyse an example proposed by~\cite{savchuk1994} (also discussed in~\cite{rufo2012B}) in which four experts are required supply prior information about the survival probability of a certain unit for which there have been $9$ successes out of $10$ trials.
+The experts express their opinion as prior means for the survival probability, which~\cite{savchuk1994} then use to construct prior distributions with maximum variance given the restriction on the means.
+From the vector of prior means $\mathbf{m} = \{ m_0 = 0.95, m_1 = 0.80, m_2 = 0.90, m_3 = 0.70 \}$, the authors obtain the parameters of the beta distributions for each expert,  $\mathbf{a} = \{ a_0 = 18.10, a_1 = 3.44 , a_2 = 8.32, a_3 = 1.98 \}$ and  $\mathbf{b} = \{ b_0 = 0.955 , b_1 = 0.860, b_2 = 0.924, b_3 = 0.848\}$.
+The resulting prior densities are show in the top panel of Figure~\ref{fig:priors_posteriors_beta}.
+
 
 \section*{Results}
 %%%%%%%%%%%%%%%%%%%%%% 
@@ -256,8 +259,9 @@ PUT YOUR FUNDING STATEMENTS HERE, LEO
 
 \begin{figure}[!ht]
 \centering
-\includegraphics[width=\textwidth]{figures/priors_&_posteriors_B.png}
-\caption{Prior and posterior densities for $\theta$.}
+\includegraphics[width=\textwidth, height = 15cm]{figures/priors_&_posteriors_B.png}
+\caption{\textbf{Prior and posterior densities for $\theta$}.
+Top panel shows the distributions elicited by each expert (data from~\cite{savchuk1994}) and the bottom panel shows the pooled priors and posteriors obtained using each of the three methods discussed in this paper.}
 \label{fig:priors_posteriors_beta}
 \end{figure}
 \end{document}          
