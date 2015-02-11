@@ -54,13 +54,16 @@ Among the various opinion pooling operators proposed in the literature, logarith
 In a practical setting, logarithmic pooling finds use in a range of fields, from infectious disease modelling~\citep{Coelho2009} and wildlife conservation~\citep{poole2000} to engineering~\citep{lind1988, savchuk1994}.
 
 A common situation of interest is that of combining expert opinions, represented as proper probability distributions, about a quantity of interest $\theta \in \mathbf{\Theta} \subseteq \mathbb{R}^n$.
-To combine these opinions using logarithmic pooling requires assigning weights to each of the experts.  These weights represent the reliability of each opinion~\citep{genest1984}.
+To combine these opinions using logarithmic pooling requires assigning weights to each of the experts.
+These weights represent the reliability of each opinion~\citep{genest1984}.
 This requirement naturally leads to the question of how to choose the weights in a meaningful fashion, according to some well-accepted optimality criterion.
-There are a few proposals in the literature that build methods using different approaches.  One proposal is to maximise the entropy the pooled distribution~\cite{myung1996}, whereas another one is to minimise Kullback-Liebler (KL) divergence between the pooled distribution and the individual opinions~\citep{abbas2009} or between the pooled (prior) distribution and the posterior distribution~\citep{rufo2012A, rufo2012B}.
+There are a few proposals in the literature that build methods using different approaches.
+One proposal is to maximise the entropy the pooled distribution~\cite{myung1996}, whereas another one is to minimise Kullback-Liebler (KL) divergence between the pooled distribution and the individual opinions~\citep{abbas2009} or between the pooled (prior) distribution and the posterior distribution~\citep{rufo2012A,rufo2012B}.
 
 These approaches, while moving away from the problem of arbitrarily assigning the weights, arrive at single point solutions, similar to point estimates in Statistical theory.
 Albeit acknowledging that these approaches have merit, we argue that in many settings, where one has substantial prior information on the relative reliabilities of the information sources (experts), it would be desirable to incorporate this information into the pooling procedure while accommodating uncertainty about the weights~\citep{poole2000}.
-Moreover, assigning a probability distribution to the weights permits us to obtain a posterior distribution using a Bayesian procedure (analysis or computing methods such as MCMC), which enables us to learn about these weights.  Therefore, it makes possible to sequentially update knowledge about the reliability of each expert/source in the face of new data.
+Moreover, assigning a probability distribution to the weights permits us to obtain a posterior distribution using a Bayesian procedure, which in turn enables us to learn about these weights.
+Therefore, it makes possible to sequentially update knowledge about the reliability of each expert/source in the face of new data.
 
 In this paper we explore previous approaches for deriving the weights for logarithmic pooling, namely by maximising the entropy of the resulting distribution and minimising the KL divergence between the pooled distribution and each individual distribution.
 Additionally, we propose a hierarchical prior approach in which we place a Dirichlet prior on the weights.
@@ -137,8 +140,10 @@ One could also want to choose the pooling weights so as to minimise the total Ku
 Let $d_i = \text{KL}(f_i || \pi)$ and let $L(\boldsymbol\alpha)$ be a loss function such that
 \begin{align}
 L(\boldsymbol\alpha) &= \sum_{i=0}^Kd_i \\
- \label{eq:argminKL}
-     &= -K\ln t(\boldsymbol\alpha) + \sum_{i=0}^K\sum_{j\neq i}^K\alpha_j\text{KL}(f_i||f_j)
+\label{eq:KLexpanded}
+     &= -K\ln t(\boldsymbol\alpha) + \sum_{i=0}^K\sum_{j\neq i}^K\alpha_j\text{KL}(f_i||f_j) \\
+     \label{eq:argminKL}
+     \hat{\boldsymbol\alpha}:=& \argmin L(\boldsymbol\alpha)   
 \end{align}
 
 \begin{proposition}
@@ -146,7 +151,7 @@ L(\boldsymbol\alpha) &= \sum_{i=0}^Kd_i \\
  The distribution obtained following~(\ref{eq:argminKL}) is unique, i.e., there is only one aggregated prior $\pi(\theta)$ that minimizes $L(\boldsymbol\alpha)$.
 \end{proposition}
 This property is proven in~\cite{rufo2012A}.
-One can get some intuition into the proof  of this claim by noting that minimising~(\ref{eq:argminKL}) is equivalent to maximising $\ln t(\boldsymbol\alpha) = \ln\int_{\boldsymbol\Theta}\prod_{i=0}^{K}f_i(\theta)^{\alpha_i}d\theta$. 
+One can get some intuition into the proof  of this claim by noting that minimising~(\ref{eq:KLexpanded}) is equivalent to maximising $\ln t(\boldsymbol\alpha) = \ln\int_{\boldsymbol\Theta}\prod_{i=0}^{K}f_i(\theta)^{\alpha_i}d\theta$. 
 \cite{rufo2012A} show that $t(\boldsymbol\alpha)$ is concave, therefore the problem in~(\ref{eq:argminKL}) has a unique solution.
 By contrast, the problem in~(\ref{eq:argmaxEnt}) requires to minimise $\ln t(\boldsymbol\alpha)$ hence lacking a sufficient condition for the existence of a unique solution.
 
