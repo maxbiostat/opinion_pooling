@@ -217,14 +217,14 @@ Data from~\citep{savchuk1994}, also analysed in~\cite{rufo2012B}
 
 \begin{table}[ht]
 \centering
-\begin{tabular}{rrrrrrr}
+\begin{tabular}{ccc}
   \hline
- & mean.prior & lower.prior & upper.prior & mean.post & lower.post & upper.post \\ 
+Method & Prior & Posterior  \\ 
   \hline
-Equal weights & 0.90 & 0.64 & 1.00 & 0.90 & 0.73 & 0.99 \\ 
-  maxEnt & 0.80 & 0.37 & 1.00 & 0.87 & 0.66 & 0.98 \\ 
-  min KL div. & 0.82 & 0.42 & 1.00 & 0.87 & 0.67 & 0.99 \\ 
-  Hier. prior & 0.88 & 0.53 & 1.00 & 0.90 & 0.71 & 0.99 \\ 
+  Equal weights & 0.90 (0.64 -- 1.00) & 0.90 (0.73 -- 0.99) \\ 
+  Maximum entropy & 0.80 (0.37 -- 1.00) & 0.87 (0.66 -- 0.98) \\ 
+  Minimum KL  & 0.82 (0.42 -- 1.00) & 0.87 (0.67 -- 0.99) \\ 
+  Hierarchical prior & 0.88 (0.53 -- 1.00 & 0.90 (0.71 -- 0.99) \\ 
    \hline
 \end{tabular}
 \end{table}
@@ -238,7 +238,7 @@ Equal weights & 0.90 & 0.64 & 1.00 & 0.90 & 0.73 & 0.99 \\
  & $\alpha_0$ & $\alpha_1$ & $\alpha_2$ & $\alpha_3$ \\ 
   \hline
 Maximum entropy & 0.00 & 1.00 & 0.00 & 0.00 \\ 
-Minimum KL$^1$ divergence div. & 0.04 & 0.96 & 0.00 & 0.00 \\ 
+Minimum KL$^1$ divergence& 0.04 & 0.96 & 0.00 & 0.00 \\ 
 Hierarchical prior$^2$ & 0.26 & 0.25 & 0.25 & 0.24 \\ 
    \hline
 \end{tabular}
