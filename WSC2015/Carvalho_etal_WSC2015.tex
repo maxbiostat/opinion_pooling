@@ -216,6 +216,21 @@ Data from~\citep{savchuk1994}, also analysed in~\cite{rufo2012B}
 \section*{Results}
 
 \begin{table}[ht]
+\caption{Weights obtained using the three methods for the proportion estimation problem. $^1$ -- Kullback-Liebler $^2$ -- Posterior mean }
+\centering
+\begin{tabular}{ccccc}
+  \hline
+Method  & $\alpha_0$ & $\alpha_1$ & $\alpha_2$ & $\alpha_3$ \\ 
+  \hline
+Maximum entropy & 0.00 & 1.00 & 0.00 & 0.00 \\ 
+Minimum KL$^1$ divergence& 0.04 & 0.96 & 0.00 & 0.00 \\ 
+Hierarchical prior$^2$ & 0.26 & 0.25 & 0.25 & 0.24 \\ 
+   \hline
+\end{tabular}
+\label{tab:alphasBeta}
+\end{table}
+
+\begin{table}[ht]
 \centering
 \begin{tabular}{ccc}
   \hline
@@ -227,24 +242,13 @@ Method & Prior & Posterior  \\
   Hierarchical prior & 0.88 (0.53 -- 1.00 & 0.90 (0.71 -- 0.99) \\ 
    \hline
 \end{tabular}
+\label{tab:prior_posteriorsBeta}
 \end{table}
 
 
-\begin{table}[ht]
-\caption{Weights obtained using the three methods for the proportion estimation problem. $^1$ -- Kullback-Liebler $^2$ -- Posterior mean }
-\centering
-\begin{tabular}{rrrrr}
-  \hline
- & $\alpha_0$ & $\alpha_1$ & $\alpha_2$ & $\alpha_3$ \\ 
-  \hline
-Maximum entropy & 0.00 & 1.00 & 0.00 & 0.00 \\ 
-Minimum KL$^1$ divergence& 0.04 & 0.96 & 0.00 & 0.00 \\ 
-Hierarchical prior$^2$ & 0.26 & 0.25 & 0.25 & 0.24 \\ 
-   \hline
-\end{tabular}
-\end{table}
 
-\begin{figure}
+
+\begin{figure}[!ht]
 \centering
 \includegraphics[scale=0.35]{figures/priors_&_posteriors.png}
 \caption{Prior and posterior densities for $\theta$.}
@@ -253,10 +257,10 @@ Hierarchical prior$^2$ & 0.26 & 0.25 & 0.25 & 0.24 \\
 
 \section*{Final remarks and avenues of future research}
 \section*{Acknowledgements}
+LMFC is grateful to the Institute of Evolutionary Biology, University of Edinburgh for support.
 DAMV was supported in part by Capes under Capes/Cofecub project (N. 833/15).
 FCC is grateful to Funda\c{c}\~ao Getulio Vargas for funding during this 
 project.
-LMFC is grateful to the Institute of Evolutionary Biology, University of Edinburgh for support.
-PUT YOUR FUNDING STATEMENTS HERE, BOYZ
+PUT YOUR FUNDING STATEMENTS HERE, LEO
 \bibliography{WSC2015}
 \end{document}          
