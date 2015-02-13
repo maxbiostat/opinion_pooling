@@ -20,9 +20,10 @@
 % Title Page
 \title{\vspace{-9ex}\centering \bf Choosing the weights for the logarithmic pooling of probability distributions}
 \author{
-Luiz Max F. de Carvalho$^{a,b}$, Daniel A. M. Villela$^a$, Flavio Coelho$^b$ \& Leonardo S. Bastos$^a$ \\
+Luiz Max F. de Carvalho$^{a,b,c}$, Daniel A. M. Villela$^a$, Flavio Coelho$^c$ \& Leonardo S. Bastos$^a$ \\
 a -- Program for Scientific Computing (PROCC), Oswaldo Cruz Foundation. \\
-b -- School of Applied Mathematics, Getulio Vargas Foundation (FGV).
+b -- Institute of Evolutionary Biology, University of Edinburgh.\\
+c -- School of Applied Mathematics, Getulio Vargas Foundation (FGV).
 }
 \DeclareMathOperator*{\argmin}{arg\,min}
 \DeclareMathOperator*{\argmax}{arg\,max}
@@ -38,9 +39,8 @@ Combining different prior distributions is an important issue in decision theory
 Logarithmic pooling is a popular method to aggregate expert opinions by using a set of weights that reflect the reliability of each information source.
 The resulting pooled distribution however heavily depends set of weights given to each opinion/prior.
 In this paper we explore three objective approaches to assigning weights to opinions. Two methods are stated in terms of optimization problems and a third one uses a hierarchical prior that accounts for uncertainty on the weights. 
-We explore an example in which a proportion is estimated using weights assigned to a finite set of opinions.
-We show that, depending on the used method, results vary from discarding some of the expert opinions to the situation in which all opinions are assigned equal weights.
-FINAL MESSAGE?
+We explore an example in which a proportion is estimated using weights assigned to a finite set of opinions and show that, depending on the used method, results vary from discarding some of the expert opinions to the situation in which all opinions are assigned equal weights.
+Nevertheless, the three methods explored in this paper lead to very similar combined priors, with very similar integrated (marginal) likelihoods.
 
 Key-words: logarithmic pooling; expert opinion; maximum entropy; Kullback-Liebler divergence; Dirichlet prior. 
 \end{abstract}
@@ -161,14 +161,14 @@ A natural choice for a prior distribution for $\boldsymbol\alpha$ is the $(K+1)-
 The conditional distribution $\pi(\theta|\boldsymbol\alpha)$ is of the form in~(\ref{eq:logpool}) and the prior density for $\boldsymbol\alpha$ is 
 \begin{equation}
  \label{eq:generalcondprior}
- \pi(\boldsymbol\alpha) = \frac{1}{\mathcal{B}(X)}\prod_{i=0}^K \alpha_i^{x_i-1}
+ \pi(\boldsymbol\alpha) = \frac{1}{\mathcal{B}(\boldsymbol X)}\prod_{i=0}^K \alpha_i^{x_i-1}
 \end{equation}
-where $X = \{ x_0, x_1, \ldots, x_K\}$ is the vector of hyperparameters for the Dirichlet prior and $\mathcal{B}(X)$ is the multinomial beta function.
+where $\boldsymbol X = \{ x_0, x_1, \ldots, x_K\}$ is the vector of hyperparameters for the Dirichlet prior and $\mathcal{B}(X)$ is the multinomial beta function.
 The marginal prior for $\theta$ is then
 \begin{align}
  \label{eq:marginalhierprior}
  \pi(\theta) &= \int_{A}\pi(\theta|\boldsymbol\alpha)\pi(\boldsymbol\alpha)d\boldsymbol\alpha \\
-             &= \frac{1}{\mathcal{B}(X)}\int_{A}t(\boldsymbol\alpha)\prod_{i=0}^K f_i(\theta)^{\alpha_i}\alpha_i^{x_i-1}d\boldsymbol\alpha 
+             &= \frac{1}{\mathcal{B}(\boldsymbol X)}\int_{A}t(\boldsymbol\alpha)\prod_{i=0}^K f_i(\theta)^{\alpha_i}\alpha_i^{x_i-1}d\boldsymbol\alpha 
 \end{align}
 
 \section*{Application: binomial probabilities}
@@ -208,24 +208,33 @@ The marginal prior for $\theta$ is
 \pi(\theta) = \frac{1}{\mathcal{B}(X)}\int_{A} \frac{1}{\mathcal{B}(a^*, b^*)} \theta^{a^* -1}(1-\theta)^{b^* -1}\alpha_i^{x_i-1}d\boldsymbol\alpha 
 \end{equation}
 which can also be efficiently approximated through Monte Carlo sampling.
+We provide a simple implementation using the Stan~\citep{stan2014} probabilistic programming language at~\url{https://github.com/maxbiostat/opinion_pooling}.
+R code for the methods, figures and tables presented in this paper can also be found at the above link.
 
-Here we analyse an example proposed by~\cite{savchuk1994} (also discussed in~\cite{rufo2012B}) in which four experts are required supply prior information about the survival probability of a certain unit for which there have been $9$ successes out of $10$ trials.
+Here we analyse an example proposed by~\cite{savchuk1994} (also discussed in~\cite{rufo2012B}) in which four experts are required supply prior information about the survival probability of a certain unit for which there have been $y = 9$ successes out of $n = 10$ trials.
 The experts express their opinion as prior means for the survival probability, which~\cite{savchuk1994} then use to construct prior distributions with maximum variance given the restriction on the means.
 From the vector of prior means $\mathbf{m} = \{ m_0 = 0.95, m_1 = 0.80, m_2 = 0.90, m_3 = 0.70 \}$, the authors obtain the parameters of the beta distributions for each expert,  $\mathbf{a} = \{ a_0 = 18.10, a_1 = 3.44 , a_2 = 8.32, a_3 = 1.98 \}$ and  $\mathbf{b} = \{ b_0 = 0.955 , b_1 = 0.860, b_2 = 0.924, b_3 = 0.848\}$.
 The resulting prior densities are show in the top panel of Figure~\ref{fig:priors_posteriors_beta}.
+To complete the analysis, we place a diffuse $Dirichlet(\boldsymbol\alpha | \boldsymbol X)$ prior on $\boldsymbol\alpha$ with $X_i = 1/4 \: \forall i$.
+Finally, we propose to compare the prior distributions representing the experts' opinions as well as the combined distributions obtained by the different approaches using the integrated (marginal) likelihood (\cite{raftery2007}, eq. 9), $l(y) = \int_{0}^{1}f(\theta|x)\pi(\theta)d\theta$.
+% \begin{align}
+%  \label{eq:marglike}
+%  l(y_i) &= \int_{0}^{1}f(\theta|y_i, n_i)\pi(\theta)d\theta\nonumber\\
+%       &= \prod_{i}\frac{\Gamma(n_i-1)}{\Gamma(n_i-y_i + 1)\Gamma(y_i+1)}\frac{\Gamma(a +b)}{\Gamma(a +b + n_i)}\frac{\Gamma(a + y_i)}{\Gamma(a)}\frac{\Gamma(b + n_i - y_i) }{\Gamma(b)}
+% \end{align}
+\section*{Results and avenues of future research}
 
+Table~\ref{tab:alphasBeta} lists the weights proposed by each method.
+Figure~\ref{fig:priors_posteriors_beta} shows the prior and posterior distributions in each of the methods and also the case in which we assign an equal weight ($1/K$) to each opinion.
+It is interesting to note that maximum entropy suggests to discard all opinions but one, which effectively leads to the maximum entropy.
+Since $t(\boldsymbol\alpha)$ is concave, we expect to find the maximum entropy given by the boundary conditions, which may lead to border points in the simplex.
+Minimising Kullback-Liebler divergence between each prior and the pooled prior leads to finding a unique solution but in this case also suggests to discard two of the opinions.
+By contrast, using a hierarchical Dirichlet prior for the weights gives rather different results from the first two methods in proposing almost equal weights to each of the opinions.
+One can get insight into these results by looking at the integrated likelihoods in Table~\ref{tab:marglikes} and the densities in Figure~\ref{fig:priors_posteriors_beta}, we note that all three methods lead  to similar pooled distributions.
+In conclusion, if the prior distributions (opinions) are not radically different, all three methods will lead to similar combined priors.
+As the results presented in this paper make clear, future research shall be focused on cases where there is substantial heterogeinity in the available opinions.
+Moreover, a sensitivity analysis for $\pi(\boldsymbol\alpha)$ is desirable to understand how much we can lead about the experts reliabilities~\textit{a posteriori}.
 
-\section*{Results}
-
-Table \ref{tab:alphasBeta} lists the weights proposed by each method. Figure \ref{fig:priors_posteriors_beta} shows the prior and posterior distributions in each of the methods and also the case in which we assign an equal weight ($1/K$) to each opinion. It is interesting to note that Maximum Entropy suggests to discard all opinions but one, which effectively leads to the maximum entropy.  As we have shown that function $t(\boldsymbol\alpha)$ is concave, we expect to find the maximum entropy given by the boundary conditions, which may lead to border points in the weight--feasible region, for instance in this case, the method assigns all the weight to the opinion that best matches the data.
-Minimum KL leads to finding a unique solution but in this case also suggest to discard two of the opinions.
-By contrast, using a Hierarchical Dirichlet prior for the weights 
-diverges from the first two methods in proposing almost equal weights to each of the opinions, and, unsurprisingly, very similar posterior distributions.
-
-More examples and numerical investigation seem to be necessary to decide which 
-pooling strategy is best. But by looking at the [prior odds/posterior odds] and 
-figure \ref{fig:priors_posteriors_beta}, we note that all three methods lead 
-to similar pooled distributions.
 \begin{table}[ht]
 \caption{Weights obtained using the three methods for the proportion estimation problem. $^1$ -- Kullback-Liebler $^2$ -- Posterior mean for $\boldsymbol\alpha$.}
 \centering
@@ -235,10 +244,28 @@ Method  & $\alpha_0$ & $\alpha_1$ & $\alpha_2$ & $\alpha_3$ \\
   \hline
 Maximum entropy & 0.00 & 1.00 & 0.00 & 0.00 \\ 
 Minimum KL$^1$ divergence& 0.04 & 0.96 & 0.00 & 0.00 \\ 
-Hierarchical prior$^2$ & 0.26 & 0.25 & 0.25 & 0.24 \\ 
+Hierarchical prior$^2$ & 0.26 & 0.24 & 0.26 & 0.23 \\ 
    \hline
 \end{tabular}
 \label{tab:alphasBeta}
+\end{table}
+
+\begin{table}[ht]
+\caption{Integrated likelihoods ($l(y)$) for the priors of each expert as well as the combined priors.
+Note that the only distribution with a substantially different $l(y)$ is that of Expert 3, who gave a rather divergent mean for the survival probability ($m_3=0.70$).
+$^1$ Calculated using the posterior mean of $\boldsymbol\alpha$}
+\centering
+\begin{tabular}{cccc}
+   \hline
+   \multicolumn{2}{c}{Expert priors} &  \multicolumn{2}{c}{Pooled priors} \\
+   \hline
+   Expert 0 & 0.237 & Equal weights & 0.254\\
+   Expert 1 & 0.211 & Maximum entropy & 0.211 \\
+   Expert 2 & 0.256 & Minimum KL & 0.223\\ 
+   Expert 3 & 0.163 & Hierarchical$^1$ & 0.255 \\
+   \hline
+\end{tabular}
+\label{tab:marglikes}
 \end{table}
 %%%%%%%%%%%%%%%%%%%%
 %\begin{table}[ht]
@@ -256,21 +283,21 @@ Hierarchical prior$^2$ & 0.26 & 0.25 & 0.25 & 0.24 \\
 %\label{tab:prior_posteriorsBeta}
 %\end{table}
 %%%%%%%%%%%%%%%%%%%%
-\section*{Final remarks and avenues of future research}
 \section*{Acknowledgements}
-LMFC is grateful to the Institute of Evolutionary Biology, University of Edinburgh for support.
+The authors would like to thank Professor Adrian Raftery (University of Washington) for helpful suggestions.
 DAMV was supported in part by Capes under Capes/Cofecub project (N. 833/15).
 FCC is grateful to Funda\c{c}\~ao Getulio Vargas for funding during this 
 project.
-PUT YOUR FUNDING STATEMENTS HERE, LEO
+% {\footnotesize
 \bibliography{WSC2015}
+% }
 
 \begin{figure}[!ht]
 \centering
 \includegraphics[width=\textwidth, height = 15cm]{figures/priors_&_posteriors.png}
 \caption{\textbf{Prior and posterior densities for $\theta$}.
 Top panel shows the distributions elicited by each expert (data from~\cite{savchuk1994}) and the bottom panel shows the pooled priors and posteriors obtained using each of the three methods discussed in this paper.
-The dashed vertical line marks the maximum likelihood estimate of $\theta$, $9/10$.}
+The dashed vertical line marks the maximum likelihood estimate of $\theta$, $\hat{\theta}= 9/10$.}
 \label{fig:priors_posteriors_beta}
 \end{figure}
 \end{document}          
