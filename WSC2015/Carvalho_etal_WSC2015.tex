@@ -231,6 +231,7 @@ Since $t(\boldsymbol\alpha)$ is concave, we expect to find the maximum entropy g
 Minimising Kullback-Liebler divergence between each prior and the pooled prior leads to finding a unique solution but in this case also suggests to discard two of the opinions.
 By contrast, using a hierarchical Dirichlet prior for the weights gives rather different results from the first two methods in proposing almost equal weights to each of the opinions.
 One can get insight into these results by looking at the integrated likelihoods in Table~\ref{tab:marglikes} and the densities in Figure~\ref{fig:priors_posteriors_beta}, we note that all three methods lead  to similar pooled distributions.
+Note that the only distribution with a substantially different $l(y)$ is that of Expert 3, who gave a rather divergent mean for the survival probability ($m_3=0.70$).
 In conclusion, if the prior distributions (opinions) are not radically different, all three methods will lead to similar combined priors.
 As the results presented in this paper make clear, future research shall be focused on cases where there is substantial heterogeinity in the available opinions.
 Moreover, a sensitivity analysis for $\pi(\boldsymbol\alpha)$ is desirable to understand how much we can lead about the experts reliabilities~\textit{a posteriori}.
@@ -252,7 +253,6 @@ Hierarchical prior$^2$ & 0.26 & 0.24 & 0.26 & 0.23 \\
 
 \begin{table}[ht]
 \caption{Integrated likelihoods ($l(y)$) for the priors of each expert as well as the combined priors.
-Note that the only distribution with a substantially different $l(y)$ is that of Expert 3, who gave a rather divergent mean for the survival probability ($m_3=0.70$).
 $^1$ Calculated using the posterior mean of $\boldsymbol\alpha$}
 \centering
 \begin{tabular}{cccc}
