@@ -217,7 +217,7 @@ The resulting prior densities are show in the top panel of Figure~\ref{fig:prior
 
 
 \section*{Results}
-%%%%%%%%%%%%%%%%%%%%%% 
+
 Table \ref{tab:alphasBeta} lists the weights proposed by each method. It is interesting to note that Maximum Entropy suggests to discard all opinions but one, which effectively leads to the maximum entropy.  As we have shown that function $t(\boldsymbol\alpha)$ is concave, we expect to find the maximum entropy given by the boundary conditions, which may lead to border points in the weight--feasible region, for instance in this case, the method assigns all the weight to the opinion that best matches the data.
 Minimum KL leads to finding a unique solution but in this case also suggest to discard two of the opinions.
 By contrast, using a Hierarchical Dirichlet prior for the weights 
@@ -268,7 +268,7 @@ PUT YOUR FUNDING STATEMENTS HERE, LEO
 
 \begin{figure}[!ht]
 \centering
-\includegraphics[width=\textwidth, height = 15cm]{figures/priors_&_posteriors_B.png}
+\includegraphics[width=\textwidth, height = 15cm]{figures/priors_&_posteriors.png}
 \caption{\textbf{Prior and posterior densities for $\theta$}.
 Top panel shows the distributions elicited by each expert (data from~\cite{savchuk1994}) and the bottom panel shows the pooled priors and posteriors obtained using each of the three methods discussed in this paper.}
 \label{fig:priors_posteriors_beta}
