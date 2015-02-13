@@ -11,11 +11,12 @@ a1 <- 3.44 ; b1 <- .860
 a2 <- 8.32 ; b2 <- .924
 a3 <- 1.98 ; b3 <- .848
 
+
 av <- c(a0, a1, a2, a3)
 bv <- c(b0, b1, b2, b3)
 K <- length(av)
 
-# Entropy surface 
+# Entropy surface (for a future dominance analysis) 
 library(fields)
 ES <- ent.surface.beta(av, bv)
 image.plot(ES$as, ES$bs, ES$M, xlab = expression(a), ylab = expression(b))
@@ -51,7 +52,7 @@ colnames(AlphasBeta.tbl) <- paste("alpha", 0:(length(av)-1), sep = "")
 ######################################################
 ###### Equal weights alphas
 ######################################################
-alphaEqual <- rep(1/K,K)
+alphaEqual <- rep(1/K, K)
 
 ab.Equal.star <- pool.par(alphaEqual, av, bv)
 # Prior
@@ -127,7 +128,8 @@ ab.KL.star <- pool.par(alphaKL.opt, av, bv)
 require("LearnBayes")
 
 M <- 100000
-X <- c(1, 1, 1, 1)/2 # Jeffreys' prior
+# X <- c(1, 1, 1, 1)/2 # Jeffreys' prior
+X <- c(1, 1, 1, 1)/4 # Jeffreys' prior
 alpha.MC <- rdirichlet(M, X)
 apply(alpha.MC, 2, mean)
 beta.par <- alpha.MC %*% cbind(av, bv)
@@ -151,20 +153,23 @@ posteriors <- extract(hierpostsamp)
 PaperBeta.tbl[4, 4] <- mean(posteriors$theta)
 PaperBeta.tbl[4, 5:6] <- quantile(posteriors$theta, c(.025, .975))
 
-(AlphasBeta.tbl[3, ] <- apply(posteriors$alpha, 2, mean))
+post.alpha <- apply(posteriors$alpha, 2, mean)
+(AlphasBeta.tbl[3, ] <- post.alpha)
 
+ab.Hier.star <- pool.par(post.alpha, av, bv)
 ######################################################
 ############## Results
 ######################################################
 # Table
 
-round(PaperBeta.tbl, 3)
-round(AlphasBeta.tbl, 3)
+round(PaperBeta.tbl, 2)
+round(AlphasBeta.tbl, 2)
 ###  Plotting
+png("../WSC2015/figures/priors_&_posteriors.png")
 par(mfrow = c(2, 1))
-
+ccx <- 1.5
 curve(fbeta(x, par = c(a0, b0) ), .5, 1,  ylab = "Density", main = "Expert Priors",
-      xlab = expression(theta), lwd = 3 , lty = 3)
+      xlab = expression(theta), lwd = 3 , lty = 3, cex.lab = ccx, cex.axis = ccx, cex.main = ccx, cex.sub = ccx)
 curve(fbeta(x, par = c(a1, b1) ), .5, 1, lwd = 3, col = 1, lty = 4, add = TRUE)
 curve(fbeta(x, par = c(a2, b2) ), .5, 1, lwd = 3, col = 1, lty = 5, add = TRUE)
 curve(fbeta(x, par = c(a3, b3) ), .5, 1, lwd = 3, col = 1, lty = 6, add = TRUE)
@@ -173,19 +178,18 @@ legend(x = "topleft",
        col = 1, lwd = 3, lty = 3:6, bty = "n" 
 )
 # Combined Priors
-# png("priors_&_posteriors.png")
 curve(fbeta(x, par = ab.Equal.star), .5, 1, ylab = "Density", main = "Pooled Priors and Posteriors",
-      xlab = expression(theta), lwd = 2, lty = 2)
+      xlab = expression(theta), lwd = 2, lty = 2, cex.lab = ccx, cex.axis = ccx, cex.main = ccx, cex.sub = ccx)
 curve(fbeta(x, par = ab.MaxEnt.star), .5, 1, col = 2, add = TRUE, lwd = 2, lty = 2)
 curve(fbeta(x, par = ab.KL.star), .5, 1, col = 3, add = TRUE, lwd = 2, lty = 2)
-#lines(density(theta.par), col = 4, lwd = 2, lty = 2)
+lines(density(theta.par), col = 4, lwd = 2, lty = 2)
 # Posteriors
 curve(fbeta(x, par = ab.Equal.star+ c(y, n-y)), .5, 1, ylab = "Density", main = "",
       xlab = expression(theta), lwd = 2, add = TRUE)
 curve(fbeta(x, par = ab.MaxEnt.star+ c(y, n-y)), .5, 1, col = 2, add = TRUE, lwd = 2)
 curve(fbeta(x, par = ab.KL.star+ c(y, n-y)), .5, 1, col = 3, add = TRUE, lwd = 2)
 lines(density(posteriors$theta), xlim = c(.5, 1), col = 4, lwd = 2)
-legend(x = "topleft", bty = "n", col = 1:4,
+legend(x = "topleft", bty = "n", col = 1:4, cex = .7,
        legend = c("Equal weights (1/K)", "MaxEnt",
                   "MinKL", "Hierarchical"),
        lwd = 2, lty = 1)
@@ -193,12 +197,13 @@ legend(x = "top", bty = "n", col = 1,
        legend = c("Priors","Posteriors"),
        lwd = 2, lty = 2:1)
 abline( v = y/n, lwd = 3, lty = 3)
-# dev.off()
+dev.off()
 ############
 # Now  let's look at marginal likelihoods for the pooled priors
 
 pars <- list(equal = ab.Equal.star,
+             entropy = ab.MaxEnt.star,
              KL = ab.KL.star,
-             entropy = ab.MaxEnt.star)
+             hier = ab.Hier.star)
 
 lapply(pars, function(p) ml.beta(yi = y, ni = n, a = p[1], b = p[2]))
