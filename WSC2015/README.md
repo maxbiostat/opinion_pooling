@@ -6,6 +6,18 @@
 <sup>2</sup> School of Applied Mathematics, Getulio Vargas Foundation (FGV), Rio de Janeiro -- RJ, Brazil.
 
 ## Abstract
+
+Combining different prior distributions is an important issue in decision theory and Bayesian inference.
+Logarithmic pooling is a popular method to aggregate expert opinions by using a set of weights that reflect the reliability of each information source.
+The resulting pooled distribution however heavily depends set of weights given to each opinion/prior.
+In this paper we explore three objective approaches to assigning weights to opinions. Two methods are stated in terms of optimization problems and a third one uses a hierarchical prior that accounts for uncertainty on the weights. 
+We explore an example in which a proportion is estimated using weights assigned to a finite set of opinions and show that, depending on the used method, results vary from discarding some of the expert opinions to the situation in which all opinions are assigned equal weights.
+Nevertheless, the three methods explored in this paper lead to very similar combined priors, with very similar integrated (marginal) likelihoods.
+
+Key-words: logarithmic pooling; expert opinion; maximum entropy; Kullback-Liebler divergence; Dirichlet prior. 
+
+![](WSC2015/figures/priors_&_posteriors.png)
+
 [PDF](https://www.sharelatex.com/project/54d8cefc01a0c9412027ff59/output/output.pdf)
 
 
