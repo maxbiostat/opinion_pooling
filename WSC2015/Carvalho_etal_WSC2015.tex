@@ -218,15 +218,14 @@ The resulting prior densities are show in the top panel of Figure~\ref{fig:prior
 
 \section*{Results}
 %%%%%%%%%%%%%%%%%%%%%% 
-Table \ref{tab:alphasBeta} lists the weights proposed by each method. the first 
-two methods, Maximum Entropy and Minimum KL, suggest to discard some of the 
-experts in order obtain the ideal pooled distribution according the their 
-respective criteria. Using a Hierarchical Dirichlet prior for the weights 
-diverges from the first two methods in proposing almost equal weights. 
+Table \ref{tab:alphasBeta} lists the weights proposed by each method. It is interesting to note that Maximum Entropy suggests to discard all opinions but one, which effectively leads to the maximum entropy.  As we have shown that function $t(\boldsymbol\alpha)$ is concave, we expect to find the maximum entropy given by the boundary conditions, which may lead to border points in the weight--feasible region, for instance in this case, the method assigns all the weight to the opinion that best matches the data.
+Minimum KL leads to finding a unique solution but in this case also suggest to discard two of the opinions.
+By contrast, using a Hierarchical Dirichlet prior for the weights 
+diverges from the first two methods in proposing almost equal weights to each of the opinions. 
 
-More examples an numerical investigation seem to be necessary to decide which 
+More examples and numerical investigation seem to be necessary to decide which 
 pooling strategy is best. But by looking at the [prior odds/posterior odds] and 
-figure \ref{fig:priors_posteriors_beta}, we can see the all three methods lead 
+figure \ref{fig:priors_posteriors_beta}, we note that all three methods lead 
 to similar pooled distributions.
 \begin{table}[ht]
 \caption{Weights obtained using the three methods for the proportion estimation problem. $^1$ -- Kullback-Liebler $^2$ -- Posterior mean for $\boldsymbol\alpha$.}
