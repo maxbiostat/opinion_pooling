@@ -4,7 +4,7 @@ Bits and pieces on (logarithmic) opinion pooling.
 ## [ISI 2015, Brazil July 26-31](https://github.com/maxbiostat/opinion_pooling/tree/master/WSC2015)
 - [x] Decide which examples;
 - [x] Prove claims on uniqueness of maximum entropy;
-- [ ] Manuscript;
+- [x] Manuscript;
 
 ## General Manuscript
 - [ ] Dynamic model example;
