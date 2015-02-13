@@ -37,11 +37,10 @@ b -- School of Applied Mathematics, Getulio Vargas Foundation (FGV).
 Combining different prior distributions is an important issue in decision theory and Bayesian inference.
 Logarithmic pooling is a popular method to aggregate expert opinions by using a set of weights that reflect the reliability of each information source.
 The resulting pooled distribution however heavily depends set of weights given to each opinion/prior.
-In this paper we explore three objective approaches to obtaining the weights, two based on loss functions and one using a hierarchical prior that accounts for uncertainty on the weights. 
-An example with proportion estimation is given.
-We show that [WHAAAAT?]
-blablablablablabla
-blablablablablabla
+In this paper we explore three objective approaches to assigning weights to opinions. Two methods are stated in terms of optimization problems and a third one uses a hierarchical prior that accounts for uncertainty on the weights. 
+We explore an example in which a proportion is estimated using weights assigned to a finite set of opinions.
+We show that, depending on the used method, results vary from discarding some of the expert opinions to the situation in which all opinions are assigned equal weights.
+FINAL MESSAGE?
 
 Key-words: logarithmic pooling; expert opinion; maximum entropy; Kullback-Liebler divergence; Dirichlet prior. 
 \end{abstract}
@@ -218,10 +217,10 @@ The resulting prior densities are show in the top panel of Figure~\ref{fig:prior
 
 \section*{Results}
 
-Table \ref{tab:alphasBeta} lists the weights proposed by each method. It is interesting to note that Maximum Entropy suggests to discard all opinions but one, which effectively leads to the maximum entropy.  As we have shown that function $t(\boldsymbol\alpha)$ is concave, we expect to find the maximum entropy given by the boundary conditions, which may lead to border points in the weight--feasible region, for instance in this case, the method assigns all the weight to the opinion that best matches the data.
+Table \ref{tab:alphasBeta} lists the weights proposed by each method. Figure \ref{fig:priors_posteriors_beta} shows the prior and posterior distributions in each of the methods and also the case in which we assign an equal weight ($1/K$) to each opinion. It is interesting to note that Maximum Entropy suggests to discard all opinions but one, which effectively leads to the maximum entropy.  As we have shown that function $t(\boldsymbol\alpha)$ is concave, we expect to find the maximum entropy given by the boundary conditions, which may lead to border points in the weight--feasible region, for instance in this case, the method assigns all the weight to the opinion that best matches the data.
 Minimum KL leads to finding a unique solution but in this case also suggest to discard two of the opinions.
 By contrast, using a Hierarchical Dirichlet prior for the weights 
-diverges from the first two methods in proposing almost equal weights to each of the opinions. 
+diverges from the first two methods in proposing almost equal weights to each of the opinions, and, unsurprisingly, very similar posterior distributions.
 
 More examples and numerical investigation seem to be necessary to decide which 
 pooling strategy is best. But by looking at the [prior odds/posterior odds] and 
