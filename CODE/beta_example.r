@@ -27,7 +27,7 @@ n <- 10
 
 ### Marginal (integrated) likelihoods for each of the experts' priors
 
-ml.beta <- function(yi, ni, a, b){
+ml.beta <- function(yi, ni, a, b){ # Equation (9) in Raftery et al (2007) 
   ( gamma(ni + 1)/{gamma(ni - yi + 1) * gamma(yi + 1)} ) *
     ( gamma(a + b)/gamma(a + b + ni)  ) *
     ( gamma(a+yi)/gamma(a) ) * ( gamma(b + ni - yi)/gamma(b)) 
