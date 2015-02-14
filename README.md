@@ -9,7 +9,7 @@ Bits and pieces on (logarithmic) opinion pooling.
 ## General Manuscript
 - [ ] Dynamic model example;
 - [ ] Dominance analysis for H() and KL() for Beta and Gamma = surfaces;
-- [ ] Method comparison: integrated likelihoods?;
+- [ ] Method comparison: integrated likelihoods only?;
 - [ ] KL divergence in transformed space?;
 - [ ] PSA for $\pi(\alpha)$
 - [ ] Arxiving
