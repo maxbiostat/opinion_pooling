@@ -5,7 +5,7 @@
 <sup>1</sup> Program for Scientific Computing, Oswaldo Cruz Foundation, Rio de Janeiro -- RJ, Brazil.
 <sup>2</sup> School of Applied Mathematics, Getulio Vargas Foundation (FGV), Rio de Janeiro -- RJ, Brazil.
 
-[PDF](https://www.sharelatex.com/project/54d8cefc01a0c9412027ff59/output/output.pdf)
+[Arxviv](http://arxiv.org/abs/1502.04206)
 
 ## Abstract
 
@@ -19,5 +19,3 @@ Nevertheless, the three methods explored in this paper lead to very similar comb
 Key-words: logarithmic pooling; expert opinion; maximum entropy; Kullback-Liebler divergence; Dirichlet prior. 
 
 ![](figures/priors_&_posteriors.png)
-
-[Arxiv]
