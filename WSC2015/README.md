@@ -5,9 +5,9 @@
 <sup>1</sup> Program for Scientific Computing, Oswaldo Cruz Foundation, Rio de Janeiro -- RJ, Brazil.
 <sup>2</sup> School of Applied Mathematics, Getulio Vargas Foundation (FGV), Rio de Janeiro -- RJ, Brazil.
 
-[Arxviv](http://arxiv.org/abs/1502.04206)
 
-## Abstract
+
+## Abstract [Arxviv](http://arxiv.org/abs/1502.04206)
 
 Combining different prior distributions is an important issue in decision theory and Bayesian inference.
 Logarithmic pooling is a popular method to aggregate expert opinions by using a set of weights that reflect the reliability of each information source.
