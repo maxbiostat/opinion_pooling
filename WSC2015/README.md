@@ -7,7 +7,7 @@
 
 
 
-## Abstract [Arxviv](http://arxiv.org/abs/1502.04206)
+## Abstract ([Arxviv](http://arxiv.org/abs/1502.04206))
 
 Combining different prior distributions is an important issue in decision theory and Bayesian inference.
 Logarithmic pooling is a popular method to aggregate expert opinions by using a set of weights that reflect the reliability of each information source.
