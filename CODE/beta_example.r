@@ -194,7 +194,7 @@ ab.Hier.star.exp <- pool.par(post.alpha.exp, av, bv)
 round(PaperBeta.tbl, 2)
 round(AlphasBeta.tbl, 2)
 ###  Plotting
-# png("../WSC2015/figures/priors_&_posteriors.png")
+png("../plots//new_beta_example.png")
 par(mfrow = c(2, 1))
 ccx <- 1.5
 curve(fbeta(x, par = c(a0, b0) ), .5, 1,  ylab = "Density", main = "Expert Priors",
@@ -228,7 +228,7 @@ legend(x = "top", bty = "n", col = 1,
        legend = c("Priors", "Posteriors"),
        lwd = 2, lty = 2:1)
 abline( v = y/n, lwd = 3, lty = 3)
-# dev.off()
+dev.off()
 ############
 # Now  let's look at marginal likelihoods for the pooled priors
 
