@@ -6,7 +6,7 @@ source("maxent_aux.R")
 ## priors are given for the survival probability for a unit for which
 ## there have been x = 9 successes in n = 10 tests  
 
-a0 <- 18.1 ; b0 <- .995
+a0 <- 2 ; b0 <- 2
 a1 <- 3.44 ; b1 <- .860 
 a2 <- 8.32 ; b2 <- .924
 a3 <- 1.98 ; b3 <- .848
@@ -22,7 +22,7 @@ ES <- ent.surface.beta(av, bv)
 image.plot(ES$as, ES$bs, ES$M, xlab = expression(a), ylab = expression(b))
 
 # Data
-y <- 9
+y <- 5
 n <- 10
 
 ### Marginal (integrated) likelihoods for each of the experts' priors
@@ -130,7 +130,7 @@ require("LearnBayes")
 M <- 100000
 # X <- c(1, 1, 1, 1)/2 # Jeffreys' prior
 X <- c(1, 1, 1, 1)/4
-cv <- 5
+cv <- 10
 alpha.MC.dir <- rdirichlet(M, X)
 alpha.MC.exp <- rgelman(N = M, m = log(X), c = cv)
 
@@ -194,7 +194,7 @@ ab.Hier.star.exp <- pool.par(post.alpha.exp, av, bv)
 round(PaperBeta.tbl, 2)
 round(AlphasBeta.tbl, 2)
 ###  Plotting
-# png("../WSC2015/figures/priors_&_posteriors.png")
+png("../15/figures/priors_&_posteriors.png")
 par(mfrow = c(2, 1))
 ccx <- 1.5
 curve(fbeta(x, par = c(a0, b0) ), .5, 1,  ylab = "Density", main = "Expert Priors",
