@@ -179,7 +179,7 @@ The marginal prior for $\theta$ is then
 
 We now turn our attention to combining expert opinions about probabilities and proportions.
 In this setting we are interested in the random variable $Y\sim Bernoulli(\theta)$.
-Again let us assume that we want to obtain a combined prior for a proportion $\theta$.
+Assume that we want to obtain a combined prior for a proportion $\theta$.
 A common choice for $\mathbf{F}(\theta)$ is the Beta family of distributions:
 $$f_i(\theta;a_i, b_i) = \frac{\Gamma(a_i + b_i)}{\Gamma(a_i b_i)} \theta^{a_i-1}(1-\theta)^{b_i-1}$$
 The log-pooled prior is then
@@ -190,7 +190,7 @@ The log-pooled prior is then
 &\propto \theta^{a^*-1}(1-\theta)^{b^*-1}
 \end{align}
 with $a^* =\sum_{i=0}^{K}\alpha_ia_i$ and $b^* = \sum_{i=0}^{K}\alpha_ib_i$.
-Again, (\ref{eq:betabern}) is the kernel of a Beta distribution with parameters $a^*$ and $b^*$, thus 
+Note that (\ref{eq:betabern}) is the kernel of a Beta distribution with parameters $a^*$ and $b^*$, thus 
 \begin{equation}
  \label{eq:entropybeta}
  H_{\pi}(\theta) = \ln B(a^*,b^*) - (a^*-1)\psi(a^*) - (b^*-1)\psi(b^*) + (a^*+b^* -2)\psi(a^*+b^*)
