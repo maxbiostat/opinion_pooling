@@ -46,7 +46,7 @@ Two methods are stated in terms of optimisation problems and a third one uses a 
 We explore an example in which a proportion is estimated using weights assigned to a finite set of opinions and show that, depending on the used method, results vary from discarding some of the expert opinions to the situation in which all opinions are assigned equal weights.
 Nevertheless, the three methods explored in this paper lead to very similar combined priors, with very similar integrated (marginal) likelihoods.
 
-Key-words: logarithmic pooling; expert opinion; maximum entropy; Kullback-Liebler divergence; Dirichlet prior. 
+Key-words: logarithmic pooling; expert opinion; maximum entropy; Kullback-Leibler divergence; Dirichlet prior. 
 \end{abstract}
 
 \section*{Background}
@@ -61,7 +61,7 @@ To combine these opinions using logarithmic pooling requires assigning weights t
 These weights represent the reliability of each opinion~\citep{genest1984}.
 This requirement naturally leads to the question of how to choose the weights in a meaningful fashion, according to some well-accepted optimality criterion.
 There are a few proposals in the literature that build methods using different approaches.
-One proposal is to maximise the entropy the pooled distribution~\citep{myung1996}, whereas another one is to minimise Kullback-Liebler (KL) divergence between the pooled distribution and the individual opinions~\citep{abbas2009} or between the pooled (prior) distribution and the posterior distribution~\citep{rufo2012A,rufo2012B}.
+One proposal is to maximise the entropy the pooled distribution~\citep{myung1996}, whereas another one is to minimise Kullback-Leibler (KL) divergence between the pooled distribution and the individual opinions~\citep{abbas2009} or between the pooled (prior) distribution and the posterior distribution~\citep{rufo2012A,rufo2012B}.
 
 These approaches, while moving away from the problem of arbitrarily assigning the weights, arrive at single point solutions, similar to point estimates in Statistical theory.
 Albeit acknowledging that these approaches have merit, we argue that in many settings, where one has substantial prior information on the relative reliabilities of the information sources (experts), it would be desirable to incorporate this information into the pooling procedure while accommodating uncertainty about the weights~\citep{poole2000}.
@@ -137,9 +137,9 @@ Formally, we want to find $\hat{\boldsymbol\alpha}$ such that
 This approach, however, does not result in a convex optimisation problem, therefore one is not guaranteed to find a unique solution. 
 See Proposition~\ref{prop:uniqueness}, below, for intuition as to why.
 
-\subsection*{Minimising Kullback-Liebler divergence}
+\subsection*{Minimising Kullback-Leibler divergence}
 
-One could also want to choose the pooling weights so as to minimise the total Kullback-Liebler divergence between each proposed distribution and the pooled distribution.
+One could also want to choose the pooling weights so as to minimise the total Kullback-Leibler divergence between each proposed distribution and the pooled distribution.
 Let $d_i = \text{KL}(f_i || \pi)$ and let $L(\boldsymbol\alpha)$ be a loss function such that
 \begin{align}
 L(\boldsymbol\alpha) &= \sum_{i=0}^Kd_i \\
@@ -232,7 +232,7 @@ Table~\ref{tab:alphasBeta} lists the weights proposed by each method.
 Figure~\ref{fig:priors_posteriors_beta} shows the prior and posterior distributions in each of the methods and also the case in which we assign an equal weight ($1/K$) to each opinion.
 It is interesting to note that maximum entropy suggests to discard all opinions but one, which effectively leads to the maximum entropy.
 Since $t(\boldsymbol\alpha)$ is concave, we expect to find the maximum entropy given by the boundary conditions, which may lead to border points in the simplex.
-Minimising Kullback-Liebler divergence between each prior and the pooled prior leads to finding a unique solution but in this case also suggests to discard two of the opinions.
+Minimising Kullback-Leibler divergence between each prior and the pooled prior leads to finding a unique solution but in this case also suggests to discard two of the opinions.
 By contrast, using a hierarchical Dirichlet prior for the weights gives rather different results from the first two methods in proposing almost equal weights to each of the opinions.
 One can get insight into these results by looking at the integrated likelihoods in Table~\ref{tab:marglikes} and the densities in Figure~\ref{fig:priors_posteriors_beta}, we note that all three methods lead  to similar pooled distributions.
 Note that the only distribution with a substantially different $l(y)$ is that of Expert 3, who gave a rather divergent mean for the survival probability ($m_3=0.70$).
@@ -243,7 +243,7 @@ As the results presented in this paper make clear, future research shall be focu
 Moreover, a sensitivity analysis for $\pi(\boldsymbol\alpha)$ is desirable to understand how much we can lead about the experts reliabilities~\textit{a posteriori}.
 
 \begin{table}[ht]
-\caption{Weights obtained using the three methods for the proportion estimation problem. $^1$ -- Kullback-Liebler $^2$ -- Posterior mean for $\boldsymbol\alpha$.}
+\caption{Weights obtained using the three methods for the proportion estimation problem. $^1$ -- Kullback-Leibler $^2$ -- Posterior mean for $\boldsymbol\alpha$.}
 \centering
 \begin{tabular}{ccccc}
   \hline
