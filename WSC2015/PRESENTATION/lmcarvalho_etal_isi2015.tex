@@ -1,0 +1,72 @@
+\documentclass[9pt]{beamer}
+\usepackage{amsmath, amssymb, amsthm, mathtools, graphicx,float, amssymb, subfigure, booktabs, enumitem}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true,citecolor=blue}
+\usepackage{tikz}
+\usetikzlibrary{calc,shapes}
+\usepackage[normalem]{ulem}
+\usepackage[authoryear,round]{natbib}
+\usetheme[pageofpages=of,% String used between the current page and the
+                         % total page count.
+          bullet=circle,% Use circles instead of squares for bullets.
+          titleline=true,% Show a line below the frame title.
+          alternativetitlepage=true,% Use the fancy title page.
+          %titlepagelogo=logo-fiocruz,% Logo for the first page.
+          %watermark=watermark-polito,% Watermark used in every page.
+          %watermarkheight=100px,% Height of the watermark.
+          %watermarkheightmult=4,% The watermark image is 4 times bigger
+                                % than watermarkheight.
+          ]{Torino}
+\usecolortheme{freewilly}          
+%%%% Box options
+\newcommand{\tikzmark}[1]{\tikz[overlay,remember picture] \node (#1) {};}
+%%%% Background settings          
+% \setbeamercolor{normal text}{fg=white,bg=black!90}
+% \setbeamercolor{structure}{fg=white}
+% \setbeamercolor{alerted text}{fg=red!85!black}
+% \setbeamercolor{item projected}{use=item,fg=black,bg=item.fg!95}
+% \setbeamercolor*{palette primary}{use=structure,fg=structure.fg}
+% \setbeamercolor*{palette secondary}{use=structure,fg=structure.fg!95!black}
+% \setbeamercolor*{palette tertiary}{use=structure,fg=structure.fg!90!black}
+% \setbeamercolor*{palette quaternary}{use=structure,fg=structure.fg!95!black,bg=black!80}
+% \setbeamercolor{title}{fg=white}
+% \setbeamercolor{frametitle}{bg=white}
+% \setbeamercolor*{framesubtitle}{fg=white}
+% \setbeamercolor*{block title}{parent=structure,bg=black!95}
+% \setbeamercolor*{block body}{fg=black,bg=black!10}
+% \setbeamercolor*{block title alerted}{parent=alerted text,bg=black!95}
+% \setbeamercolor*{block title example}{parent=example text,bg=black!95}
+
+%%%% Maths crap
+\DeclareMathOperator*{\argmin}{arg\,min}
+\DeclareMathOperator*{\argmax}{arg\,max}
+%%%% Itemize settings 
+\setlist[itemize,1]{label=$\bullet$}
+\setlist[itemize,2]{label=$\diamond$}
+
+%%%% Hyperref stuff
+\hypersetup{
+  colorlinks  = true, %Colours links instead of ugly boxes
+  urlcolor    = cyan, %Colour for external hyperlinks
+  linkcolor   = cyan, %Colour of internal links
+  citecolor   = red %Colour of citations
+}
+%%%% To create without the 'Figure' prefix. Remove if you need'em
+\usepackage{caption}
+\captionsetup[figure]{labelformat=empty}
+%%%%
+\author{
+\underline{Luiz Max F. de Carvalho} [lmax.procc@gmail.com], Daniel Villela, Flavio Coelho~\& Leonardo S. Bastos [lsbastos@fiocruz.br]\linebreak
+}
+\title{\Large Choosing the weights for the logarithmic pooling of probability distributions.}
+\institute{Scientific Computing Programme (PROCC), Oswaldo Cruz Foundation, Fiocruz, Brazil.\\
+60th World Statistics Congress – ISI2015, Rio de Janeiro, Brazil.}
+\date{\today}
+\logo{\includegraphics[scale=.15]{logo-fiocruz.jpg}}
+\begin{document}
+\include{isi2015}
+\begin{frame}{References}
+\bibliographystyle{apalike}
+\bibliography{WSC2015}
+\end{frame}
+\end{document}
