@@ -52,7 +52,7 @@ stat.beta <- function(a, alpha = .95){
 }
 stat.gamma <- function(a, alpha = .95){
   # returns the mean and 100*alpha% quantiles
-  c( a[1]/a[2], qgamma( c((1-alpha)/2, (1+alpha)/2), a[1], a[2]))
+  c(a[1]/a[2], qgamma( c((1-alpha)/2, (1+alpha)/2), a[1], a[2]))
 }
 #
 fbeta <- function(x, par){
