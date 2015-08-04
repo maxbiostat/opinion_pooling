@@ -18,4 +18,4 @@ Nevertheless, the three methods explored in this paper lead to very similar comb
 
 Key-words: logarithmic pooling; expert opinion; maximum entropy; Kullback-Liebler divergence; Dirichlet prior. 
 
-![](figures/priors_&_posteriors.png)
+![](figures/new_beta_example.png)
