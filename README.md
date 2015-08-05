@@ -14,6 +14,8 @@ Bits and pieces on (logarithmic) opinion pooling.
 - [ ] PSA for $\pi(\alpha)$
 - [ ] Arxiving
 
+[![PDF Status](https://www.sharelatex.com/github/repos/maxbiostat/opinion_pooling/builds/latest/badge.svg)](https://www.sharelatex.com/github/repos/maxbiostat/opinion_pooling/builds/latest/output.pdf)
+
 ## Extras
 - [ ] Matrix representation: refine the algebra + find a good application
 - [ ] R_0: pool-then-induce vs induce-then-pool problem + nice application
