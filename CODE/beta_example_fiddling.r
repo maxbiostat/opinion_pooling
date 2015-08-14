@@ -1,15 +1,17 @@
 
 # Leo Bastos & Luiz Max Carvalho (2015)
 source("maxent_aux.R")
+source("beta_elicitator.R")
 
-## The elicitation by four experts given in Savchuk & Martz, 1994 (IEEE)
-## priors are given for the survival probability for a unit for which
-## there have been x = 9 successes in n = 10 tests  
+## The idea is as follows: all expert priors but one,  will be rather inconsistent
+## with the data.
+## Why, you ask? To see how much we can "learn" about \alpha
 
-a0 <- 2 ; b0 <- 2
-a1 <- 3.44 ; b1 <- .860 
-a2 <- 8.32 ; b2 <- .924
-a3 <- 1.98 ; b3 <- .848
+p0 <- elicit.beta(m0 = 8/10, v0 = 1/20); a0 <- p0$a ; b0 <- p0$b
+p1 <- elicit.beta(m0 = 8/10, v0 = 1/200); a1 <- p1$a ; b1 <- p1$b
+p2 <- elicit.beta(m0 = 8/10, v0 = 1/300); a2 <- p2$a ; b2 <- p2$b
+p3 <- elicit.beta(m0 = 8/10, v0 = 1/2000); a3 <- p3$a ; b3 <- p3$b
+
 
 
 av <- c(a0, a1, a2, a3)
@@ -22,7 +24,7 @@ ES <- ent.surface.beta(av, bv)
 image.plot(ES$as, ES$bs, ES$M, xlab = expression(a), ylab = expression(b))
 
 # Data
-y <- 5
+y <- 9
 n <- 10
 
 ### Marginal (integrated) likelihoods for each of the experts' priors
@@ -194,7 +196,7 @@ ab.Hier.star.exp <- pool.par(post.alpha.exp, av, bv)
 round(PaperBeta.tbl, 2)
 round(AlphasBeta.tbl, 2)
 ###  Plotting
-png("../15/figures/priors_&_posteriors.png")
+png("../manuscript/figures/beta_fiddling_variances_wrongMean.png")
 par(mfrow = c(2, 1))
 ccx <- 1.5
 curve(fbeta(x, par = c(a0, b0) ), .5, 1,  ylab = "Density", main = "Expert Priors",
@@ -228,7 +230,7 @@ legend(x = "top", bty = "n", col = 1,
        legend = c("Priors", "Posteriors"),
        lwd = 2, lty = 2:1)
 abline( v = y/n, lwd = 3, lty = 3)
-# dev.off()
+dev.off()
 ############
 # Now  let's look at marginal likelihoods for the pooled priors
 
