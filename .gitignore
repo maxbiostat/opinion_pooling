@@ -107,3 +107,16 @@ sympy-plots-for-*.tex/
 
 # xindy
 *.xdy
+
+## Specific stuff in my Dropbox folder
+.latex.yml.save
+CODE/.Rhistory
+CODE/beta_elicitator_handSol.R
+R0_uncertainty/
+WSC2015/Carvalho_etal_WSC2015.pdf
+WSC2015/Carvalho_etal_WSC2015.tex.backup
+WSC2015/PRESENTATION/isi2015.tex.backup
+WSC2015/PRESENTATION/lmcarvalho_etal_isi2015.tex.backup
+manuscript/Carvalho_etal_pooling.pdf
+manuscript/Carvalho_etal_pooling.tex.backup
+
