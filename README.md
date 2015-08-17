@@ -6,6 +6,11 @@ Bits and pieces on (logarithmic) opinion pooling.
 - [x] Prove claims on uniqueness of maximum entropy;
 - [x] Manuscript;
 
+## [Epidemic Modelling Conference, Brazil, January 2016](http://math-epidemics.emap.fgv.br/)
+- [ ] R_0: pool-then-induce vs induce-then-pool problem + nice application
+
+Lives on its own [repo](https://github.com/maxbiostat/R0_uncertainty).
+
 ## General Manuscript
 - [ ] Dynamic model example;
 - [ ] Dominance analysis for H() and KL() for Beta and Gamma = surfaces;
@@ -18,4 +23,4 @@ Bits and pieces on (logarithmic) opinion pooling.
 
 ## Extras
 - [ ] Matrix representation: refine the algebra + find a good application
-- [ ] R_0: pool-then-induce vs induce-then-pool problem + nice application
+
