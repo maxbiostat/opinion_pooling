@@ -75,11 +75,11 @@ We present an example on proportion estimation by combining Beta priors.
 In what follows, we introduce the necessary theory and extend a previous 
 result~\citep{poole2000} for combining more than two distributions.
 
-Let $\mathbf{F(\theta)} = \{f_0(\theta), f_1(\theta), f_2(\theta), \ldots, f_K(\theta)\}$ be the set of prior distributions representing the opinions of $K+1$ experts and let $\boldsymbol\alpha =\{\alpha_0, \alpha_1, \alpha_2, \ldots, \alpha_K \}$ be the vector of weights, such that $\alpha_i > 0\: \forall i$ and $\sum_{i=0}^K \alpha_i = 1$.
+Let $\mathbf{F(\theta)} := \{f_0(\theta), f_1(\theta), f_2(\theta), \ldots, f_K(\theta)\}$ be the set of prior distributions representing the opinions of $K+1$ experts and let $\boldsymbol\alpha :=\{\alpha_0, \alpha_1, \alpha_2, \ldots, \alpha_K \}$ be the vector of weights, such that $\alpha_i > 0\: \forall i$ and $\sum_{i=0}^K \alpha_i = 1$.
 Then the log-pooled prior is
 \begin{equation}
 \label{eq:logpool}
- \pi(\theta) = t(\boldsymbol\alpha) \prod_{i=0}^K f_i(\theta)^{\alpha_i} 
+ \pi(\theta) := t(\boldsymbol\alpha) \prod_{i=0}^K f_i(\theta)^{\alpha_i} 
 \end{equation}
 where $t(\boldsymbol\alpha) = \int_{\boldsymbol\Theta}\prod_{i=0}^K f_i(\theta)^{\alpha_i}d\theta$.
 
@@ -106,7 +106,7 @@ Then integrating the expression in (\ref{eq:pirewritten}) is equivalent to findi
 E_{0}\left[\prod_{j=1}^KX_j^{\alpha_j}\right] \leq \prod_{j=1}^KE_{0}[X_j]^{\alpha_j}
 \end{equation}
 where $E_{0}[\cdot]$ is the expectation w.r.t $f_0$ and (\ref{eq:expectations}) follows from H\"{o}lder's inequality for expectations~\citep{yeh2011}.
-Since we have, $\forall j$, $ E_{0}[X_j]^{\alpha_j} = \left(\int_{\boldsymbol\Theta}f_0(\theta)\frac{f_j(\theta)}{f_0(\theta)}\right)^{\alpha_j}d\theta=1^{\alpha_j}=1$, Theorem~\ref{thm:normalisation} is proven.
+Since $\forall j$ we have $E_{0}[X_j]^{\alpha_j} = \left(\int_{\boldsymbol\Theta}f_0(\theta)\frac{f_j(\theta)}{f_0(\theta)}\right)^{\alpha_j}d\theta=1^{\alpha_j}=1$, Theorem~\ref{thm:normalisation} is proven.
 \end{proof}
 
 We now move on to study three approaches to assign weights, the first two approaches based on optimality criteria and a proposal based on pooling Dirichlet prior distributions.
