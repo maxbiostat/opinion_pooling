@@ -1,4 +1,4 @@
-\documentclass[a4paper, notitlepage, 10pt]{article}
+\documentclass[a4paper, notitlepage, 11pt]{article}
 \usepackage{geometry}
 % WSC 2015 configs
 \fontfamily{times}
@@ -109,6 +109,26 @@ where $E_{0}[\cdot]$ is the expectation w.r.t $f_0$ and (\ref{eq:expectations}) 
 Since we have, $\forall j$, $ E_{0}[X_j]^{\alpha_j} = \left(\int_{\boldsymbol\Theta}f_0(\theta)\frac{f_j(\theta)}{f_0(\theta)}\right)^{\alpha_j}d\theta=1^{\alpha_j}=1$, Theorem~\ref{thm:normalisation} is proven.
 \end{proof}
 
+\begin{remark}
+\textbf{Log-concavity}. 
+ Let $\mathbf{F(\theta)}$ be a family of log-concave distributions, i.e., each $f_i$ can be represented as
+ \begin{equation}
+  \label{eq:logconcavity}
+  f_i(\theta) \propto e^{\psi_i(\theta)}
+ \end{equation}
+where $\psi_i(\cdot)$ is a concave function.
+Then $\pi(\theta)$ is also log-concave.
+\end{remark}
+\begin{proof}
+\begin{align}
+ \pi(\theta) &\propto \prod_{i=0}^{K} [\exp(\psi_i(\theta))]^{\alpha_i}\\
+ \pi(\theta) &\propto \exp(\psi^{\ast}(\theta))
+\end{align}
+ where $\psi^{\ast}(\theta) = \sum_{i=0}^{K}\alpha_i\psi_i(\theta)$ is a concave function due to being a linear combination of concave functions.
+\end{proof}
+Log-concavity of the pooled prior may be important to consider in order to guarantee unimodality and certain conditions on tail behaviour.
+[IF ANYBODY HAS ANYTHING TO ADD HERE, PLEASE BE MY GUEST]
+
 We now move on to study three approaches to assign weights, the first two approaches based on optimality criteria and a proposal based on pooling Dirichlet prior distributions.
 
 \section*{Choosing the weights based on optimality criteria}
@@ -175,8 +195,11 @@ The marginal prior for $\theta$ is then
              &= \frac{1}{\mathcal{B}(\boldsymbol X)}\int_{A}t(\boldsymbol\alpha)\prod_{i=0}^K f_i(\theta)^{\alpha_i}\alpha_i^{x_i-1}d\boldsymbol\alpha 
 \end{align}
 
-\section*{Application: binomial probabilities}
+\section*{Applications}
+\label{sec:apps}
 
+\subsection*{Binomial probabilities}
+\label{sec:beta}
 We now turn our attention to combining expert opinions about probabilities and proportions.
 In this setting we are interested in the random variable $Y\sim Bernoulli(\theta)$.
 Assume that we want to obtain a combined prior for a proportion $\theta$.
@@ -184,7 +207,7 @@ A common choice for $\mathbf{F}(\theta)$ is the Beta family of distributions:
 $$f_i(\theta;a_i, b_i) = \frac{\Gamma(a_i + b_i)}{\Gamma(a_i b_i)} \theta^{a_i-1}(1-\theta)^{b_i-1}$$
 The log-pooled prior is then
 \begin{align}
-\pi(\theta)&=\prod_{i=0}^{K}f_i(\theta;a_i,b_i)^{\alpha_i}\\
+\pi(\theta)&= t(\boldsymbol\alpha)\prod_{i=0}^{K}f_i(\theta;a_i,b_i)^{\alpha_i}\\
 &\propto \prod_{i=0}^{K} \left(\theta^{a_i-1}(1-\theta)^{b_i-1} \right)^{\alpha_i}\\
 \label{eq:betabern}
 &\propto \theta^{a^*-1}(1-\theta)^{b^*-1}
@@ -226,6 +249,65 @@ Finally, we propose to compare the prior distributions representing the experts'
  l(y_i) &= \int_{0}^{1}f(\theta|y_i, n_i)\pi(\theta)d\theta\nonumber\\
       &= \prod_{i}\frac{\Gamma(n_i-1)}{\Gamma(n_i-y_i + 1)\Gamma(y_i+1)}\frac{\Gamma(a +b)}{\Gamma(a +b + n_i)}\frac{\Gamma(a + y_i)}{\Gamma(a)}\frac{\Gamma(b + n_i - y_i) }{\Gamma(b)}
 \end{align}
+
+\subsection*{Poisson rate $\lambda$}
+\label{sec:gamma}
+Suppose we are interested in a certain count $Y\sim Poisson(\lambda)$ and $K + 1$ experts are called upon to elicit prior distributions for $\lambda$.
+A convenient parametric choice for $\mathbf{F}(\lambda)$ is the Gamma family of distributions, for which densities are of the form
+$$ f_i(\lambda;a_i,b_i) = \frac{b_i^{a_i}}{\Gamma(a_i)} \lambda^{a_i-1} e^{-b_i\lambda}$$
+The log-pooled prior $\pi(\lambda)$ is then
+\begin{align}
+\pi(\lambda)&= t(\boldsymbol\alpha)\prod_{i=0}^{K}f_i(\lambda;a_i,b_i)^{\alpha_i}\\
+&\propto \prod_{i=0}^{K} \left(\lambda^{a_i-1} e^{-b_i\lambda}\right)^{\alpha_i}\\
+\label{eq:gammapois}
+&\propto \lambda^{a^*-1} e^{-b^*\lambda}
+\end{align}
+where $a^* =\sum_{i=0}^{K}\alpha_ia_i$ and $b^* = \sum_{i=0}^{K}\alpha_ib_i$.
+Noticing (\ref{eq:gammapois}) is the kernel of a gamma distribution with parameters $a^*$ and $b^*$, $H_{\pi}(\lambda)$ becomes
+\begin{equation}
+\label{eq:entropygamma}
+H_{\pi}(\lambda) = a^* - \ln b^* + \ln \Gamma(a^*) + (1-a^*)\psi(a^*)
+\end{equation}
+where $\psi(\cdot)$ is the digamma function.
+
+The Kullback-Liebler divergence between each density and the pooled density is:
+\begin{equation}
+ \label{eq:KLgamma}
+ d_i = \text{KL}(f_i||\pi) = (a_i-a^*)\psi(a_i) - \ln\Gamma(a_i) + \ln\Gamma(a^*) + a^*(\ln\frac{b_i}{b^*}) + a_i\frac{b^*-b_i}{b_i}
+\end{equation}
+
+blablablablablabla
+
+blablablablablabla
+
+blablablablablabla
+
+The marginal prior is then
+\begin{equation}
+\label{eq:marginalgamma}
+\pi(\lambda) = \frac{1}{\mathcal{B}(X)}\int_{A} \frac{{b^*}^{a^*}}{\Gamma(a^*)}\lambda^{a^* - 1} e^{b^*\lambda} \alpha_i^{x_i-1}d\boldsymbol\alpha 
+\end{equation}
+
+\subsection*{Normal random variables} %TODO: find a better name
+\label{sec:normal}
+Now suppose one is interested in combinining prior distributions on a quantity $\mu \in \mathbb{R}$.
+Suppose further that the expert priors are densities in the normal family, i.e.,
+$$ f_i(\mu; m_i,s_i) = \frac{1}{s_i\sqrt{2\pi}} \exp\left(\frac{-(\mu-m_i)^2}{2s_i^2}\right) $$
+Thus 
+\begin{align}
+\pi(\lambda)&= t(\boldsymbol\alpha)\prod_{i=0}^{K}f_i(\mu; m_i, s_i)^{\alpha_i}\\
+&\propto \prod_{i=0}^{K} \left[ \exp\left(\frac{-(\mu-m_i)^2}{2s_i^2}\right) \right]^{\alpha_i}\\
+&\propto \exp\left[-\frac{1}{2}\left\{\mu\sum_{i=0}^K\frac{\alpha_i}{s_i^2} - 2\mu\sum_{i=0}^K \frac{\alpha_im_i}{s_i^2} - \sum_{i=0}^K\frac{\alpha_im_i^2}{s_i^2} \right\}\right]
+\end{align}
+which yields a normal distribution with parameters and $m^* = \frac{\sum_{i=0}^K w_im_i}{\sum_{i=0}^K w_i}$ and $v^* = [\sum_{i=0}^K w_i]^{-1}$,  where $w_i = \alpha_i/s_i^2$.
+The entropy function is then:
+\begin{equation}
+ \label{eq:normalpoolentropy}
+ H_{\pi}(\mu) = \frac{1}{2}\left[ \ln(2\pi e) - \ln\sum_{i=0}^K w_i\right]
+\end{equation}
+which achieves its maximum when $\alpha_j = 1$ for $s_j = max(s_1, s_2, \ldots, s_K)$.
+
+
 \section*{Results and avenues of future research}
 
 Table~\ref{tab:alphasBeta} lists the weights proposed by each method.
