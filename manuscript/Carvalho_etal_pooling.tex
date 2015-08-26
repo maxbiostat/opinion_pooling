@@ -293,13 +293,20 @@ The marginal prior is then
 Now suppose one is interested in combinining prior distributions on a quantity $\mu \in \mathbb{R}$.
 Suppose further that the expert priors are densities in the normal family, i.e.,
 $$ f_i(\mu; m_i,s_i) = \frac{1}{s_i\sqrt{2\pi}} \exp\left(\frac{-(\mu-m_i)^2}{2s_i^2}\right) $$
-Thus 
+Thus
 \begin{align}
-\pi(\lambda)&= t(\boldsymbol\alpha)\prod_{i=0}^{K}f_i(\mu; m_i, s_i)^{\alpha_i}\\
-&\propto \prod_{i=0}^{K} \left[ \exp\left(\frac{-(\mu-m_i)^2}{2s_i^2}\right) \right]^{\alpha_i}\\
-&\propto \exp\left[-\frac{1}{2}\left\{\mu\sum_{i=0}^K\frac{\alpha_i}{s_i^2} - 2\mu\sum_{i=0}^K \frac{\alpha_im_i}{s_i^2} - \sum_{i=0}^K\frac{\alpha_im_i^2}{s_i^2} \right\}\right]
+\pi(\mu)&= t(\boldsymbol\alpha)\prod_{i=0}^{K}f_i(\mu; m_i,
+v_i)^{\alpha_i}\\
+ &\propto \prod_{i=0}^{K} \left[ \exp \left(-\frac{(\mu-m_i)^2}{2v_i}
+\right) \right]^{\alpha_i} \\
+&\propto \exp\left[-\frac{1}{2}\left\{\mu^2
+\sum_{i=0}^K\frac{\alpha_i}{v_i} - 2 \mu \sum_{i=0}^K \frac{\alpha_i
+m_i}{v_i} \right\} \right] % \\
+ %&\propto \exp \left( -\frac{1}{2}\frac{(\mu-m^*)^2}{v^*} \right)
 \end{align}
-which yields a normal distribution with parameters and $m^* = \frac{\sum_{i=0}^K w_im_i}{\sum_{i=0}^K w_i}$ and $v^* = [\sum_{i=0}^K w_i]^{-1}$,  where $w_i = \alpha_i/s_i^2$.
+which yields a normal distribution with parameters and $m^* =
+\frac{\sum_{i=0}^K w_i m_i}{\sum_{i=0}^K w_i}$ and $v^* = [\sum_{i=0}^K
+w_i]^{-1}$,  where $w_i = \alpha_i/v_i$.
 The entropy function is then:
 \begin{equation}
  \label{eq:normalpoolentropy}
