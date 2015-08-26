@@ -292,7 +292,7 @@ The marginal prior is then
 \label{sec:normal}
 Now suppose one is interested in combinining prior distributions on a quantity $\mu \in \mathbb{R}$.
 Suppose further that the expert priors are densities in the normal family, i.e.,
-$$ f_i(\mu; m_i,s_i) = \frac{1}{s_i\sqrt{2\pi}} \exp\left(\frac{-(\mu-m_i)^2}{2s_i^2}\right) $$
+$$ f_i(\mu; m_i,v_i) = \frac{1}{\sqrt{2\pi v_i}} \exp\left(\frac{-(\mu-m_i)^2}{2v_i}\right) $$
 Thus
 \begin{align}
 \pi(\mu)&= t(\boldsymbol\alpha)\prod_{i=0}^{K}f_i(\mu; m_i,
