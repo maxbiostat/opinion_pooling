@@ -19,3 +19,5 @@ Nevertheless, the three methods explored in this paper lead to very similar comb
 Key-words: logarithmic pooling; expert opinion; maximum entropy; Kullback-Liebler divergence; Dirichlet prior. 
 
 ![](figures/new_beta_example.png)
+
+See the [talk.](https://github.com/maxbiostat/opinion_pooling/blob/master/WSC2015/PRESENTATION/lmcarvalho_etal_isi2015.pdf)
