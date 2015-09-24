@@ -8,8 +8,8 @@ pool.par <- function(alpha, a, b){
 dpool <- function(x, D, alphas){
   # D is a set (list type) of K of densities
   # alphas is a K-dimensional vector with the weights a_i>0  and sum(alphas)=1
-#   if(sum(alphas)!=1){ break ("The vector of weigths doesn't sum up to unity")}
-#   if(any(alphas<=0)) { break ("All weigths should be greater than zero")}
+  #   if(sum(alphas)!=1){ break ("The vector of weigths doesn't sum up to unity")}
+  #   if(any(alphas<=0)) { break ("All weigths should be greater than zero")}
   sapply(x, function(x) prod(unlist(lapply(D, function(d) d(x)))^alphas))
 }
 ## the constant t(\alpha)
@@ -19,6 +19,10 @@ tpool <- function(alpha, D){
 tpool.positive <- function(alpha, D){ # For those with positive support
   1/integrate(function(x) sapply(x, function(e) dpool(e, D = D, alpha = alpha)), 0, Inf)$value
 } 
+#
+tpool.unit <- function(alpha, D){ # For those with positive support
+  1/integrate(function(x) sapply(x, function(e) dpool(e, D = D, alpha = alpha)), 0, .999999999)$value
+}
 ##
 dpoolnorm <- function(x, D, alphas){
   # D is a set of K of densities
@@ -36,6 +40,11 @@ dpoolnorm.positive <- function(x, D, alphas){
 #   if(any(alphas<=0)) { break ("All weigths should be greater than zero")}
   dens <- dpool(x, D, alphas)
   return(tpool.positive(alphas, D)*dens)
+}
+dpoolnorm.unit <- function(x, D, alphas){
+## same as before, but integrating on the open interval (0, 1)
+  dens <- dpool(x, D, alphas)
+  return(tpool.unit(alphas, D)*dens)
 }
 #
 dpool.entropy <- function(D, alphas){
