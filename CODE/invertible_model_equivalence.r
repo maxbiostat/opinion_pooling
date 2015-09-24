@@ -30,7 +30,6 @@ ItP.dens <- function(y, va, vb, alphas){
     f2 = function(y){dbeta(Minv(y), shape1 = va[3], shape2 = vb[3])*J(y)},
     f3 = function(y){dbeta(Minv(y), shape1 = va[4], shape2 = vb[4])*J(y)}
   ) # list with the densities
-  # return(dpool(y, D = Ds, alphas = alphas))
   return(dpoolnorm.unit(y, D = Ds, alphas = alphas))
 }
 ####
@@ -50,6 +49,5 @@ curve(dPtI, min(Y), max(Y), lwd = 2, col = "green", add = TRUE)
 curve(dItP, min(Y), max(Y), lwd = 2, lty = 3, col = "red", add = TRUE)
 legend(x = "topleft", legend = c("Pool-then-induce", "Induce-then-pool"),
        lwd = 2, col = c(3, 2), lty = c(1,3), bty = "n")
-
 dItP(.3)
 dItP(.3)
