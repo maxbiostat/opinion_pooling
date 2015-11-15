@@ -42,10 +42,10 @@ c -- School of Applied Mathematics, Getulio Vargas Foundation (FGV).
 Combining different prior distributions is an important issue in decision theory and Bayesian inference.
 Logarithmic pooling is a popular method to aggregate expert opinions by using a set of weights that reflect the reliability of each information source.
 The resulting pooled distribution however heavily depends set of weights given to each opinion/prior.
-In this paper we explore three objective approaches to assigning weights to opinions.
+In this paper we explore three approaches to assigning weights to opinions.
 Two methods are stated in terms of optimisation problems and a third one uses a hierarchical prior that accounts for uncertainty on the weights. 
-We explore an example in which a proportion is estimated using weights assigned to a finite set of opinions and show that, depending on the used method, results vary from discarding some of the expert opinions to the situation in which all opinions are assigned equal weights.
-Nevertheless, the three methods explored in this paper lead to very similar combined priors, with very similar integrated (marginal) likelihoods.
+We explore several examples of interest, such as proportion and rate estimation and combining Normal distributions.
+Our findings...
 
 Key-words: logarithmic pooling; expert opinion; maximum entropy; Kullback-Leibler divergence; Dirichlet prior. 
 \end{abstract}
@@ -247,7 +247,7 @@ Finally, we propose to compare the prior distributions representing the experts'
 The marginal likelihood for the $i-th$ expert and $J$ observations of the type $\{ y_j, n_j\}$ is:
 \begin{align}
  \label{eq:marglike}
- l_i(y_j) &= \int_{0}^{1}f(\theta|y_j, n_j)\pi_i(\theta)d\theta\nonumber\\
+ l_i(y_j) &= \int_{0}^{1}\mathcal{L}(\theta|y_j, n_j)\pi_i(\theta)d\theta\nonumber\\
       &= \prod_{j = 1}^{J}\frac{\Gamma(n_j-1)}{\Gamma(n_j-y_j + 1)\Gamma(y_j+1)}\frac{\Gamma(a_i + b_i)}{\Gamma(a_i + b_i + n_j)}\frac{\Gamma(a_i + y_j)}{\Gamma(a)}\frac{\Gamma(b_i + n_j - y_j) }{\Gamma(b)}
 \end{align}
 
