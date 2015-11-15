@@ -244,10 +244,11 @@ From the vector of prior means $\mathbf{m} = \{ m_0 = 0.95, m_1 = 0.80, m_2 = 0.
 The resulting prior densities are show in the top panel of Figure~\ref{fig:priors_posteriors_beta}.
 To complete the analysis, we place a diffuse $Dirichlet(\boldsymbol\alpha | \boldsymbol X)$ prior on $\boldsymbol\alpha$ with $X_i = 1/4 \: \forall i$.
 Finally, we propose to compare the prior distributions representing the experts' opinions as well as the combined distributions obtained by the different approaches using the integrated (marginal) likelihood (\cite{raftery2007}, eq. 9), $l(y) = \int_{0}^{1}f(\theta|y)\pi(\theta)d\theta$.
+The marginal likelihood for the $i-th$ expert and $J$ observations of the type $\{ y_j, n_j\}$ is:
 \begin{align}
  \label{eq:marglike}
- l(y_i) &= \int_{0}^{1}f(\theta|y_i, n_i)\pi(\theta)d\theta\nonumber\\
-      &= \prod_{i}\frac{\Gamma(n_i-1)}{\Gamma(n_i-y_i + 1)\Gamma(y_i+1)}\frac{\Gamma(a +b)}{\Gamma(a +b + n_i)}\frac{\Gamma(a + y_i)}{\Gamma(a)}\frac{\Gamma(b + n_i - y_i) }{\Gamma(b)}
+ l_i(y_j) &= \int_{0}^{1}f(\theta|y_j, n_j)\pi_i(\theta)d\theta\nonumber\\
+      &= \prod_{j = 1}^{J}\frac{\Gamma(n_j-1)}{\Gamma(n_j-y_j + 1)\Gamma(y_j+1)}\frac{\Gamma(a_i + b_i)}{\Gamma(a_i + b_i + n_j)}\frac{\Gamma(a_i + y_j)}{\Gamma(a)}\frac{\Gamma(b_i + n_j - y_j) }{\Gamma(b)}
 \end{align}
 
 \subsection*{Poisson rate $\lambda$}
