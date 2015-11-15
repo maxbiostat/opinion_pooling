@@ -7,15 +7,14 @@ Bits and pieces on (logarithmic) opinion pooling.
 - [x] Manuscript;
 
 ## [Epidemic Modelling Conference, Brazil, January 2016](http://math-epidemics.emap.fgv.br/)
-- [ ] R_0: pool-then-induce vs induce-then-pool problem + nice application
-
 Lives on its own [repo](https://github.com/maxbiostat/R0_uncertainty).
+- [ ] R_0: pool-then-induce vs induce-then-pool problem + nice application
+- [ ] KL divergence in transformed space?
 
 ## General Manuscript
 - [ ] Dynamic model example;
 - [ ] Dominance analysis for H() and KL() for Beta and Gamma = surfaces;
 - [ ] Method comparison: integrated likelihoods only?;
-- [ ] KL divergence in transformed space?;
 - [ ] PSA for $\pi(\alpha)$
 - [ ] Arxiving
 
