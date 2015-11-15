@@ -76,7 +76,7 @@ We present an example on proportion estimation by combining Beta priors.
 In what follows, we introduce the necessary theory and extend a previous 
 result~\citep{poole2000} for combining more than two distributions.
 
-Let $\mathbf{F(\theta)} := \{f_0(\theta), f_1(\theta), f_2(\theta), \ldots, f_K(\theta)\}$ be the set of prior distributions representing the opinions of $K+1$ experts and let $\boldsymbol\alpha :=\{\alpha_0, \alpha_1, \alpha_2, \ldots, \alpha_K \}$ be the vector of weights, such that $\alpha_i > 0\: \forall i$ and $\sum_{i=0}^K \alpha_i = 1$.
+Let $\mathbf{F(\theta)} := \{f_0(\theta), f_1(\theta), f_2(\theta), \ldots, f_K(\theta)\}$ be a set of prior distributions representing the opinions of $K+1$ experts and let $\boldsymbol\alpha :=\{\alpha_0, \alpha_1, \alpha_2, \ldots, \alpha_K \}$ be the vector of weights, such that $\alpha_i > 0\: \forall i$ and $\sum_{i=0}^K \alpha_i = 1$.
 Then the log-pooled prior is
 \begin{equation}
 \label{eq:logpool}
@@ -128,7 +128,6 @@ Then $\pi(\theta)$ is also log-concave.
  where $\psi^{\ast}(\theta) = \sum_{i=0}^{K}\alpha_i\psi_i(\theta)$ is a concave function due to being a linear combination of concave functions.
 \end{proof}
 Log-concavity of the pooled prior may be important to consider in order to guarantee unimodality and certain conditions on tail behaviour.
-[IF ANYBODY HAS ANYTHING TO ADD HERE, PLEASE BE MY GUEST]
 
 We now move on to study three approaches to assign weights, the first two approaches based on optimality criteria and a proposal based on pooling Dirichlet prior distributions.
 
@@ -289,9 +288,9 @@ The marginal prior is then
 \pi(\lambda) = \frac{1}{\mathcal{B}(X)}\int_{A} \frac{{b^*}^{a^*}}{\Gamma(a^*)}\lambda^{a^* - 1} e^{b^*\lambda} \alpha_i^{x_i-1}d\boldsymbol\alpha 
 \end{equation}
 
-\subsection*{Normal random variables} %TODO: find a better name
+\subsection*{Normal priors} %TODO: find a better name
 \label{sec:normal}
-Now suppose one is interested in combinining prior distributions on a quantity $\mu \in \mathbb{R}$.
+Now suppose one is interested in combining prior distributions on a quantity $\mu \in \mathbb{R}$.
 Suppose further that the expert priors are densities in the normal family, i.e.,
 $$ f_i(\mu; m_i,v_i) = \frac{1}{\sqrt{2\pi v_i}} \exp\left(\frac{-(\mu-m_i)^2}{2v_i}\right) $$
 Thus
