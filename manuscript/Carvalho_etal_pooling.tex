@@ -38,14 +38,13 @@ c -- School of Applied Mathematics, Getulio Vargas Foundation (FGV).
 \maketitle
 
 \begin{abstract}
-
 Combining different prior distributions is an important issue in decision theory and Bayesian inference.
 Logarithmic pooling is a popular method to aggregate expert opinions by using a set of weights that reflect the reliability of each information source.
 The resulting pooled distribution however heavily depends set of weights given to each opinion/prior.
-In this paper we explore three approaches to assigning weights to opinions.
+In this paper we explore three objective approaches to assigning weights to opinions.
 Two methods are stated in terms of optimisation problems and a third one uses a hierarchical prior that accounts for uncertainty on the weights. 
-We explore several examples of interest, such as proportion and rate estimation and combining Normal distributions.
-Our findings...
+We explore an example in which a proportion is estimated using weights assigned to a finite set of opinions and show that, depending on the used method, results vary from discarding some of the expert opinions to the situation in which all opinions are assigned equal weights.
+Nevertheless, the three methods explored in this paper lead to very similar combined priors, with very similar integrated (marginal) likelihoods.
 
 Key-words: logarithmic pooling; expert opinion; maximum entropy; Kullback-Leibler divergence; Dirichlet prior. 
 \end{abstract}
@@ -76,11 +75,11 @@ We present an example on proportion estimation by combining Beta priors.
 In what follows, we introduce the necessary theory and extend a previous 
 result~\citep{poole2000} for combining more than two distributions.
 
-Let $\mathbf{F(\theta)} := \{f_0(\theta), f_1(\theta), f_2(\theta), \ldots, f_K(\theta)\}$ be a set of prior distributions representing the opinions of $K+1$ experts and let $\boldsymbol\alpha :=\{\alpha_0, \alpha_1, \alpha_2, \ldots, \alpha_K \}$ be the vector of weights, such that $\alpha_i > 0\: \forall i$ and $\sum_{i=0}^K \alpha_i = 1$.
+Let $\mathbf{F(\theta)} := \{f_0(\theta), f_1(\theta), f_2(\theta), \ldots, f_K(\theta)\}$ be the set of prior distributions representing the opinions of $K+1$ experts and let $\boldsymbol\alpha :=\{\alpha_0, \alpha_1, \alpha_2, \ldots, \alpha_K \}$ be the vector of weights, such that $\alpha_i > 0\: \forall i$ and $\sum_{i=0}^K \alpha_i = 1$.
 Then the log-pooled prior is
 \begin{equation}
 \label{eq:logpool}
- \pi(\theta) := t(\boldsymbol\alpha) \prod_{i=0}^K f_i(\theta)^{\alpha_i} 
+ \pi(\theta) := t(\boldsymbol\alpha) \prod_{i=0}^K f_i(\theta)^{\alpha_i},
 \end{equation}
 where $t(\boldsymbol\alpha) = \int_{\boldsymbol\Theta}\prod_{i=0}^K f_i(\theta)^{\alpha_i}d\theta$.
 
@@ -98,13 +97,13 @@ Here we provide a simple proof using H\"{o}lder's inequality.
 We begin by noting that $\pi(\theta)$ can be re-written as:
 \begin{equation}
 \label{eq:pirewritten}
- \pi(\theta) \propto f_0(\theta)\prod_{j=1}^{K} \left(\frac{f_j(\theta)}{f_0(\theta)}\right)^{\alpha_j}
+ \pi(\theta) \propto f_0(\theta)\prod_{j=1}^{K} \left(\frac{f_j(\theta)}{f_0(\theta)}\right)^{\alpha_j}.
 \end{equation}
 Let $X_j = \frac{f_j(\theta)}{f_0(\theta)}, j=1, 2,\ldots, K$. 
 Then integrating the expression in (\ref{eq:pirewritten}) is equivalent to finding 
 \begin{equation}
 \label{eq:expectations}
-E_{0}\left[\prod_{j=1}^KX_j^{\alpha_j}\right] \leq \prod_{j=1}^KE_{0}[X_j]^{\alpha_j}
+E_{0}\left[\prod_{j=1}^KX_j^{\alpha_j}\right] \leq \prod_{j=1}^KE_{0}[X_j]^{\alpha_j},
 \end{equation}
 where $E_{0}[\cdot]$ is the expectation w.r.t $f_0$ and (\ref{eq:expectations}) follows from H\"{o}lder's inequality for expectations~\citep{yeh2011}.
 Since $\forall j$ we have $E_{0}[X_j]^{\alpha_j} = \left(\int_{\boldsymbol\Theta}f_0(\theta)\frac{f_j(\theta)}{f_0(\theta)}\right)^{\alpha_j}d\theta=1^{\alpha_j}=1$, Theorem~\ref{thm:normalisation} is proven.
@@ -112,10 +111,10 @@ Since $\forall j$ we have $E_{0}[X_j]^{\alpha_j} = \left(\int_{\boldsymbol\Theta
 
 \begin{remark}
 \textbf{Log-concavity}. 
- Let $\mathbf{F(\theta)}$ be a set of log-concave distributions, i.e., each $f_i$ can be represented as
+ Let $\mathbf{F(\theta)}$ be a family of log-concave distributions, i.e., each $f_i$ can be represented as
  \begin{equation}
   \label{eq:logconcavity}
-  f_i(\theta) \propto e^{\psi_i(\theta)}
+  f_i(\theta) \propto e^{\psi_i(\theta)},
  \end{equation}
 where $\psi_i(\cdot)$ is a concave function.
 Then $\pi(\theta)$ is also log-concave.
@@ -123,13 +122,15 @@ Then $\pi(\theta)$ is also log-concave.
 \begin{proof}
 \begin{align}
  \pi(\theta) &\propto \prod_{i=0}^{K} [\exp(\psi_i(\theta))]^{\alpha_i}\\
- \pi(\theta) &\propto \exp(\psi^{\ast}(\theta))
+             &\propto \exp(\psi^{\ast}(\theta)),
 \end{align}
  where $\psi^{\ast}(\theta) = \sum_{i=0}^{K}\alpha_i\psi_i(\theta)$ is a concave function due to being a linear combination of concave functions.
 \end{proof}
 Log-concavity of the pooled prior may be important to consider in order to guarantee unimodality and certain conditions on tail behaviour.
+[IF ANYBODY HAS ANYTHING TO ADD HERE, PLEASE BE MY GUEST; NOT SURE IF WE NEED THIS PROPERTY...]
 
 We now move on to study three approaches to assign weights, the first two approaches based on optimality criteria and a proposal based on pooling Dirichlet prior distributions.
+
 
 \section*{Choosing the weights based on optimality criteria}
 \subsection*{Maximum entropy}
@@ -195,6 +196,55 @@ The marginal prior for $\theta$ is then
              &= \frac{1}{\mathcal{B}(\boldsymbol X)}\int_{A}t(\boldsymbol\alpha)\prod_{i=0}^K f_i(\theta)^{\alpha_i}\alpha_i^{x_i-1}d\boldsymbol\alpha 
 \end{align}
 
+
+\section*{log-pooled Experts' conjugate priors for exponential family}
+
+Suppose we are interested in a random variable, $Y$, from a exponential family with parameter $\theta$ whose probability density function is given by
+\begin{equation} \label{eq:exponentialfamily}
+f(y|\theta) = h(y) e^{\theta y - \psi(\theta)}.
+\end{equation}
+A conjugate prior family for $f(y|\theta)$ is the following
+\begin{equation} \label{eq:priorEF}
+f(\theta | a, b) = K(a,b) e^{\theta a - b \psi(\theta)},
+\end{equation}
+where $K(a,b)$ is a normalising constant. We used the definition and notation for exponential family and its conjugate prior family from \citet[chapter 3]{robert2001bayesian}.
+
+Let $\mathbf{F(\theta)} := \{f_0(\theta), f_1(\theta), f_2(\theta), \ldots, f_K(\theta)\}$ be a set of conjugate prior distributions representing the opinions of $K+1$ experts, and $f_i(\theta) = f(\theta | a_i, b_i)$ from equation (\ref{eq:priorEF}).
+
+The log-pooled prior is also a conjugate prior for $f(y|\theta)$ with hyperparameters given by an weighted mean of the experts hyperparameters, i.e.
+\begin{equation}
+\pi(\theta) = f(\theta | a^*, b^*),
+\end{equation}
+where $a^* = \sum_{i} \alpha_i a_i$ and $b^* = \sum_{i} \alpha_i b_i$. Note that the posterior distribution of $\theta$ is given by $\pi(\theta | y) = f(\theta | a^* + y, b^* + 1)$.
+
+The entropy function of the log-pooled prior is given by
+\begin{equation} \label{eq:entropypriorEF}
+H_\pi(\theta) = - \log(K(a^*, b^*) + a^*  E[\theta]-  b^*  E[\psi(\theta)].
+\end{equation}
+
+Contas para conferir:
+\begin{eqnarray*} 
+H_\pi(\theta) & = & E[-\log(\pi(\theta)] \\
+              & = & - \int \log(\pi(\theta) \pi(\theta) d\theta \\
+              & = & - \int (\log(K(a^*, b^*) + \theta a^* - \psi(\theta) b^*) \pi(\theta) d\theta \\
+              & = & - \log(K(a^*, b^*) + a^*  E[\theta]-  b^*  E[\psi(\theta)]
+\end{eqnarray*}
+
+
+And the Kullback-Leibler divergence, $KL(f_i || \pi)$, is the following
+\begin{equation} \label{eq:KLpriorEF}
+KL(f_i || \pi) = \log( K(a_i,b_i)) - \log(K(a^*,b^*)) + (a_i - a^*) E[\theta] - (b_i - b^*) E[\psi(\theta)] .
+\end{equation}
+
+Contas para conferir:
+\begin{eqnarray*} 
+KL(f_i || \pi) & = & E_\pi[\log(f_i(\theta)-\log(\pi(\theta)] \\
+              & = & \int [\log( K(a_i,b_i) e^{\theta a_i - b_i \psi(\theta)}) - \log(K(a^*,b^*) e^{\theta a^* - b^* \psi(\theta)}) ] \pi(\theta) d\theta \\
+              & = & \int [\log( K(a_i,b_i)) - \log(K(a^*,b^*)) + (a_i - a^*) \theta  - (b_i - b^*) \psi(\theta) \pi(\theta) d\theta \\
+              & = & \log( K(a_i,b_i)) - \log(K(a^*,b^*)) + (a_i - a^*) E[\theta] - (b_i - b^*) E[\psi(\theta)] 
+\end{eqnarray*}
+
+
 \section*{Applications}
 \label{sec:apps}
 
@@ -244,11 +294,10 @@ From the vector of prior means $\mathbf{m} = \{ m_0 = 0.95, m_1 = 0.80, m_2 = 0.
 The resulting prior densities are show in the top panel of Figure~\ref{fig:priors_posteriors_beta}.
 To complete the analysis, we place a diffuse $Dirichlet(\boldsymbol\alpha | \boldsymbol X)$ prior on $\boldsymbol\alpha$ with $X_i = 1/4 \: \forall i$.
 Finally, we propose to compare the prior distributions representing the experts' opinions as well as the combined distributions obtained by the different approaches using the integrated (marginal) likelihood (\cite{raftery2007}, eq. 9), $l(y) = \int_{0}^{1}f(\theta|y)\pi(\theta)d\theta$.
-The marginal likelihood for the $i-th$ expert and $J$ observations of the type $\{ y_j, n_j\}$ is:
 \begin{align}
  \label{eq:marglike}
- l_i(y_j) &= \int_{0}^{1}\mathcal{L}(\theta|y_j, n_j)\pi_i(\theta)d\theta\nonumber\\
-      &= \prod_{j = 1}^{J}\frac{\Gamma(n_j-1)}{\Gamma(n_j-y_j + 1)\Gamma(y_j+1)}\frac{\Gamma(a_i + b_i)}{\Gamma(a_i + b_i + n_j)}\frac{\Gamma(a_i + y_j)}{\Gamma(a)}\frac{\Gamma(b_i + n_j - y_j) }{\Gamma(b)}
+ l(y_i) &= \int_{0}^{1}f(\theta|y_i, n_i)\pi(\theta)d\theta\nonumber\\
+      &= \prod_{i}\frac{\Gamma(n_i-1)}{\Gamma(n_i-y_i + 1)\Gamma(y_i+1)}\frac{\Gamma(a +b)}{\Gamma(a +b + n_i)}\frac{\Gamma(a + y_i)}{\Gamma(a)}\frac{\Gamma(b + n_i - y_i) }{\Gamma(b)}
 \end{align}
 
 \subsection*{Poisson rate $\lambda$}
@@ -289,25 +338,19 @@ The marginal prior is then
 \pi(\lambda) = \frac{1}{\mathcal{B}(X)}\int_{A} \frac{{b^*}^{a^*}}{\Gamma(a^*)}\lambda^{a^* - 1} e^{b^*\lambda} \alpha_i^{x_i-1}d\boldsymbol\alpha 
 \end{equation}
 
-\subsection*{Normal priors} %TODO: find a better name
+\subsection*{Normal random variables} %TODO: find a better name
 \label{sec:normal}
-Now suppose one is interested in combining prior distributions on a quantity $\mu \in \mathbb{R}$.
+Now suppose one is interested in combinining prior distributions on a quantity $\mu \in \mathbb{R}$.
 Suppose further that the expert priors are densities in the normal family, i.e.,
-$$ f_i(\mu; m_i,v_i) = \frac{1}{\sqrt{2\pi v_i}} \exp\left(\frac{-(\mu-m_i)^2}{2v_i}\right) $$
-Thus
+$$ f_i(\mu; m_i,v_i) = \frac{1}{s_i\sqrt{2\pi}} \exp\left(\frac{-(\mu-m_i)^2}{2v_i}\right) $$
+Thus 
 \begin{align}
-\pi(\mu)&= t(\boldsymbol\alpha)\prod_{i=0}^{K}f_i(\mu; m_i,
-v_i)^{\alpha_i}\\
- &\propto \prod_{i=0}^{K} \left[ \exp \left(-\frac{(\mu-m_i)^2}{2v_i}
-\right) \right]^{\alpha_i} \\
-&\propto \exp\left[-\frac{1}{2}\left\{\mu^2
-\sum_{i=0}^K\frac{\alpha_i}{v_i} - 2 \mu \sum_{i=0}^K \frac{\alpha_i
-m_i}{v_i} \right\} \right] % \\
- %&\propto \exp \left( -\frac{1}{2}\frac{(\mu-m^*)^2}{v^*} \right)
+\pi(\mu)&= t(\boldsymbol\alpha)\prod_{i=0}^{K}f_i(\mu; m_i, v_i)^{\alpha_i}\\
+ &\propto \prod_{i=0}^{K} \left[ \exp \left(-\frac{(\mu-m_i)^2}{2v_i} \right) \right]^{\alpha_i} \\
+&\propto \exp\left[-\frac{1}{2}\left\{\mu^2 \sum_{i=0}^K\frac{\alpha_i}{v_i} - 2 \mu \sum_{i=0}^K \frac{\alpha_i m_i}{v_i} \right\} \right] % \\
+ %&\propto \exp \left( -\frac{1}{2}\frac{(\mu-m^*)^2}{v^*} \right) 
 \end{align}
-which yields a normal distribution with parameters and $m^* =
-\frac{\sum_{i=0}^K w_i m_i}{\sum_{i=0}^K w_i}$ and $v^* = [\sum_{i=0}^K
-w_i]^{-1}$,  where $w_i = \alpha_i/v_i$.
+which yields a normal distribution with parameters and $m^* = \frac{\sum_{i=0}^K w_i m_i}{\sum_{i=0}^K w_i}$ and $v^* = [\sum_{i=0}^K w_i]^{-1}$,  where $w_i = \alpha_i/v_i$.
 The entropy function is then:
 \begin{equation}
  \label{eq:normalpoolentropy}
@@ -381,7 +424,7 @@ $^1$ Calculated using the posterior mean of $\boldsymbol\alpha$}
 %%%%%%%%%%%%%%%%%%%%
 \section*{Acknowledgements}
 The authors would like to thank Professor Adrian Raftery (University of Washington) for helpful suggestions.
-DAMV was supported in part by Capes under Capes/Cofecub project (N. 833/15).
+DAMV and LSB were supported in part by Capes under Capes/Cofecub project (N. 833/15).
 FCC is grateful to Funda\c{c}\~ao Getulio Vargas for funding during this 
 project.
 % {\footnotesize
@@ -397,4 +440,4 @@ The dashed vertical line marks the maximum likelihood estimate of $\theta$, $\ha
 [NEEDS CHANGING]}
 \label{fig:priors_posteriors_beta}
 \end{figure}
-\end{document}          
+\end{document} 
