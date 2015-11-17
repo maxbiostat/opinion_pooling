@@ -15,8 +15,8 @@ K <- length(av)
 
 #### Other auxiliary functions
 M <- function(x) x/(x + 1)
-Minv <- function(y) -y/(y-1)
-J <- function(y) 1/(y-1)^2
+Minv <- function(y) -y/(y-1) ## M_inverse
+J <- function(y) 1/(y-1)^2 ## Jacobian
 ### Pool-then-induce
 PtI.dens <- function(y, va, vb, alphas){
   parms <- pool.par(alpha = alphas, a = va, b = vb)
