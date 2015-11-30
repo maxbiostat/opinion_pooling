@@ -88,28 +88,15 @@ This condition is usually assumed implicitly, without proof.
 \citet{poole2000} provide a proof for the case of two densities (see Theorem 1 therein), which we extend for the case of a finite number of densities.
 \begin{theo}
 \label{thm:normalisation}
+\textbf{Normalisation}. 
 Let $A$ be the $(K+1)$-dimensional open simplex on $[0,1]$.
 For all $\boldsymbol\alpha \in A$ there exists a constant $t(\boldsymbol\alpha)$ such that $\int_{\boldsymbol\Theta}\pi(\theta)d\theta = 1$.
 \end{theo}
 
-Here we provide a simple proof using H\"{o}lder's inequality.
-\begin{proof}
-We begin by noting that $\pi(\theta)$ can be re-written as:
-\begin{equation}
-\label{eq:pirewritten}
- \pi(\theta) \propto f_0(\theta)\prod_{j=1}^{K} \left(\frac{f_j(\theta)}{f_0(\theta)}\right)^{\alpha_j}.
-\end{equation}
-Let $X_j = \frac{f_j(\theta)}{f_0(\theta)}, j=1, 2,\ldots, K$. 
-Then integrating the expression in (\ref{eq:pirewritten}) is equivalent to finding 
-\begin{equation}
-\label{eq:expectations}
-E_{0}\left[\prod_{j=1}^KX_j^{\alpha_j}\right] \leq \prod_{j=1}^KE_{0}[X_j]^{\alpha_j},
-\end{equation}
-where $E_{0}[\cdot]$ is the expectation w.r.t $f_0$ and (\ref{eq:expectations}) follows from H\"{o}lder's inequality for expectations~\citep{yeh2011}.
-Since $\forall j$ we have $E_{0}[X_j]^{\alpha_j} = \left(\int_{\boldsymbol\Theta}f_0(\theta)\frac{f_j(\theta)}{f_0(\theta)}\right)^{\alpha_j}d\theta=1^{\alpha_j}=1$, Theorem~\ref{thm:normalisation} is proven.
-\end{proof}
+CONECTIVOS
 
 \begin{remark}
+\label{rmk:concavity}
 \textbf{Log-concavity}. 
  Let $\mathbf{F(\theta)}$ be a set of log-concave distributions, i.e., each $f_i$ can be represented as
  \begin{equation}
@@ -119,18 +106,42 @@ Since $\forall j$ we have $E_{0}[X_j]^{\alpha_j} = \left(\int_{\boldsymbol\Theta
 where $\psi_i(\cdot)$ is a concave function.
 Then $\pi(\theta)$ is also log-concave.
 \end{remark}
-\begin{proof}
-\begin{align}
- \pi(\theta) &\propto \prod_{i=0}^{K} [\exp(\psi_i(\theta))]^{\alpha_i}\\
-             &\propto \exp(\psi^{\ast}(\theta)),
-\end{align}
- where $\psi^{\ast}(\theta) = \sum_{i=0}^{K}\alpha_i\psi_i(\theta)$ is a concave function due to being a linear combination of concave functions.
-\end{proof}
+
 Log-concavity of the pooled prior may be important to consider in order to guarantee unimodality and certain conditions on tail behaviour.
-% [IF ANYBODY HAS ANYTHING TO ADD HERE, PLEASE BE MY GUEST; NOT SURE IF WE NEED THIS PROPERTY...] %LM: I think it doesn't hurt. 
 
-We now move on to study three approaches to assign weights, the first two approaches based on optimality criteria and a proposal based on pooling Dirichlet prior distributions.
+\section*{Exponential family}%TODO: revise the phrasing 
 
+Suppose we are interested in a random variable, $Y$, from a exponential family with parameter $\theta$ whose probability density function is given by
+\begin{equation} \label{eq:exponentialfamily}
+f(y|\theta) = h(y) e^{\theta y - \psi(\theta)}.
+\end{equation}
+A conjugate prior family for $f(y|\theta)$ is the following
+\begin{equation} \label{eq:priorEF}
+f(\theta | a, b) = K(a,b) e^{\theta a - b \psi(\theta)},
+\end{equation}
+where $K(a,b)$ is a normalising constant. We used the definition and notation for exponential family and its conjugate prior family from \citet[chapter 3]{robert2001bayesian}.
+
+Let $\mathbf{F(\theta)} := \{f_0(\theta), f_1(\theta), f_2(\theta), \ldots, f_K(\theta)\}$ be a set of conjugate prior distributions representing the opinions of $K+1$ experts, and $f_i(\theta) = f(\theta | a_i, b_i)$ from equation (\ref{eq:priorEF}).
+
+The log-pooled prior is also a conjugate prior for $f(y|\theta)$ with hyperparameters given by an weighted mean of the experts hyperparameters, i.e.
+\begin{equation}
+\pi(\theta) = f(\theta | a^*, b^*),
+\end{equation}
+where $a^* = \sum_{i} \alpha_i a_i$ and $b^* = \sum_{i} \alpha_i b_i$. Note that the posterior distribution of $\theta$ is given by $\pi(\theta | y) = f(\theta | a^* + y, b^* + 1)$.
+
+The entropy function of the log-pooled prior is given by
+\begin{equation}
+\label{eq:entropypriorEF}
+H_\pi(\theta) = - \log(K(a^*, b^*) + a^*  E[\theta]-  b^*  E[\psi(\theta)].
+\end{equation}
+
+And the Kullback-Leibler divergence, $KL(f_i || \pi)$, is the following
+\begin{equation}
+\label{eq:KLpriorEF}
+KL(f_i || \pi) = \log( K(a_i,b_i)) - \log(K(a^*,b^*)) + (a_i - a^*) E[\theta] - (b_i - b^*) E[\psi(\theta)] .
+\end{equation}
+
+We now move on to study three approaches to assign weights. The first two approaches are based on optimality criteria and a third method is based on assigning a Dirichlet hyperprior on the weights.
 
 \section*{Choosing the weights based on optimality criteria}
 \subsection*{Maximum entropy}
@@ -167,14 +178,14 @@ L(\boldsymbol\alpha) &= \sum_{i=0}^Kd_i \\
 \label{eq:KLexpanded}
      &= -K\ln t(\boldsymbol\alpha) + \sum_{i=0}^K\sum_{j\neq i}^K\alpha_j\text{KL}(f_i||f_j) \\
      \label{eq:argminKL}
-     \hat{\boldsymbol\alpha}:=& \argmin L(\boldsymbol\alpha)   
+     \hat{\boldsymbol\alpha}:=& \:\argmin L(\boldsymbol\alpha)   
 \end{align}
 
 \begin{proposition}
 \label{prop:uniqueness}
+\textbf{Uniqueness}~\citep{rufo2012A}.
  The distribution obtained following~(\ref{eq:argminKL}) is unique, i.e., there is only one aggregated prior $\pi(\theta)$ that minimizes $L(\boldsymbol\alpha)$.
 \end{proposition}
-This property is proven in~\cite{rufo2012A}.
 One can get some intuition into the proof  of this claim by noting that minimising~(\ref{eq:KLexpanded}) is equivalent to maximising $\ln t(\boldsymbol\alpha) = \ln\int_{\boldsymbol\Theta}\prod_{i=0}^{K}f_i(\theta)^{\alpha_i}d\theta$. 
 \cite{rufo2012A} show that $t(\boldsymbol\alpha)$ is concave, therefore the problem in~(\ref{eq:argminKL}) has a unique solution.
 By contrast, the problem in~(\ref{eq:argmaxEnt}) requires to minimise $\ln t(\boldsymbol\alpha)$ hence lacking a sufficient condition for the existence of a unique solution.
@@ -197,61 +208,13 @@ The marginal prior for $\theta$ is then
 \end{align}
 
 
-\section*{log-pooled Experts' conjugate priors for exponential family}
-
-Suppose we are interested in a random variable, $Y$, from a exponential family with parameter $\theta$ whose probability density function is given by
-\begin{equation} \label{eq:exponentialfamily}
-f(y|\theta) = h(y) e^{\theta y - \psi(\theta)}.
-\end{equation}
-A conjugate prior family for $f(y|\theta)$ is the following
-\begin{equation} \label{eq:priorEF}
-f(\theta | a, b) = K(a,b) e^{\theta a - b \psi(\theta)},
-\end{equation}
-where $K(a,b)$ is a normalising constant. We used the definition and notation for exponential family and its conjugate prior family from \citet[chapter 3]{robert2001bayesian}.
-
-Let $\mathbf{F(\theta)} := \{f_0(\theta), f_1(\theta), f_2(\theta), \ldots, f_K(\theta)\}$ be a set of conjugate prior distributions representing the opinions of $K+1$ experts, and $f_i(\theta) = f(\theta | a_i, b_i)$ from equation (\ref{eq:priorEF}).
-
-The log-pooled prior is also a conjugate prior for $f(y|\theta)$ with hyperparameters given by an weighted mean of the experts hyperparameters, i.e.
-\begin{equation}
-\pi(\theta) = f(\theta | a^*, b^*),
-\end{equation}
-where $a^* = \sum_{i} \alpha_i a_i$ and $b^* = \sum_{i} \alpha_i b_i$. Note that the posterior distribution of $\theta$ is given by $\pi(\theta | y) = f(\theta | a^* + y, b^* + 1)$.
-
-The entropy function of the log-pooled prior is given by
-\begin{equation} \label{eq:entropypriorEF}
-H_\pi(\theta) = - \log(K(a^*, b^*) + a^*  E[\theta]-  b^*  E[\psi(\theta)].
-\end{equation}
-
-Contas para conferir:
-\begin{eqnarray*} 
-H_\pi(\theta) & = & E[-\log(\pi(\theta)] \\
-              & = & - \int \log(\pi(\theta) \pi(\theta) d\theta \\
-              & = & - \int (\log(K(a^*, b^*) + \theta a^* - \psi(\theta) b^*) \pi(\theta) d\theta \\
-              & = & - \log(K(a^*, b^*) + a^*  E[\theta]-  b^*  E[\psi(\theta)]
-\end{eqnarray*}
-
-
-And the Kullback-Leibler divergence, $KL(f_i || \pi)$, is the following
-\begin{equation} \label{eq:KLpriorEF}
-KL(f_i || \pi) = \log( K(a_i,b_i)) - \log(K(a^*,b^*)) + (a_i - a^*) E[\theta] - (b_i - b^*) E[\psi(\theta)] .
-\end{equation}
-
-Contas para conferir:
-\begin{eqnarray*} 
-KL(f_i || \pi) & = & E_\pi[\log(f_i(\theta)-\log(\pi(\theta)] \\
-              & = & \int [\log( K(a_i,b_i) e^{\theta a_i - b_i \psi(\theta)}) - \log(K(a^*,b^*) e^{\theta a^* - b^* \psi(\theta)}) ] \pi(\theta) d\theta \\
-              & = & \int [\log( K(a_i,b_i)) - \log(K(a^*,b^*)) + (a_i - a^*) \theta  - (b_i - b^*) \psi(\theta) \pi(\theta) d\theta \\
-              & = & \log( K(a_i,b_i)) - \log(K(a^*,b^*)) + (a_i - a^*) E[\theta] - (b_i - b^*) E[\psi(\theta)] 
-\end{eqnarray*}
-
-
 \section*{Applications}
 \label{sec:apps}
 
 \subsection*{Binomial probabilities}
 \label{sec:beta}
 We now turn our attention to combining expert opinions about probabilities and proportions.
-In this setting we are interested in the random variable $Y\sim Bernoulli(\theta)$.
+In this setting we are interested in the random variable $Y | \theta \sim Bernoulli(\theta)$.
 Assume that we want to obtain a combined prior for a proportion $\theta$.
 A common choice for $\mathbf{F}(\theta)$ is the Beta family of distributions:
 $$f_i(\theta;a_i, b_i) = \frac{\Gamma(a_i + b_i)}{\Gamma(a_i b_i)} \theta^{a_i-1}(1-\theta)^{b_i-1}$$
@@ -361,7 +324,7 @@ The entropy function is then:
 which achieves its maximum when $\alpha_j = 1$ for $s_j = max(s_1, s_2, \ldots, s_K)$.
 
 
-\section*{Results and avenues of future research}
+\section*{Results} % TODO: LM: maybe remove and just present results as they go
 
 Table~\ref{tab:alphasBeta} lists the weights proposed by each method.
 Figure~\ref{fig:priors_posteriors_beta} shows the prior and posterior distributions in each of the methods and also the case in which we assign an equal weight ($1/K$) to each opinion.
@@ -408,21 +371,21 @@ $^1$ Calculated using the posterior mean of $\boldsymbol\alpha$}
 \end{tabular}
 \label{tab:marglikes}
 \end{table}
-%%%%%%%%%%%%%%%%%%%%
-%\begin{table}[ht]
-%\centering
-%\begin{tabular}{ccc}
-%  \hline
-%Method & Prior & Posterior  \\ 
-%  \hline
-%  Equal weights & 0.90 (0.64--1.00) & 0.90 (0.73--0.99) \\ 
-%  Maximum entropy & 0.80 (0.37--1.00) & 0.87 (0.66--0.98) \\ 
-%  Minimum KL  & 0.82 (0.42--1.00) & 0.87 (0.67--0.99) \\ 
-%  Hierarchical prior & 0.88 (0.53--1.00) & 0.90 (0.71--0.99) \\ 
-%   \hline
-%\end{tabular}
-%\label{tab:prior_posteriorsBeta}
-%\end{table}
+%%%%%%%%%%%%%%%%%%
+\begin{table}[ht]
+\centering
+\begin{tabular}{ccc}
+ \hline
+Method & Prior & Posterior  \\ 
+ \hline
+ Equal weights & 0.90 (0.64--1.00) & 0.90 (0.73--0.99) \\ 
+ Maximum entropy & 0.80 (0.37--1.00) & 0.87 (0.66--0.98) \\ 
+ Minimum KL  & 0.82 (0.42--1.00) & 0.87 (0.67--0.99) \\ 
+ Hierarchical prior & 0.88 (0.53--1.00) & 0.90 (0.71--0.99) \\ 
+  \hline
+\end{tabular}
+\label{tab:prior_posteriorsBeta}
+\end{table}
 %%%%%%%%%%%%%%%%%%%%
 \section*{Acknowledgements}
 The authors would like to thank Professor Adrian Raftery (University of Washington) for helpful suggestions.
@@ -442,4 +405,49 @@ The dashed vertical line marks the maximum likelihood estimate of $\theta$, $\ha
 [NEEDS CHANGING]}
 \label{fig:priors_posteriors_beta}
 \end{figure}
+
+\newpage
+
+\section*{Appendix}
+
+\subsection*{Proofs}
+
+Here we provide a simple proof of theorem~\ref{thm:normalisation} using H\"{o}lder's inequality.
+\begin{proof}
+We begin by noting that $\pi(\theta)$ can be re-written as:
+\begin{equation}
+\label{eq:pirewritten}
+ \pi(\theta) \propto f_0(\theta)\prod_{j=1}^{K} \left(\frac{f_j(\theta)}{f_0(\theta)}\right)^{\alpha_j}.
+\end{equation}
+Let $X_j = \frac{f_j(\theta)}{f_0(\theta)}, j=1, 2,\ldots, K$. 
+Then integrating the expression in (\ref{eq:pirewritten}) is equivalent to finding 
+\begin{equation}
+\label{eq:expectations}
+E_{0}\left[\prod_{j=1}^KX_j^{\alpha_j}\right] \leq \prod_{j=1}^KE_{0}[X_j]^{\alpha_j},
+\end{equation}
+where $E_{0}[\cdot]$ is the expectation w.r.t $f_0$ and (\ref{eq:expectations}) follows from H\"{o}lder's inequality for expectations~\citep{yeh2011}.
+Since $\forall j$ we have $E_{0}[X_j]^{\alpha_j} = \left(\int_{\boldsymbol\Theta}f_0(\theta)\frac{f_j(\theta)}{f_0(\theta)}\right)^{\alpha_j}d\theta=1^{\alpha_j}=1$, Theorem~\ref{thm:normalisation} is proven.
+\end{proof}
+It is straightforward to show that remark~\ref{rmk:concavity} holds:
+\begin{proof}
+\begin{align}
+ \pi(\theta) &\propto \prod_{i=0}^{K} [\exp(\psi_i(\theta))]^{\alpha_i}\\
+             &\propto \exp(\psi^{\ast}(\theta)),
+\end{align}
+ where $\psi^{\ast}(\theta) = \sum_{i=0}^{K}\alpha_i\psi_i(\theta)$ is a concave function due to being a linear combination of concave functions.
+\end{proof}
+To see that equation~\ref{eq:entropypriorEF} holds:
+\begin{eqnarray*} 
+H_\pi(\theta) & = & E[-\log(\pi(\theta)] \\
+              & = & - \int \log(\pi(\theta) \pi(\theta) d\theta \\
+              & = & - \int (\log(K(a^*, b^*) + \theta a^* - \psi(\theta) b^*) \pi(\theta) d\theta \\
+              & = & - \log(K(a^*, b^*) + a^*  E[\theta]-  b^*  E[\psi(\theta)]
+\end{eqnarray*}
+Likewise for equation~\ref{eq:KLpriorEF}, we have 
+\begin{eqnarray*} 
+KL(f_i || \pi) & = & E_\pi[\log(f_i(\theta)-\log(\pi(\theta)] \\
+              & = & \int [\log( K(a_i,b_i) e^{\theta a_i - b_i \psi(\theta)}) - \log(K(a^*,b^*) e^{\theta a^* - b^* \psi(\theta)}) ] \pi(\theta) d\theta \\
+              & = & \int [\log( K(a_i,b_i)) - \log(K(a^*,b^*)) + (a_i - a^*) \theta  - (b_i - b^*) \psi(\theta) \pi(\theta) d\theta \\
+              & = & \log( K(a_i,b_i)) - \log(K(a^*,b^*)) + (a_i - a^*) E[\theta] - (b_i - b^*) E[\psi(\theta)] 
+\end{eqnarray*}
 \end{document} 
