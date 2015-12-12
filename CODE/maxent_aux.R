@@ -158,22 +158,7 @@ alpha.01 <- function(alpha.inv){
   alphap <- 1/(1 + sum(exp(alpha.inv)))
   c(exp(alpha.inv) * alphap, alphap)
 }
-######################################
-# Transform + min KL section. These functions only apply to the R_0 example. It's possible to write more general ones, though.
-# Computing the induced distribution using pool-then-induce (PI)
-# q_1(y) = M(\pi(x) =  dgamma.ratio(y, a1 = sum(alpha*a1p), b1 = sum(alpha*b1p), a2 = sum(alpha*a2p), b2 = sum(alpha*b2p))
-# g_i = M(f_i(x)) =  dgamma.ratio(y, k1 = ga1, t1 = gb1, k2 = ga2, t2 = gb2)
-########
-kl.transform <- function(alpha, a1v, b1v, a2v, b2v, Nv,  ga1, gb1, ga2, gb2, gN){
-  kl2int <- function(y){
-    dgamma.ratio(y, k1 = ga1, t1 = gb1, k2 = ga2, t2 = gb2, N = gN)* log(
-      dgamma.ratio(y, k1 = ga1, t1 = gb1, k2 = ga2, t2 = gb2, N = gN)/
-        dgamma.ratio(y, k1 = sum(alpha*a1v), t1 = sum(alpha*b1v),
-                     k2 = sum(alpha*a2v), t2 = sum(alpha*b2v), N = sum(alpha*Nv))  
-      )
-  }  
-  integrate(kl2int, 0, Inf)$value
-}
+
 ################################
 ## Let's sample from the prior in Gelman (1995) JCompGraph Stats (http://www.stat.columbia.edu/~gelman/research/published/moments.pdf)
 ## This is the first example, in page 46. See also Gelman, Bois & Jiang (1996) JASA.
