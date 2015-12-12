@@ -75,7 +75,7 @@ We present an example on proportion estimation by combining Beta priors.
 In what follows, we introduce the necessary theory and extend a previous 
 result~\citep{poole2000} for combining more than two distributions.
 
-Let $\mathbf{F}{\theta} := \{f_0(\theta), f_1(\theta), f_2(\theta), \ldots, f_K(\theta)\}$ be a set of prior distributions representing the opinions of $K+1$ experts and let $\boldsymbol\alpha :=\{\alpha_0, \alpha_1, \alpha_2, \ldots, \alpha_K \}$ be the vector of weights, such that $\alpha_i > 0\: \forall i$ and $\sum_{i=0}^K \alpha_i = 1$.
+Let $\mathbf{F}_{\theta} := \{f_0(\theta), f_1(\theta), f_2(\theta), \ldots, f_K(\theta)\}$ be a set of prior distributions representing the opinions of $K+1$ experts and let $\boldsymbol\alpha :=\{\alpha_0, \alpha_1, \alpha_2, \ldots, \alpha_K \}$ be the vector of weights, such that $\alpha_i > 0\: \forall i$ and $\sum_{i=0}^K \alpha_i = 1$.
 Then the log-pooled prior is
 \begin{equation}
 \label{eq:logpool}
@@ -98,7 +98,7 @@ CONECTIVOS
 \begin{remark}
 \label{rmk:concavity}
 \textbf{Log-concavity}. 
- Let $\mathbf{F}{\theta}$ be a set of log-concave distributions, i.e., each $f_i$ can be represented as
+ Let $\mathbf{F}_{\theta}$ be a set of log-concave distributions, i.e., each $f_i$ can be represented as
  \begin{equation}
   \label{eq:logconcavity}
   f_i(\theta) \propto e^{\psi_i(\theta)},
@@ -121,7 +121,7 @@ f(\theta | a, b) = K(a,b) e^{\theta a - b \psi(\theta)},
 \end{equation}
 where $K(a,b)$ is a normalising constant. We used the definition and notation for exponential family and its conjugate prior family from \citet[chapter 3]{robert2001bayesian}.
 
-Let $\mathbf{F}{\theta} := \{f_0(\theta), f_1(\theta), f_2(\theta), \ldots, f_K(\theta)\}$ be a set of conjugate prior distributions representing the opinions of $K+1$ experts, and $f_i(\theta) = f(\theta | a_i, b_i)$ from equation (\ref{eq:priorEF}).
+Let $\mathbf{F}_{\theta} := \{f_0(\theta), f_1(\theta), f_2(\theta), \ldots, f_K(\theta)\}$ be a set of conjugate prior distributions representing the opinions of $K+1$ experts, and $f_i(\theta) = f(\theta | a_i, b_i)$ from equation (\ref{eq:priorEF}).
 
 The log-pooled prior is also a conjugate prior for $f(y|\theta)$ with hyperparameters given by an weighted mean of the experts hyperparameters, i.e.
 \begin{equation}
@@ -147,7 +147,7 @@ We now move on to study three approaches to assign weights. The first two approa
 \subsection*{Maximum entropy}
 
 In a context of near complete uncertainty about the relative reliabilities of the experts (information sources) it may be desirable to combine the prior distributions such that $\pi(\theta)$ is maximally uninformative. %% this can be highly problematic...
-Such approach would ensure that, given the constraints imposed by $\mathbf{F}{\theta}$, the pooled distribution is the one which best represents the current state of knowledge~\citep{jaynes1957,savchuk1994}.
+Such approach would ensure that, given the constraints imposed by $\mathbf{F}_{\theta}$, the pooled distribution is the one which best represents the current state of knowledge~\citep{jaynes1957,savchuk1994}.
 In order to choose $\boldsymbol\alpha$ so as to maximise prior 
 diffuseness, one can maximise the entropy of the log-pooled prior:
 \begin{equation}
