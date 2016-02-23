@@ -57,11 +57,11 @@ with $t(\boldsymbol\alpha) = \int_{\boldsymbol\Theta}\prod_{i=0}^K f_i(\theta)^{
 \begin{itemize}
  \item What if we want to minimise conflict between the consensus and each individual opinion?
  \item Let $d_i = \text{KL}(f_i || \pi)$ and let $L(\boldsymbol\alpha)$ be a loss function such that
-\begin{align}
+\begin{align*}
 L(\boldsymbol\alpha) &= \sum_{i=0}^Kd_i \\
      &= -K\ln t(\boldsymbol\alpha) + \sum_{i=0}^K\sum_{j\neq i}^K\alpha_j\text{KL}(f_i||f_j) \\
      \hat{\boldsymbol\alpha}:=& \argmin L(\boldsymbol\alpha)   
-\end{align}
+\end{align*}
 \item Contrary to the above, the loss function is convex, thus there is a unique solution~\citep{rufo2012A}.
 \end{itemize}
 \end{frame}
