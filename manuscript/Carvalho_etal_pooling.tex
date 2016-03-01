@@ -1,4 +1,4 @@
-\documentclass[a4paper, notitlepage, 11pt]{article}
+\documentclass[a4paper, notitlepage, 10pt]{article}
 \usepackage{geometry}
 % WSC 2015 configs
 \fontfamily{times}
@@ -51,7 +51,7 @@ Key-words: logarithmic pooling; expert opinion; maximum entropy; Kullback-Leible
 
 \section*{Background}
 
-Combining probability distributions is a topic of general interest, both in the statistical~\citep{genest1986A,genest1986B} and decision theory literatures~\citep{genest1984}.
+Combining probability distributions is a topic of general interest, both in the statistical~\citep{west1984, genest1986A, genest1986B} and decision theory literatures~\citep{genest1984}.
 On the theoretical front, studying opinion pooling operators may give important insights on consensus belief formation and group decision making~\citep{genest1986B}.
 Among the various opinion pooling operators proposed in the literature, logarithmic pooling has enjoyed much popularity, mainly due to its many desirable properties such as relative propensity consistency (RPC) and external Bayesianity (EB)~\citep{genest1986A}. 
 In a practical setting, logarithmic pooling finds use in a range of fields, from infectious disease modelling~\citep{Coelho2009} and wildlife conservation~\citep{poole2000} to engineering~\citep{lind1988, savchuk1994}.
@@ -69,11 +69,10 @@ Moreover, assigning a probability distribution to the weights permits us to obta
 Therefore, it makes possible to sequentially update knowledge about the reliability of each expert/source in the face of new data.
 
 In this paper we explore previous approaches for deriving the weights for logarithmic pooling, namely by maximising the entropy of the resulting distribution and minimising the KL divergence between the pooled distribution and each individual distribution.
-Additionally, we propose a hierarchical prior approach in which we place a Dirichlet prior on the weights.
+Additionally, we propose a hierarchical prior approach in which we place a distribution on the weights.
 We present an example on proportion estimation by combining Beta priors.
 
-In what follows, we introduce the necessary theory and extend a previous 
-result~\citep{poole2000} for combining more than two distributions.
+In what follows, we introduce the necessary theory and motivate the use of the logarithmic pooling operator by presenting some of its desirable properties.
 
 Let $\mathbf{F}_{\theta} := \{f_0(\theta), f_1(\theta), f_2(\theta), \ldots, f_K(\theta)\}$ be a set of prior distributions representing the opinions of $K+1$ experts and let $\boldsymbol\alpha :=\{\alpha_0, \alpha_1, \alpha_2, \ldots, \alpha_K \}$ be the vector of weights, such that $\alpha_i > 0\: \forall i$ and $\sum_{i=0}^K \alpha_i = 1$.
 Then the log-pooled prior is
@@ -93,8 +92,9 @@ Let $A$ be the $(K+1)$-dimensional open simplex on $[0,1]$.
 For all $\boldsymbol\alpha \in A$ there exists a constant $t(\boldsymbol\alpha)$ such that $\int_{\boldsymbol\Theta}\pi(\theta)d\theta = 1$.
 \end{theo}
 
-CONECTIVOS
+This result ensures any (finite) number of proper distributions can be combined using the logarithmic pooling operator to yield a normalisable density.
 
+Another interesting property of the logarithmic pooling operator is the fact that combining log-concave densities will produce a log-concave pooled distribution.
 \begin{remark}
 \label{rmk:concavity}
 \textbf{Log-concavity}. 
@@ -109,9 +109,9 @@ Then $\pi(\theta)$ is also log-concave.
 
 Log-concavity of the pooled prior may be important to consider in order to guarantee unimodality and certain conditions on tail behaviour.
 
-\section*{Exponential family}%TODO: revise the phrasing 
+\subsection*{Conjugate priors to the exponential family}%TODO: revise the phrasing 
 
-Suppose we are interested in a random variable, $Y$, from a exponential family with parameter $\theta$ whose probability density function is given by
+Suppose we are interested in a random variable, $Y$, from a exponential family with parameter $\theta$ and probability density function is given by
 \begin{equation} \label{eq:exponentialfamily}
 f(y|\theta) = h(y) e^{\theta y - \psi(\theta)}.
 \end{equation}
@@ -119,9 +119,9 @@ A conjugate prior family for $f(y|\theta)$ is the following
 \begin{equation} \label{eq:priorEF}
 f(\theta | a, b) = K(a,b) e^{\theta a - b \psi(\theta)},
 \end{equation}
-where $K(a,b)$ is a normalising constant. We used the definition and notation for exponential family and its conjugate prior family from \citet[chapter 3]{robert2001bayesian}.
-
-Let $\mathbf{F}_{\theta} := \{f_0(\theta), f_1(\theta), f_2(\theta), \ldots, f_K(\theta)\}$ be a set of conjugate prior distributions representing the opinions of $K+1$ experts, and $f_i(\theta) = f(\theta | a_i, b_i)$ from equation (\ref{eq:priorEF}).
+where $K(a,b)$ is a normalising constant.
+Here, we employ the definition and notation for exponential family and its conjugate prior family from \citet[chapter 3]{robert2001bayesian}.
+Let $\mathbf{F}_{\theta}$ be a set of conjugate prior distributions representing the opinions of $K+1$ experts, and $f_i(\theta) = f(\theta | a_i, b_i)$ from equation (\ref{eq:priorEF}).
 
 The log-pooled prior is also a conjugate prior for $f(y|\theta)$ with hyperparameters given by an weighted mean of the experts hyperparameters, i.e.
 \begin{equation}
@@ -207,6 +207,79 @@ The marginal prior for $\theta$ is then
              &= \frac{1}{\mathcal{B}(\boldsymbol X)}\int_{A}t(\boldsymbol\alpha)\prod_{i=0}^K f_i(\theta)^{\alpha_i}\alpha_i^{x_i-1}d\boldsymbol\alpha 
 \end{align}
 
+\subsubsection*{Induce-then-pool or pool-then-induce?}
+
+Let $\theta \in \Theta \subseteq \mathbb{R}^p$ and $y \in \mathcal{Y} \subseteq \mathbb{R}^p$. 
+Define the model (transformation) as $M \,:\, \Theta \to \mathcal{Y}$. 
+This paper concerns the setting where a set $\mathbf{F_\theta}$ of distributions on $\theta$ is available but one is interested in obtaining a pooled distribution on $y$.
+There are two ways of obtaining a pooled distribution $\pi(y)$: (a) combine the distributions in $\mathbf{F_\theta}$ and then apply $M(\cdot)$ to the resulting distribution to get the \underline{induced} distribution on $y$ (``pool-then-induce'') or; (b) apply  $M(\cdot)$ to each component of $\mathbf{F_\theta}$ and combine the resulting induced distributions using the logarithmic pooling operator (``induce-then-pool''). 
+First we note that under some conditions on the transformation $M(\cdot)$, the order in which one performs the pooling and transforming operations does not matter.
+%% "Stolen" from http://math.stackexchange.com/questions/732960/inverse-of-a-multivariable-function
+Consider $M(\theta) = y$ and suppose $M(\cdot)$ is invertible, i.e., there exists $M^{-1}: \: \mathcal{Y} \to \Theta$ such that,
+\[A_0:\quad M(M^{-1}(v)) = v,\: v \in \mathcal{Y}\: \text{and}\: M^{-1}(M(t)) = t, \: t \in \Theta \]
+and $J := det \left[ \frac{\partial M^{-1}}{\partial y_1}, \frac{\partial M^{-1}}{\partial y_2}, \ldots, \frac{\partial M^{-1}}{\partial y_p}\right]$ is the Jacobian.
+
+With some abuse of notation, define
+  \begin{align}
+  \label{eq:transfF}
+  \mathbf{F^{-1}_y} &:= \{h_1(y), \, h_2(y), \ldots, \, h_K(y) \} \\
+  h_i(y) & = f_i(M^{-1}(y))|J|\nonumber
+  \end{align}
+where $|J|$ is the absolute value of $J$.
+\begin{remark}
+\label{rmk:invariance}
+Define $\pi_{\theta}(\theta | \boldsymbol\alpha) =  \mathcal{LP}(\mathbf{F_\theta}, \boldsymbol\alpha)$ and $\pi_{y}(y |\boldsymbol\alpha) = \pi_{\theta}(M^{-1}(y))|J|$.
+Similarly, define $\pi^{\prime}_{y}(y|\boldsymbol\alpha) = \mathcal{LP}(\mathbf{F^{-1}_y}, \boldsymbol\alpha)$.
+If $A_0$ is satisfied, then $\pi_{y}(y |\boldsymbol\alpha) = \pi^{\prime}_{y}(y|\boldsymbol\alpha)$, i.e., the order in which one combines and transforms the distributions does not matter.
+\end{remark}
+\begin{proof}
+To see that Remark~\ref{rmk:invariance} holds, we only need a straightforward calculation from the definition of the logarithmic pooling operator in~(\ref{eq:logpool}):
+\[\pi_{y}(y |\boldsymbol\alpha) \propto \prod_{i=0}^K f_i(M^{-1}(y))^{w_i}|J| \]
+whereas
+\begin{align*}
+ \pi^{\prime}_{y}(y|\boldsymbol\alpha) &\propto  \prod_{i=0}^K \left[ f_i(M^{-1}(y))|J| \right] ^{w_i} = \prod_{i=0}^K f_i(M^{-1}(y))^{w_i} \prod_{i=0}^K|J|^{w_i}\\
+ &\propto  \prod_{i=0}^K f_i(M^{-1}(y))^{w_i}|J|, %TODO: maybe = instead of \propto ?
+\end{align*}
+as claimed.
+%% LM: if this embarassingly simple ``proof'' does not convince you, take a look at https://github.com/maxbiostat/R0_uncertainty/blob/master/code/invertible_model_equivalence.r
+This is very similar in nature to the ``external Bayesianity'' property of the logarithmic pooling operator, by which one can either pool the prior distributions and then combine the resulting distribution with the likelihood or combine each prior with the likelihood separately and then pool the resulting posteriors to obtain the same posterior distribution.
+%% TODO: if we can show that combining the prior with the likelihood is an invertible transform, then this result is a generalisation of EB. But we first need to see the degree of generality EB was actually proven in the original paper.
+\end{proof}
+
+\textbf{\large Can we prove the reverse (Equivalence$\to$Invertibility) ?}
+
+Here go my two cents.
+Suppose $M(\cdot)$ is not invertible on the whole of $\mathcal{Y}$, but instead is \textbf{piece-wise invertible}.
+Let $\mathcal{Y}_1, \mathcal{Y}_2, \ldots, \mathcal{Y}_T$ be a  partition of $\mathcal{Y}$, i.e., $\mathcal{Y}_i\cap\mathcal{Y}_j = \emptyset,\: \forall i\neq j \in \{1, 2, \ldots, T\}$ and $\bigcup_{t = 1}^T\mathcal{Y}_t = \mathcal{Y}$.
+Then define the inverse functions $M_{t}^{-1}(y)\,:\, \mathcal{Y}_t \to \Theta, \: t \in \{1, 2, \ldots, T\}$.
+Last, let $J_t$ be the Jacobian of $M_{t}^{-1}(\cdot)$.
+Then we are prepared to write:
+\begin{align}
+\label{eq:piecewiseTransf}
+\pi_{y}(y |\boldsymbol\alpha) &\propto \sum_{t = 1}^T\left(\prod_{i=0}^K f_i(M_t^{-1}(y))^{w_i}\right)|J_t|, \quad \text{and}\\
+\pi^{\prime}_{y}(y|\boldsymbol\alpha) &\propto \prod_{i=0}^K\left[\sum_{t = 1}^T f_i(M_t^{-1}(y))|J_t|\right]^{w_i}
+\end{align}
+which, I claim, will only be equal if $T = 1$, that is,  if $M(\cdot)$ is invertible in the usual sense.
+
+
+\subsubsection*{Minimising Kullback-Leibler divergence in transformed space}
+
+One might argue that procedure (b) makes little sense, given that the set of opinions $\mathbf{F}_{\theta}$ concerns only $\theta$, i.e, it was not necessarily constructed taking the transformation $M(\cdot)$ into account.
+An example is a situation where experts are asked to provide distributions on the probability $p$ of a particular event.
+In general, elicitation for $f_i(p)$ will not take into account the induced distribution on the log-odds, $M(p) = \log p/(1-p)$.
+%% LM: we can change this dull example to something more involved.
+Nevertheless, the decision-maker may wish to assign the weights $\boldsymbol\alpha$ in a way that takes $M(\cdot)$ into account, e.g., by giving lower weights to experts whose distributions on the log-odds scale are unreasonable.
+
+This decision process can be made more precise.
+In a similar spirit to the discussed above, one can construct $\boldsymbol\alpha$ so as to minimise the Kullback-Leibler divergence between each distribution in $\mathbf{F^{-1}_y}$ and a transformation of the distribution obtained by procedure (a), $\pi_{y}(y | \boldsymbol\alpha) = \pi_{\theta}( M^{-1}(y)| \boldsymbol\alpha)|J|$.
+Let $d_i = \text{KL}( h_i(y) || \pi_{y}(y | \boldsymbol\alpha))$.
+We then aim at solving the problem
+\begin{align}
+L(\boldsymbol\alpha) &= \sum_{i=0}^Kd_i \\
+     \hat{\boldsymbol\alpha}:=& \:\argmin L(\boldsymbol\alpha)  \nonumber
+\end{align}
+
+This procedure therefore choses weights for each expert by how coherent the prior provided by each expert is with the pool-then-induce -- procedure (a) -- prior in the transformed space induced by $M(\cdot)$.
 
 \section*{Applications}
 \label{sec:apps}
