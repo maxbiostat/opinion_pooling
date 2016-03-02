@@ -71,6 +71,9 @@ Therefore, it makes possible to sequentially update knowledge about the reliabil
 In this paper we explore previous approaches for deriving the weights for logarithmic pooling, namely by maximising the entropy of the resulting distribution and minimising the KL divergence between the pooled distribution and each individual distribution.
 Additionally, we propose a hierarchical prior approach in which we place a distribution on the weights.
 We present an example on proportion estimation by combining Beta priors.
+[EXEMPLO]
+
+\section*{Properties of the logarithmic pooling operator}
 
 In what follows, we introduce the necessary theory and motivate the use of the logarithmic pooling operator by presenting some of its desirable properties.
 
@@ -161,7 +164,7 @@ Note that the posterior distribution of $\theta$ is given by $\pi(\theta | y) = 
 The entropy function of the log-pooled prior is given by
 \begin{equation}
 \label{eq:entropypriorEF}
-H_\pi(\theta) = - \log(K(a^*, b^*) + a^*  E[\theta]-  b^*  E[\psi(\theta)] \: .
+H_\pi(\theta) = - \log (K(a^*, b^*)) + a^*  E[\theta]-  b^*  E[\psi(\theta)] \: .
 \end{equation}
 
 And the Kullback-Leibler divergence, $KL(f_i || \pi)$, is the following
@@ -170,74 +173,7 @@ And the Kullback-Leibler divergence, $KL(f_i || \pi)$, is the following
 KL(g_i || \pi) = \log( K(a_i,b_i)) - \log(K(a^*,b^*)) + (a_i - a^*) E[\theta] - (b_i - b^*) E[\psi(\theta)] \: .
 \end{equation}
 
-We now move on to study three approaches to assign weights.
-The first two approaches are based on optimality criteria and a third method is based on assigning a Dirichlet hyperprior on the weights.
-
-\section*{Choosing the weights based on optimality criteria}
-\subsection*{Maximum entropy}
-
-In a context of near complete uncertainty about the relative reliabilities of the experts (information sources) it may be desirable to combine the prior distributions such that $\pi(\theta)$ is maximally uninformative. %% LM: this can be highly problematic...
-Such approach would ensure that, given the constraints imposed by $\mathbf{F}_{\theta}$, the pooled distribution is the one which best represents the current state of knowledge~\citep{jaynes1957,savchuk1994}.
-In order to choose $\boldsymbol\alpha$ so as to maximise prior 
-diffuseness, one can maximise the entropy of the log-pooled prior:
-\begin{equation}
-\label{eq:entropypiA}
-H_{\pi}(\theta) = E_{\pi}\left[-\ln\pi(\theta) \right] =-\int_{\boldsymbol\Theta}\pi(\theta)\ln\pi(\theta)d\theta 
-\end{equation}
-
-In some cases it may be useful to express $H_{\pi}(\theta)$ as
-\begin{equation}
-\label{eq:entropypiB}
- H_{\pi}(\theta; \boldsymbol\alpha) = \sum_{i=0}^{K} \alpha_i E_{\pi}[ - \ln f_i(\theta)] - \ln t(\boldsymbol\alpha)
-\end{equation}
-Formally, we want to find $\hat{\boldsymbol\alpha}$ such that
-\begin{equation}
-\label{eq:argmaxEnt}
- \hat{\boldsymbol\alpha}:= \argmax H_{\pi}(\theta; \boldsymbol\alpha)  
-\end{equation}
-
-This approach, however, does not result in a convex optimisation problem, therefore one is not guaranteed to find a unique solution. 
-See Proposition~\ref{prop:uniqueness}, below, for intuition as to why.
-
-\subsection*{Minimising Kullback-Leibler divergence}
-
-One could also want to choose the pooling weights so as to minimise the total Kullback-Leibler divergence between each proposed distribution and the pooled distribution.
-Let $d_i = \text{KL}(f_i || \pi)$ and let $L(\boldsymbol\alpha)$ be a loss function such that
-\begin{align}
-L(\boldsymbol\alpha) &= \sum_{i=0}^Kd_i \\
-\label{eq:KLexpanded}
-     &= -K\ln t(\boldsymbol\alpha) + \sum_{i=0}^K\sum_{j\neq i}^K\alpha_j\text{KL}(f_i||f_j) \\
-     \label{eq:argminKL}
-     \hat{\boldsymbol\alpha}:=& \:\argmin L(\boldsymbol\alpha)   
-\end{align}
-
-\begin{proposition}
-\label{prop:uniqueness}
-\textbf{Uniqueness}~\citep{rufo2012A}.
- The distribution obtained following~(\ref{eq:argminKL}) is unique, i.e., there is only one aggregated prior $\pi(\theta)$ that minimizes $L(\boldsymbol\alpha)$.
-\end{proposition}
-One can get some intuition into the proof  of this claim by noting that minimising~(\ref{eq:KLexpanded}) is equivalent to maximising $\ln t(\boldsymbol\alpha) = \ln\int_{\boldsymbol\Theta}\prod_{i=0}^{K}f_i(\theta)^{\alpha_i}d\theta$. 
-\cite{rufo2012A} show that $t(\boldsymbol\alpha)$ is concave, therefore the problem in~(\ref{eq:argminKL}) has a unique solution.
-By contrast, the problem in~(\ref{eq:argmaxEnt}) requires to minimise $\ln t(\boldsymbol\alpha)$ hence lacking a sufficient condition for the existence of a unique solution.
-
-\section*{Specifying a prior distribution for $\boldsymbol\alpha$}
-
-In this section we propose a hierarchical prior for $\theta$ conditional on $\boldsymbol\alpha$ in order to incorporate uncertainty on the weights.
-A natural choice for a prior distribution for $\boldsymbol\alpha$ is the $(K+1)-$dimensional Dirichlet distribution.
-The conditional distribution $\pi(\theta|\boldsymbol\alpha)$ is of the form in~(\ref{eq:logpool}) and the prior density for $\boldsymbol\alpha$ is 
-\begin{equation}
- \label{eq:generalcondprior}
- \pi(\boldsymbol\alpha) = \frac{1}{\mathcal{B}(\boldsymbol X)}\prod_{i=0}^K \alpha_i^{x_i-1}
-\end{equation}
-where $\boldsymbol X = \{ x_0, x_1, \ldots, x_K\}$ is the vector of hyperparameters for the Dirichlet prior and $\mathcal{B}(X)$ is the multinomial beta function.
-The marginal prior for $\theta$ is then
-\begin{align}
- \label{eq:marginalhierprior}
- \pi(\theta) &= \int_{A}\pi(\theta|\boldsymbol\alpha)\pi(\boldsymbol\alpha)d\boldsymbol\alpha \\
-             &= \frac{1}{\mathcal{B}(\boldsymbol X)}\int_{A}t(\boldsymbol\alpha)\prod_{i=0}^K f_i(\theta)^{\alpha_i}\alpha_i^{x_i-1}d\boldsymbol\alpha 
-\end{align}
-
-\subsubsection*{Induce-then-pool or pool-then-induce?}
+\section*{Induce-then-pool or pool-then-induce?}
 
 Let $\theta \in \Theta \subseteq \mathbb{R}^p$ and $y \in \mathcal{Y} \subseteq \mathbb{R}^p$. 
 Define the model (transformation) as $M \,:\, \Theta \to \mathcal{Y}$. 
@@ -292,6 +228,56 @@ Then we are prepared to write:
 which, I claim, will only be equal if $T = 1$, that is,  if $M(\cdot)$ is invertible in the usual sense.
 
 
+We now move on to study three approaches to assign weights.
+The first two approaches are based on optimality criteria and a third method is based on assigning a Dirichlet hyperprior on the weights.
+\section*{Methods}
+\subsection*{Choosing the weights based on optimality criteria}
+\subsubsection*{Maximum entropy}
+
+In a context of near complete uncertainty about the relative reliabilities of the experts (information sources) it may be desirable to combine the prior distributions such that $\pi(\theta)$ is maximally uninformative. %% LM: this can be highly problematic...
+Such approach would ensure that, given the constraints imposed by $\mathbf{F}_{\theta}$, the pooled distribution is the one which best represents the current state of knowledge~\citep{jaynes1957,savchuk1994}.
+In order to choose $\boldsymbol\alpha$ so as to maximise prior 
+diffuseness, one can maximise the entropy of the log-pooled prior:
+\begin{equation}
+\label{eq:entropypiA}
+H_{\pi}(\theta) = E_{\pi}\left[-\ln\pi(\theta) \right] =-\int_{\boldsymbol\Theta}\pi(\theta)\ln\pi(\theta)d\theta 
+\end{equation}
+
+In some cases it may be useful to express $H_{\pi}(\theta)$ as
+\begin{equation}
+\label{eq:entropypiB}
+ H_{\pi}(\theta; \boldsymbol\alpha) = \sum_{i=0}^{K} \alpha_i E_{\pi}[ - \ln f_i(\theta)] - \ln t(\boldsymbol\alpha)
+\end{equation}
+Formally, we want to find $\hat{\boldsymbol\alpha}$ such that
+\begin{equation}
+\label{eq:argmaxEnt}
+ \hat{\boldsymbol\alpha}:= \argmax H_{\pi}(\theta; \boldsymbol\alpha)  
+\end{equation}
+
+This approach, however, does not result in a convex optimisation problem, therefore one is not guaranteed to find a unique solution. 
+See Proposition~\ref{remark:uniqueness}, below, for intuition as to why.
+
+\subsubsection*{Minimising Kullback-Leibler divergence}
+
+One could also want to choose the pooling weights so as to minimise the total Kullback-Leibler divergence between each proposed distribution and the pooled distribution.
+Let $d_i = \text{KL}(f_i || \pi)$ and let $L(\boldsymbol\alpha)$ be a loss function such that
+\begin{align}
+L(\boldsymbol\alpha) &= \sum_{i=0}^Kd_i \\
+\label{eq:KLexpanded}
+     &= -K\ln t(\boldsymbol\alpha) + \sum_{i=0}^K\sum_{j\neq i}^K\alpha_j\text{KL}(f_i||f_j) \\
+     \label{eq:argminKL}
+     \hat{\boldsymbol\alpha}:=& \:\argmin L(\boldsymbol\alpha)   
+\end{align}
+
+\begin{remark}
+\label{remark:uniqueness}
+\textbf{Uniqueness}~\citep{rufo2012A}.
+ The distribution obtained following~(\ref{eq:argminKL}) is unique, i.e., there is only one aggregated prior $\pi(\theta)$ that minimizes $L(\boldsymbol\alpha)$.
+\end{remark}
+One can get some intuition into the proof  of this claim by noting that minimising~(\ref{eq:KLexpanded}) is equivalent to maximising $\ln t(\boldsymbol\alpha) = \ln\int_{\boldsymbol\Theta}\prod_{i=0}^{K}f_i(\theta)^{\alpha_i}d\theta$. 
+\cite{rufo2012A} show that $t(\boldsymbol\alpha)$ is concave, therefore the problem in~(\ref{eq:argminKL}) has a unique solution.
+By contrast, the problem in~(\ref{eq:argmaxEnt}) requires to minimise $\ln t(\boldsymbol\alpha)$ hence lacking a sufficient condition for the existence of a unique solution.
+
 \subsubsection*{Minimising Kullback-Leibler divergence in transformed space}
 
 One might argue that procedure (b) makes little sense, given that the set of opinions $\mathbf{F}_{\theta}$ concerns only $\theta$, i.e, it was not necessarily constructed taking the transformation $M(\cdot)$ into account.
@@ -310,6 +296,23 @@ L(\boldsymbol\alpha) &= \sum_{i=0}^Kd_i \\
 \end{align}
 
 This procedure therefore choses weights for each expert by how coherent the prior provided by each expert is with the pool-then-induce -- procedure (a) -- prior in the transformed space induced by $M(\cdot)$.
+
+\subsection*{Specifying a prior distribution for $\boldsymbol\alpha$}
+
+In this section we propose a hierarchical prior for $\theta$ conditional on $\boldsymbol\alpha$ in order to incorporate uncertainty on the weights.
+A natural choice for a prior distribution for $\boldsymbol\alpha$ is the $(K+1)-$dimensional Dirichlet distribution.
+The conditional distribution $\pi(\theta|\boldsymbol\alpha)$ is of the form in~(\ref{eq:logpool}) and the prior density for $\boldsymbol\alpha$ is 
+\begin{equation}
+ \label{eq:generalcondprior}
+ \pi(\boldsymbol\alpha) = \frac{1}{\mathcal{B}(\boldsymbol X)}\prod_{i=0}^K \alpha_i^{x_i-1}
+\end{equation}
+where $\boldsymbol X = \{ x_0, x_1, \ldots, x_K\}$ is the vector of hyperparameters for the Dirichlet prior and $\mathcal{B}(X)$ is the multinomial beta function.
+The marginal prior for $\theta$ is then
+\begin{align}
+ \label{eq:marginalhierprior}
+ \pi(\theta) &= \int_{A}\pi(\theta|\boldsymbol\alpha)\pi(\boldsymbol\alpha)d\boldsymbol\alpha \\
+             &= \frac{1}{\mathcal{B}(\boldsymbol X)}\int_{A}t(\boldsymbol\alpha)\prod_{i=0}^K f_i(\theta)^{\alpha_i}\alpha_i^{x_i-1}d\boldsymbol\alpha 
+\end{align}
 
 \section*{Applications}
 \label{sec:apps}
