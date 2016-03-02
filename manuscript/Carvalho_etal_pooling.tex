@@ -109,44 +109,74 @@ Then $\pi(\theta)$ is also log-concave.
 
 Log-concavity of the pooled prior may be important to consider in order to guarantee unimodality and certain conditions on tail behaviour.
 
-\subsection*{Conjugate priors to the exponential family}%TODO: revise the phrasing 
+\subsection*{Exponential family}
 
 Suppose we are interested in a random variable, $Y$, from a exponential family with parameter $\theta$ and probability density function is given by
-\begin{equation} \label{eq:exponentialfamily}
+\begin{equation}
+\label{eq:exponentialfamily}
 f(y|\theta) = h(y) e^{\theta y - \psi(\theta)}.
 \end{equation}
+
+Let $\mathbf{F}_{y}$ be a set of distributions on $y$ of the form in~(\ref{eq:exponentialfamily}), $f_i(y|\theta_i)$, $ i = 0, 1, \ldots, K$. 
+The combined (log-pooled) distribution also belongs to the exponential family:
+
+\begin{equation}
+\label{eq:pooldistEF}
+\pi(y|\boldsymbol\alpha) = t(\boldsymbol\alpha) h^\ast (y) e^{\theta^\ast y - \psi^\ast (\tilde{\theta})}.
+\end{equation}
+where $h^\ast (y) = \prod_{i = 0}^K h_i(y)^{\alpha_i}$,  $\theta^\ast = \sum_{i = 0}^K \alpha_i \theta_i$ and $\psi^\ast (\tilde{\theta}) = \sum_{i = 0}^K \alpha_i \psi_i(\theta_i)$.
+
+The entropy function of the log-pooled distribution is
+\begin{equation}
+\label{eq:entropydistEF}
+H_\pi(y) =  -\log t(\boldsymbol\alpha) + \psi^\ast (\tilde{\theta}) - \mathbb{E}_\pi[\log h^\ast (y)] - \theta^\ast\mathbb{E}_\pi[Y] \: ,
+\end{equation}
+and the Kullback-Leibler divergence between each distribution in $\mathbf{F}_{y}$ and $\pi(y|\boldsymbol\alpha)$ can be written as:
+\begin{equation}
+\label{eq:KLdistEF}
+KL(f_i || \pi)  =  -\psi_i(\theta_i) +   \psi^\ast (\tilde{\theta}) +  \mathbb{E}_\pi[\log h_i(y)] - \mathbb{E}_\pi[\log h^\ast (y)] \: .
+\end{equation}
+
+These expressions allow for easy computation of information measures for a broad class of distributions, which will be useful in the remainder of this paper.
+
+\subsubsection*{Conjugate priors}
+
 A conjugate prior family for $f(y|\theta)$ is the following
-\begin{equation} \label{eq:priorEF}
-f(\theta | a, b) = K(a,b) e^{\theta a - b \psi(\theta)},
+\begin{equation}
+\label{eq:priorEF}
+g(\theta | a, b) = K(a,b) e^{\theta a - b \psi(\theta)} \: ,
 \end{equation}
 where $K(a,b)$ is a normalising constant.
 Here, we employ the definition and notation for exponential family and its conjugate prior family from \citet[chapter 3]{robert2001bayesian}.
-Let $\mathbf{F}_{\theta}$ be a set of conjugate prior distributions representing the opinions of $K+1$ experts, and $f_i(\theta) = f(\theta | a_i, b_i)$ from equation (\ref{eq:priorEF}).
+Similar to the above, let $\mathbf{G}_{\theta}$ be a set of conjugate prior distributions representing the opinions of $K+1$ experts, and $g_i(\theta) = g(\theta | a_i, b_i)$ from equation (\ref{eq:priorEF}).
 
 The log-pooled prior is also a conjugate prior for $f(y|\theta)$ with hyperparameters given by an weighted mean of the experts hyperparameters, i.e.
 \begin{equation}
-\pi(\theta) = f(\theta | a^*, b^*),
+\label{eq:poolpriorEF}
+\pi(\theta|\boldsymbol\alpha) = g(\theta | a^*, b^*) \: ,
 \end{equation}
-where $a^* = \sum_{i} \alpha_i a_i$ and $b^* = \sum_{i} \alpha_i b_i$. Note that the posterior distribution of $\theta$ is given by $\pi(\theta | y) = f(\theta | a^* + y, b^* + 1)$.
+where $a^* = \sum_{i} \alpha_i a_i$ and $b^* = \sum_{i} \alpha_i b_i$.
+Note that the posterior distribution of $\theta$ is given by $\pi(\theta | y) = g(\theta | a^* + y, b^* + 1)$.
 
 The entropy function of the log-pooled prior is given by
 \begin{equation}
 \label{eq:entropypriorEF}
-H_\pi(\theta) = - \log(K(a^*, b^*) + a^*  E[\theta]-  b^*  E[\psi(\theta)].
+H_\pi(\theta) = - \log(K(a^*, b^*) + a^*  E[\theta]-  b^*  E[\psi(\theta)] \: .
 \end{equation}
 
 And the Kullback-Leibler divergence, $KL(f_i || \pi)$, is the following
 \begin{equation}
 \label{eq:KLpriorEF}
-KL(f_i || \pi) = \log( K(a_i,b_i)) - \log(K(a^*,b^*)) + (a_i - a^*) E[\theta] - (b_i - b^*) E[\psi(\theta)] .
+KL(g_i || \pi) = \log( K(a_i,b_i)) - \log(K(a^*,b^*)) + (a_i - a^*) E[\theta] - (b_i - b^*) E[\psi(\theta)] \: .
 \end{equation}
 
-We now move on to study three approaches to assign weights. The first two approaches are based on optimality criteria and a third method is based on assigning a Dirichlet hyperprior on the weights.
+We now move on to study three approaches to assign weights.
+The first two approaches are based on optimality criteria and a third method is based on assigning a Dirichlet hyperprior on the weights.
 
 \section*{Choosing the weights based on optimality criteria}
 \subsection*{Maximum entropy}
 
-In a context of near complete uncertainty about the relative reliabilities of the experts (information sources) it may be desirable to combine the prior distributions such that $\pi(\theta)$ is maximally uninformative. %% this can be highly problematic...
+In a context of near complete uncertainty about the relative reliabilities of the experts (information sources) it may be desirable to combine the prior distributions such that $\pi(\theta)$ is maximally uninformative. %% LM: this can be highly problematic...
 Such approach would ensure that, given the constraints imposed by $\mathbf{F}_{\theta}$, the pooled distribution is the one which best represents the current state of knowledge~\citep{jaynes1957,savchuk1994}.
 In order to choose $\boldsymbol\alpha$ so as to maximise prior 
 diffuseness, one can maximise the entropy of the log-pooled prior:
@@ -329,7 +359,7 @@ The experts express their opinion as prior means for the survival probability, w
 From the vector of prior means $\mathbf{m} = \{ m_0 = 0.95, m_1 = 0.80, m_2 = 0.90, m_3 = 0.70 \}$, the authors obtain the parameters of the beta distributions for each expert,  $\mathbf{a} = \{ a_0 = 18.10, a_1 = 3.44 , a_2 = 8.32, a_3 = 1.98 \}$ and  $\mathbf{b} = \{ b_0 = 0.955 , b_1 = 0.860, b_2 = 0.924, b_3 = 0.848\}$.
 The resulting prior densities are show in the top panel of Figure~\ref{fig:priors_posteriors_beta}.
 To complete the analysis, we place a diffuse $Dirichlet(\boldsymbol\alpha | \boldsymbol X)$ prior on $\boldsymbol\alpha$ with $X_i = 1/4 \: \forall i$.
-Finally, we propose to compare the prior distributions representing the experts' opinions as well as the combined distributions obtained by the different approaches using the integrated (marginal) likelihood (\cite{raftery2007}, eq. 9), $l(y) = \int_{0}^{1}f(\theta|y)\pi(\theta)d\theta$.
+Finally, we propose to compare the prior distributions representing the experts' opinions as well as the combined distributions obtained by the different approaches using the integrated (marginal) likelihood (\cite{raftery2007}, eq. 9), $l(y) = \int_{0}^{1}f(y|\theta)\pi(\theta)d\theta$.
 The marginal likelihood for the $i-th$ expert and $J$ observations of the form $\{ y_j, n_j\}$ is:
 \begin{align}
   \label{eq:marglike}
