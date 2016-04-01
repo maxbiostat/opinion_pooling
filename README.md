@@ -18,7 +18,7 @@ Lives on its own [repo](https://github.com/maxbiostat/R0_uncertainty).
 - [ ] KL divergence in transformed space?
 
 ## [XIII EBEB - Brazilian Meeting on Bayesian Statistics - 2016](http://www.redeabe.org.br/ebeb2016/)
-[Presentation](https://github.com/maxbiostat/opinion_pooling/blob/master/EBEB_2016/PRESENTATION/lmcarvalho_etal_ebeb_2016.pdf)
+[Presentation slides](https://github.com/maxbiostat/opinion_pooling/blob/master/EBEB_2016/PRESENTATION/lmcarvalho_etal_ebeb_2016.pdf) and [video](https://youtu.be/MGft1XnW3es?list=PL3T2Ppt4bgDJBiGZlan-qNY6PsLOGXdAB)
 
 ## General Manuscript
 - [ ] Dynamic model example;
