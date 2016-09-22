@@ -27,7 +27,7 @@ Lives on its own [repo](https://github.com/maxbiostat/R0_uncertainty).
 - [ ] PSA for $\pi(\alpha)$
 - [ ] Arxiving
 
-[![PDF Status](https://www.sharelatex.com/github/repos/maxbiostat/opinion_pooling/builds/latest/badge.svg)](https://www.sharelatex.com/github/repos/maxbiostat/opinion_pooling/builds/latest/output.pdf)
+[PDF](https://github.com/maxbiostat/opinion_pooling/blob/master/manuscript/Carvalho_etal_pooling.pdf)
 
 ## Extras
 - [ ] Matrix representation: refine the algebra + find a good application
