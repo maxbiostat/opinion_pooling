@@ -65,47 +65,49 @@ One proposal is to maximise the entropy the pooled distribution~\citep{myung1996
 
 These approaches, while moving away from the problem of arbitrarily assigning the weights, arrive at single point solutions, similar to point estimates in Statistical theory.
 Albeit acknowledging that these approaches have merit, we argue that in many settings, where one has substantial prior information on the relative reliabilities of the information sources (experts), it would be desirable to incorporate this information into the pooling procedure while accommodating uncertainty about the weights~\citep{poole2000}.
-Moreover, assigning a probability distribution to the weights permits us to obtain a posterior distribution using a Bayesian procedure, which in turn enables us to learn about these weights.
+Moreover, assigning a probability distribution over the weights allows one to obtain a posterior distribution using a Bayesian procedure, which in turn enables learning about the weights from data.
 Therefore, it makes possible to sequentially update knowledge about the reliability of each expert/source in the face of new data.
 
 In this paper we explore previous approaches for deriving the weights for logarithmic pooling, namely by maximising the entropy of the resulting distribution and minimising the KL divergence between the pooled distribution and each individual distribution.
 Additionally, we propose a hierarchical prior approach in which we place a distribution on the weights.
-We present an example on proportion estimation by combining Beta priors.
+We also discuss the case where the decision maker is interested in a transformation $y$ of the quantity $\theta$ for which the expert opinions were elicited.
+To conclude, we present an example on proportion estimation by combining Beta priors.
 [EXEMPLO]
 
 \section*{Properties of the logarithmic pooling operator}
 
-In what follows, we introduce the necessary theory and motivate the use of the logarithmic pooling operator by presenting some of its desirable properties.
+In what follows, we introduce the necessary theory and notation and motivate the use of the logarithmic pooling operator by presenting some of its desirable properties.
 
+First let us define the logarithmic pooling (LP) operator.
 Let $\mathbf{F}_{\theta} := \{f_0(\theta), f_1(\theta), f_2(\theta), \ldots, f_K(\theta)\}$ be a set of prior distributions representing the opinions of $K+1$ experts and let $\boldsymbol\alpha :=\{\alpha_0, \alpha_1, \alpha_2, \ldots, \alpha_K \}$ be the vector of weights, such that $\alpha_i > 0\: \forall i$ and $\sum_{i=0}^K \alpha_i = 1$.
 Then the log-pooled prior is
 \begin{equation}
 \label{eq:logpool}
- \pi(\theta) := t(\boldsymbol\alpha) \prod_{i=0}^K f_i(\theta)^{\alpha_i},
+ \mathcal{LP}(\mathbf{F_\theta}, \boldsymbol\alpha) := \pi(\theta) = t(\boldsymbol\alpha) \prod_{i=0}^K f_i(\theta)^{\alpha_i},
 \end{equation}
 where $t(\boldsymbol\alpha) = \int_{\boldsymbol\Theta}\prod_{i=0}^K f_i(\theta)^{\alpha_i}d\theta$.
 
 Logarithmic pooling will only yield proper probability distributions if it is possible to normalise the expression in (\ref{eq:logpool}).
-This condition is usually assumed implicitly, without proof.
-\citet{poole2000} provide a proof for the case of two densities (see Theorem 1 therein), which we extend for the case of a finite number of densities.
+% This condition is usually assumed implicitly, without proof.
+While \citet{poole2000} provide a proof for the case of two densities (see Theorem 1 therein),~\cite{genest1986A} (pg.489) prove the result for a finite number of densities.
 \begin{theo}
 \label{thm:normalisation}
-\textbf{Normalisation}. 
+\textbf{Normalisation~\cite{genest1986A}}. 
 Let $A$ be the $(K+1)$-dimensional open simplex on $[0,1]$.
 For all $\boldsymbol\alpha \in A$ there exists a constant $t(\boldsymbol\alpha)$ such that $\int_{\boldsymbol\Theta}\pi(\theta)d\theta = 1$.
 \end{theo}
-
-This result ensures any (finite) number of proper distributions can be combined using the logarithmic pooling operator to yield a normalisable density.
+A simple proof using H\"{o}lder's inequality is given in the Appendix of this paper.
+This result ensures any (finite) number of proper distributions can be combined using the logarithmic pooling operator to yield a normalisable (proper) density.
 
 Another interesting property of the logarithmic pooling operator is the fact that combining log-concave densities will produce a log-concave pooled distribution.
 \begin{remark}
 \label{rmk:concavity}
 \textbf{Log-concavity}. 
- Let $\mathbf{F}_{\theta}$ be a set of log-concave distributions, i.e., each $f_i$ can be represented as
- \begin{equation}
-  \label{eq:logconcavity}
-  f_i(\theta) \propto e^{\psi_i(\theta)},
- \end{equation}
+ Let $\mathbf{F}_{\theta}$ be a set of log-concave distributions, i.e., each $f_i$ can be represented as $ f_i(\theta) \propto e^{\psi_i(\theta)}$,
+%  \begin{equation}
+%   \label{eq:logconcavity}
+%   f_i(\theta) \propto e^{\psi_i(\theta)},
+%  \end{equation}
 where $\psi_i(\cdot)$ is a concave function.
 Then $\pi(\theta)$ is also log-concave.
 \end{remark}
@@ -114,7 +116,7 @@ Log-concavity of the pooled prior may be important to consider in order to guara
 
 \subsection*{Exponential family}
 
-Suppose we are interested in a random variable, $Y$, from a exponential family with parameter $\theta$ and probability density function is given by
+Suppose we are interested in a random variable, $Y$, from a exponential family with parameter $\theta$ and probability density function given by
 \begin{equation}
 \label{eq:exponentialfamily}
 f(y|\theta) = h(y) e^{\theta y - \psi(\theta)}.
@@ -150,15 +152,15 @@ A conjugate prior family for $f(y|\theta)$ is the following
 g(\theta | a, b) = K(a,b) e^{\theta a - b \psi(\theta)} \: ,
 \end{equation}
 where $K(a,b)$ is a normalising constant.
-Here, we employ the definition and notation for exponential family and its conjugate prior family from \citet[chapter 3]{robert2001bayesian}.
+Here, we employ the definition and notation for exponential family and its conjugate prior family from \citet[chapter 3]{robert2001}.
 Similar to the above, let $\mathbf{G}_{\theta}$ be a set of conjugate prior distributions representing the opinions of $K+1$ experts, and $g_i(\theta) = g(\theta | a_i, b_i)$ from equation (\ref{eq:priorEF}).
 
-The log-pooled prior is also a conjugate prior for $f(y|\theta)$ with hyperparameters given by an weighted mean of the experts hyperparameters, i.e.
-\begin{equation}
-\label{eq:poolpriorEF}
-\pi(\theta|\boldsymbol\alpha) = g(\theta | a^*, b^*) \: ,
-\end{equation}
-where $a^* = \sum_{i} \alpha_i a_i$ and $b^* = \sum_{i} \alpha_i b_i$.
+The log-pooled prior is also a conjugate prior for $f(y|\theta)$ with hyperparameters given by an weighted mean of the experts hyperparameters, i.e., $\pi(\theta|\boldsymbol\alpha) = g(\theta | a^*, b^*)$.
+% \begin{equation}
+% \label{eq:poolpriorEF}
+% \pi(\theta|\boldsymbol\alpha) = g(\theta | a^*, b^*) \: ,
+% \end{equation}
+% where $a^* = \sum_{i} \alpha_i a_i$ and $b^* = \sum_{i} \alpha_i b_i$.
 Note that the posterior distribution of $\theta$ is given by $\pi(\theta | y) = g(\theta | a^* + y, b^* + 1)$.
 
 The entropy function of the log-pooled prior is given by
@@ -173,12 +175,16 @@ And the Kullback-Leibler divergence, $KL(f_i || \pi)$, is the following
 KL(g_i || \pi) = \log( K(a_i,b_i)) - \log(K(a^*,b^*)) + (a_i - a^*) E[\theta] - (b_i - b^*) E[\psi(\theta)] \: .
 \end{equation}
 
-\section*{Induce-then-pool or pool-then-induce?}
+\section*{Combining distributions on a transformed quantity} % LM: more informative title, me thinks
+% \section*{Induce-then-pool or pool-then-induce?}
+So far we have discussed the situation where the decision maker combines distributions over $\theta$.
+We now turn our attention to the case where the decision maker is interested in a quantity $y$, given by a deterministic transform of $\theta$.
+This is a slightly different setting to that discussed by~\cite{poole2000}, who discuss invertible and non-invertible transforms in the context of pooling distributions on the input and output of a deterministic model.
 
-Let $\theta \in \Theta \subseteq \mathbb{R}^p$ and $y \in \mathcal{Y} \subseteq \mathbb{R}^p$. 
-Define the model (transformation) as $M \,:\, \Theta \to \mathcal{Y}$. 
+Let $\theta \in \Theta \subseteq \mathbb{R}^p$ and $y \in \mathcal{Y} \subseteq \mathbb{R}^q$. 
+Define the transform (model) as $M \,:\, \Theta \to \mathcal{Y}$. 
 This paper concerns the setting where a set $\mathbf{F_\theta}$ of distributions on $\theta$ is available but one is interested in obtaining a pooled distribution on $y$.
-There are two ways of obtaining a pooled distribution $\pi(y)$: (a) combine the distributions in $\mathbf{F_\theta}$ and then apply $M(\cdot)$ to the resulting distribution to get the \underline{induced} distribution on $y$ (``pool-then-induce'') or; (b) apply  $M(\cdot)$ to each component of $\mathbf{F_\theta}$ and combine the resulting induced distributions using the logarithmic pooling operator (``induce-then-pool''). 
+There are two ways of obtaining a pooled distribution $\pi(y)$: (a) combine the distributions in $\mathbf{F_\theta}$ and then apply $M(\cdot)$ to the resulting distribution to get the \underline{induced} distribution on $y$ (``pool-then-induce'' approach) or; (b) apply  $M(\cdot)$ to each component of $\mathbf{F_\theta}$ and combine the resulting induced distributions using the logarithmic pooling operator (``induce-then-pool'' approach). 
 First we note that under some conditions on the transformation $M(\cdot)$, the order in which one performs the pooling and transforming operations does not matter.
 %% "Stolen" from http://math.stackexchange.com/questions/732960/inverse-of-a-multivariable-function
 Consider $M(\theta) = y$ and suppose $M(\cdot)$ is invertible, i.e., there exists $M^{-1}: \: \mathcal{Y} \to \Theta$ such that,
@@ -212,6 +218,10 @@ This is very similar in nature to the ``external Bayesianity'' property of the l
 %% TODO: if we can show that combining the prior with the likelihood is an invertible transform, then this result is a generalisation of EB. But we first need to see the degree of generality EB was actually proven in the original paper.
 \end{proof}
 
+We note, however, that if $M(\cdot)$ is not invertible,  
+
+One can see this result 
+
 \textbf{\large Can we prove the reverse (Equivalence$\to$Invertibility) ?}
 
 Here go my two cents.
@@ -231,8 +241,8 @@ which, I claim, will only be equal if $T = 1$, that is,  if $M(\cdot)$ is invert
 We now move on to study three approaches to assign weights.
 The first two approaches are based on optimality criteria and a third method is based on assigning a Dirichlet hyperprior on the weights.
 \section*{Methods}
-\subsection*{Choosing the weights based on optimality criteria}
-\subsubsection*{Maximum entropy}
+
+\subsubsection*{Choosing the weights by maximising entropy}
 
 In a context of near complete uncertainty about the relative reliabilities of the experts (information sources) it may be desirable to combine the prior distributions such that $\pi(\theta)$ is maximally uninformative. %% LM: this can be highly problematic...
 Such approach would ensure that, given the constraints imposed by $\mathbf{F}_{\theta}$, the pooled distribution is the one which best represents the current state of knowledge~\citep{jaynes1957,savchuk1994}.
@@ -257,7 +267,7 @@ Formally, we want to find $\hat{\boldsymbol\alpha}$ such that
 This approach, however, does not result in a convex optimisation problem, therefore one is not guaranteed to find a unique solution. 
 See Proposition~\ref{remark:uniqueness}, below, for intuition as to why.
 
-\subsubsection*{Minimising Kullback-Leibler divergence}
+\subsubsection*{Choosing the weights by minimising Kullback-Leibler divergence}
 
 One could also want to choose the pooling weights so as to minimise the total Kullback-Leibler divergence between each proposed distribution and the pooled distribution.
 Let $d_i = \text{KL}(f_i || \pi)$ and let $L(\boldsymbol\alpha)$ be a loss function such that
@@ -297,7 +307,7 @@ L(\boldsymbol\alpha) &= \sum_{i=0}^Kd_i \\
 
 This procedure therefore choses weights for each expert by how coherent the prior provided by each expert is with the pool-then-induce -- procedure (a) -- prior in the transformed space induced by $M(\cdot)$.
 
-\subsection*{Specifying a prior distribution for $\boldsymbol\alpha$}
+\subsection*{Specifying a prior distribution on the weights}
 
 In this section we propose a hierarchical prior for $\theta$ conditional on $\boldsymbol\alpha$ in order to incorporate uncertainty on the weights.
 A natural choice for a prior distribution for $\boldsymbol\alpha$ is the $(K+1)-$dimensional Dirichlet distribution.
