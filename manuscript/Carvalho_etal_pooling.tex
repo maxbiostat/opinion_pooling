@@ -92,8 +92,8 @@ Logarithmic pooling will only yield proper probability distributions if it is po
 While \citet{poole2000} provide a proof for the case of two densities (see Theorem 1 therein),~\cite{genest1986A} (pg.489) prove the result for a finite number of densities.
 \begin{theo}
 \label{thm:normalisation}
-\textbf{Normalisation~\cite{genest1986A}}. 
-Let $A$ be the $(K+1)$-dimensional open simplex on $[0,1]$.
+\textbf{Normalisation~\citep{genest1986A}}. 
+Let $A$ be a $(K+1)$-dimensional open simplex on $[0,1]$.
 For all $\boldsymbol\alpha \in A$ there exists a constant $t(\boldsymbol\alpha)$ such that $\int_{\boldsymbol\Theta}\pi(\theta)d\theta = 1$.
 \end{theo}
 A simple proof using H\"{o}lder's inequality is given in the Appendix of this paper.
@@ -174,7 +174,7 @@ And the Kullback-Leibler divergence, $KL(f_i || \pi)$, is the following
 \label{eq:KLpriorEF}
 KL(g_i || \pi) = \log( K(a_i,b_i)) - \log(K(a^*,b^*)) + (a_i - a^*) E[\theta] - (b_i - b^*) E[\psi(\theta)] \: .
 \end{equation}
-
+{\color{red}
 \section*{Combining distributions on a transformed quantity} % LM: more informative title, me thinks
 % \section*{Induce-then-pool or pool-then-induce?}
 So far we have discussed the situation where the decision maker combines distributions over $\theta$.
@@ -218,9 +218,7 @@ This is very similar in nature to the ``external Bayesianity'' property of the l
 %% TODO: if we can show that combining the prior with the likelihood is an invertible transform, then this result is a generalisation of EB. But we first need to see the degree of generality EB was actually proven in the original paper.
 \end{proof}
 
-We note, however, that if $M(\cdot)$ is not invertible,  
-
-One can see this result 
+We note, however, that if $M(\cdot)$ is not invertible...
 
 \textbf{\large Can we prove the reverse (Equivalence$\to$Invertibility) ?}
 
@@ -236,8 +234,7 @@ Then we are prepared to write:
 \pi^{\prime}_{y}(y|\boldsymbol\alpha) &\propto \prod_{i=0}^K\left[\sum_{t = 1}^T f_i(M_t^{-1}(y))|J_t|\right]^{w_i}
 \end{align}
 which, I claim, will only be equal if $T = 1$, that is,  if $M(\cdot)$ is invertible in the usual sense.
-
-
+}
 We now move on to study three approaches to assign weights.
 The first two approaches are based on optimality criteria and a third method is based on assigning a Dirichlet hyperprior on the weights.
 \section*{Methods}
@@ -307,11 +304,11 @@ L(\boldsymbol\alpha) &= \sum_{i=0}^Kd_i \\
 
 This procedure therefore choses weights for each expert by how coherent the prior provided by each expert is with the pool-then-induce -- procedure (a) -- prior in the transformed space induced by $M(\cdot)$.
 
-\subsection*{Specifying a prior distribution on the weights}
-
+\subsection*{Hierarchical modelling of the weights}
 In this section we propose a hierarchical prior for $\theta$ conditional on $\boldsymbol\alpha$ in order to incorporate uncertainty on the weights.
-A natural choice for a prior distribution for $\boldsymbol\alpha$ is the $(K+1)-$dimensional Dirichlet distribution.
 The conditional distribution $\pi(\theta|\boldsymbol\alpha)$ is of the form in~(\ref{eq:logpool}) and the prior density for $\boldsymbol\alpha$ is 
+\subsubsection*{Priors}
+A natural choice for a prior distribution for $\boldsymbol\alpha$ is the $(K+1)-$dimensional Dirichlet distribution.
 \begin{equation}
  \label{eq:generalcondprior}
  \pi(\boldsymbol\alpha) = \frac{1}{\mathcal{B}(\boldsymbol X)}\prod_{i=0}^K \alpha_i^{x_i-1}
@@ -323,6 +320,15 @@ The marginal prior for $\theta$ is then
  \pi(\theta) &= \int_{A}\pi(\theta|\boldsymbol\alpha)\pi(\boldsymbol\alpha)d\boldsymbol\alpha \\
              &= \frac{1}{\mathcal{B}(\boldsymbol X)}\int_{A}t(\boldsymbol\alpha)\prod_{i=0}^K f_i(\theta)^{\alpha_i}\alpha_i^{x_i-1}d\boldsymbol\alpha 
 \end{align}
+
+\subsubsection*{Posterior}
+\begin{align}
+ \label{eq:alpha_posterior}
+ p(\boldsymbol\alpha | x) &= \int_{\Theta}  p(\theta, \boldsymbol\alpha | x) d\theta \\
+  &\propto  \int_{\Theta} \mathcal{L}(x | \theta) \pi(\theta | \boldsymbol\alpha) \pi(\boldsymbol\alpha) d\theta
+\end{align}
+
+\subsubsection*{Computational approach}
 
 \section*{Applications}
 \label{sec:apps}
