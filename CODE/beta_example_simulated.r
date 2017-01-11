@@ -1,4 +1,3 @@
-
 # Leo Bastos & Luiz Max Carvalho (2015)
 source("maxent_aux.R")
 source("beta_elicitator.R")
@@ -7,17 +6,16 @@ source("beta_elicitator.R")
 ## with the data.
 ## Why, you ask? To see how much we can "learn" about \alpha
 
-p0 <- elicit.beta(m0 = 8/10, v0 = 1/20); a0 <- p0$a ; b0 <- p0$b
-p1 <- elicit.beta(m0 = 8/10, v0 = 1/200); a1 <- p1$a ; b1 <- p1$b
-p2 <- elicit.beta(m0 = 8/10, v0 = 1/300); a2 <- p2$a ; b2 <- p2$b
-p3 <- elicit.beta(m0 = 8/10, v0 = 1/2000); a3 <- p3$a ; b3 <- p3$b
-
-
+p0 <- elicit.beta(m0 = 8/10, v0 = 1/1000); a0 <- p0$a ; b0 <- p0$b
+p1 <- elicit.beta(m0 = 7/10, v0 = 1/100); a1 <- p1$a ; b1 <- p1$b
+p2 <- elicit.beta(m0 = 7/10, v0 = 1/100); a2 <- p2$a ; b2 <- p2$b
+p3 <- elicit.beta(m0 = 9/10, v0 = 1/100); a3 <- p3$a ; b3 <- p3$b
 
 av <- c(a0, a1, a2, a3)
 bv <- c(b0, b1, b2, b3)
 K <- length(av)
 
+beta.mode <- function(a, b) (a-1)/(a +b -2)
 # Entropy surface (for a future dominance analysis) 
 library(fields)
 ES <- ent.surface.beta(av, bv)
@@ -130,8 +128,8 @@ ab.KL.star <- pool.par(alphaKL.opt, av, bv)
 require("LearnBayes")
 
 M <- 100000
-# X <- c(1, 1, 1, 1)/2 # Jeffreys' prior
-X <- c(1, 1, 1, 1)/4
+X <- c(1, 1, 1, 1)/2 # Jeffreys' prior
+# X <- c(1, 1, 1, 1)/4
 cv <- 10
 alpha.MC.dir <- rdirichlet(M, X)
 alpha.MC.exp <- rgelman(N = M, m = log(X), c = cv)
@@ -154,7 +152,8 @@ PaperBeta.tbl[5, 2:3] <- quantile(theta.par.exp, c(.025, .975))
 # Posterior 
 library(rstan)
 betadata.stan <-  list(Y = y, X = X, N = n, K = K, a = av, b = bv)
-betadata.stan.exp <-  list(Y = y, means = log(X), sds = abs(cv*log(X)) ,  N = n, K = K, a = av, b = bv)
+betadata.stan.exp <-  list(Y = y, means = log(X), sds = abs(cv*log(X)),
+                           N = n, K = K, a = av, b = bv)
 # hierpost <- stan(file = "posterior_beta_pooled.stan",
 #                      data = betadata.stan, iter = 1, thin = 1, chains = 1)
 # save(hierpost, file = "compiled_beta_post_sampler.RData")
@@ -182,6 +181,9 @@ PaperBeta.tbl[5, 5:6] <- quantile(posteriors.exp$theta, c(.025, .975))
 post.alpha.dir <- apply(posteriors.dir$alpha, 2, mean)
 post.alpha.exp <- apply(alphas.exp, 2, mean)
 
+post.alpha.dir.cred <- apply(posteriors.dir$alpha, 2, quantile, probs = c(.025, .975))
+post.alpha.exp.cred <- apply(alphas.exp, 2, quantile, probs = c(.025, .975))
+
 (AlphasBeta.tbl[3, ] <- post.alpha.dir)
 (AlphasBeta.tbl[4, ] <- post.alpha.exp)
 
@@ -196,25 +198,28 @@ ab.Hier.star.exp <- pool.par(post.alpha.exp, av, bv)
 round(PaperBeta.tbl, 2)
 round(AlphasBeta.tbl, 2)
 ###  Plotting
-png("../manuscript/figures/beta_fiddling_variances_wrongMean.png")
-par(mfrow = c(2, 1))
+# png("../manuscript/figures/beta_example_simulated_data.png")
+# par(mfrow = c(2, 1))
 ccx <- 1.5
 curve(fbeta(x, par = c(a0, b0) ), .5, 1,  ylab = "Density", main = "Expert Priors",
       xlab = expression(theta), lwd = 3 , lty = 3, cex.lab = ccx, cex.axis = ccx, cex.main = ccx, cex.sub = ccx)
 curve(fbeta(x, par = c(a1, b1) ), .5, 1, lwd = 3, col = 1, lty = 4, add = TRUE)
 curve(fbeta(x, par = c(a2, b2) ), .5, 1, lwd = 3, col = 1, lty = 5, add = TRUE)
 curve(fbeta(x, par = c(a3, b3) ), .5, 1, lwd = 3, col = 1, lty = 6, add = TRUE)
-legend(x = "topleft", 
+legend(x = "topleft",
        legend = paste("Expert", 1:4),
-       col = 1, lwd = 3, lty = 3:6, bty = "n" 
+       col = 1, lwd = 3, lty = 3:6, bty = "n"
 )
+# dev.off()
 # Combined Priors
 curve(fbeta(x, par = ab.Equal.star), .5, 1, ylab = "Density", main = "Pooled Priors and Posteriors",
-      xlab = expression(theta), lwd = 2, lty = 2, cex.lab = ccx, cex.axis = ccx, cex.main = ccx, cex.sub = ccx)
+      xlab = expression(theta), lwd = 2, lty = 2,
+      cex.lab = ccx, cex.axis = ccx, cex.main = ccx, cex.sub = ccx)
 curve(fbeta(x, par = ab.MaxEnt.star), .5, 1, col = 2, add = TRUE, lwd = 2, lty = 2)
 curve(fbeta(x, par = ab.KL.star), .5, 1, col = 3, add = TRUE, lwd = 2, lty = 2)
 lines(density(theta.par.dir), col = 4, lwd = 2, lty = 2)
 lines(density(theta.par.exp), col = 5, lwd = 2, lty = 2)
+# png("../manuscript/figures/beta_example_simulated_data.png")
 # Posteriors
 curve(fbeta(x, par = ab.Equal.star+ c(y, n-y)), .5, 1, ylab = "Density", main = "",
       xlab = expression(theta), lwd = 2, add = TRUE)
@@ -230,14 +235,50 @@ legend(x = "top", bty = "n", col = 1,
        legend = c("Priors", "Posteriors"),
        lwd = 2, lty = 2:1)
 abline( v = y/n, lwd = 3, lty = 3)
-dev.off()
-############
+# dev.off()
+#############
+Posterior_experts <- data.frame(
+  alpha = c(post.alpha.dir, post.alpha.exp),
+  lwr = c(post.alpha.dir.cred[1, ], post.alpha.exp.cred[1, ]),
+  upr = c(post.alpha.dir.cred[2, ], post.alpha.exp.cred[2, ]),
+  expert = rep(paste("expert_", 0:(K-1), sep = ""), 2),
+  prior = rep(c("Dirichlet", "NormalExp"), each = K)
+)
+library(ggplot2)
+##
+coord_radar <- function (theta = "x", start = 0, direction = 1) 
+{ ## from http://web-r.org/board_ISVF22/8271
+  theta <- match.arg(theta, c("x", "y"))
+  r <- if (theta == "x") 
+    "y"
+  else "x"
+  ggproto("CoordRadar", CoordPolar, theta = theta, r = r, start = start, 
+          direction = sign(direction),
+          is_linear = function(coord) TRUE)
+}
+number_ticks <- function(n) {function(limits) pretty(limits, n)}
+####
+ggplot(data = Posterior_experts,
+       aes(x = expert, y = alpha, group = prior, colour = prior, fill = prior)) +
+  geom_point() +
+  geom_polygon(alpha = 0.4) +
+  theme_bw() + 
+  scale_y_continuous(expand = c(0, 0), limits = c(0, 1),
+                     breaks = number_ticks(10)) + 
+  coord_radar() +
+  theme(axis.title.x = element_blank(),
+        axis.ticks.x = element_blank(),
+        axis.text.x = element_text(face = "bold"),
+        axis.title.y = element_blank(),
+        axis.text.y = element_blank(),
+        axis.ticks.y = element_blank()
+)
+#############
 # Now  let's look at marginal likelihoods for the pooled priors
 
 pars <- list(equal = ab.Equal.star,
-             entropy = ab.MaxEnt.star,
+             max_entropy = ab.MaxEnt.star,
              KL = ab.KL.star,
              hierD = ab.Hier.star.dir,
              hierE = ab.Hier.star.exp)
-
 lapply(pars, function(p) ml.beta(yi = y, ni = n, a = p[1], b = p[2]))
