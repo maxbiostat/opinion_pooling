@@ -158,7 +158,6 @@ alpha.01 <- function(alpha.inv){
   alphap <- 1/(1 + sum(exp(alpha.inv)))
   c(exp(alpha.inv) * alphap, alphap)
 }
-
 ################################
 ## Let's sample from the prior in Gelman (1995) JCompGraph Stats (http://www.stat.columbia.edu/~gelman/research/published/moments.pdf)
 ## This is the first example, in page 46. See also Gelman, Bois & Jiang (1996) JASA.
@@ -167,7 +166,7 @@ rgelman <- function(N, m, K = NULL, c){
   ## m vector of means. If a scalar is given, it is recycled K times
   ## c = coefficient of variation. Used to bypass the need to specify a vector of variances. Note this is not in the original paper.
   if(is.null(K)) K <- length(m)
-  if(length(m)==1){ means <- rep(m, K)}else{means <- m }  
+  if(K==1){ means <- rep(m, K)} else{means <- m }  
   draws <- sapply(1:N, function(i) rnorm(K, m = means, s = abs(c*means) ))
   ndraws <- apply(draws, 2, function(x) exp(x)/sum(exp(x)) ) # normalised draws
   return(t(ndraws))
