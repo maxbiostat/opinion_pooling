@@ -56,7 +56,7 @@ On the theoretical front, studying opinion pooling operators may give important 
 Among the various opinion pooling operators proposed in the literature, logarithmic pooling has enjoyed much popularity, mainly due to its many desirable properties such as relative propensity consistency (RPC) and external Bayesianity (EB)~\citep{genest1986A}. 
 In a practical setting, logarithmic pooling finds use in a range of fields, from infectious disease modelling~\citep{Coelho2009} and wildlife conservation~\citep{poole2000} to engineering~\citep{lind1988, savchuk1994}.
 
-A common situation of interest is that of combining expert opinions, represented as proper probability distributions, about a quantity of interest $\theta \in \mathbf{\Theta} \subseteq \mathbb{R}^n$.
+A common situation of interest is that of combining expert opinions, represented as proper probability distributions, about a quantity of interest $\theta \in \mathbf{\Theta} \subseteq \mathbb{R}^p$.
 To combine these opinions using logarithmic pooling requires assigning weights to each of the experts.
 These weights represent the reliability of each opinion~\citep{genest1984}.
 This requirement naturally leads to the question of how to choose the weights in a meaningful fashion, according to some well-accepted optimality criterion.
@@ -174,7 +174,8 @@ And the Kullback-Leibler divergence, $KL(f_i || \pi)$, is the following
 \label{eq:KLpriorEF}
 KL(g_i || \pi) = \log( K(a_i,b_i)) - \log(K(a^*,b^*)) + (a_i - a^*) E[\theta] - (b_i - b^*) E[\psi(\theta)] \: .
 \end{equation}
-{\color{red}
+
+%{\color{red}
 \section*{Combining distributions on a transformed quantity} % LM: more informative title, me thinks
 % \section*{Induce-then-pool or pool-then-induce?}
 So far we have discussed the situation where the decision maker combines distributions over $\theta$.
@@ -194,7 +195,7 @@ and $J := det \left[ \frac{\partial M^{-1}}{\partial y_1}, \frac{\partial M^{-1}
 With some abuse of notation, define
   \begin{align}
   \label{eq:transfF}
-  \mathbf{F^{-1}_y} &:= \{h_1(y), \, h_2(y), \ldots, \, h_K(y) \} \\
+  \mathbf{F^{-1}_y} &:= \{h_0(y), \, h_1(y), \ldots, \, h_K(y) \} \\
   h_i(y) & = f_i(M^{-1}(y))|J|\nonumber
   \end{align}
 where $|J|$ is the absolute value of $J$.
@@ -218,23 +219,24 @@ This is very similar in nature to the ``external Bayesianity'' property of the l
 %% TODO: if we can show that combining the prior with the likelihood is an invertible transform, then this result is a generalisation of EB. But we first need to see the degree of generality EB was actually proven in the original paper.
 \end{proof}
 
-We note, however, that if $M(\cdot)$ is not invertible...
+% We note, however, that if $M(\cdot)$ is not invertible...
+% 
+% \textbf{\large Can we prove the reverse (Equivalence$\to$Invertibility) ?}
+% 
+% Here go my two cents.
+% Suppose $M(\cdot)$ is not invertible on the whole of $\mathcal{Y}$, but instead is \textbf{piece-wise invertible}.
+% Let $\mathcal{Y}_1, \mathcal{Y}_2, \ldots, \mathcal{Y}_T$ be a  partition of $\mathcal{Y}$, i.e., $\mathcal{Y}_i\cap\mathcal{Y}_j = \emptyset,\: \forall i\neq j \in \{1, 2, \ldots, T\}$ and $\bigcup_{t = 1}^T\mathcal{Y}_t = \mathcal{Y}$.
+% Then define the inverse functions $M_{t}^{-1}(y)\,:\, \mathcal{Y}_t \to \Theta, \: t \in \{1, 2, \ldots, T\}$.
+% Last, let $J_t$ be the Jacobian of $M_{t}^{-1}(\cdot)$.
+% Then we are prepared to write:
+% \begin{align}
+% \label{eq:piecewiseTransf}
+% \pi_{y}(y |\boldsymbol\alpha) &\propto \sum_{t = 1}^T\left(\prod_{i=0}^K f_i(M_t^{-1}(y))^{w_i}\right)|J_t|, \quad \text{and}\\
+% \pi^{\prime}_{y}(y|\boldsymbol\alpha) &\propto \prod_{i=0}^K\left[\sum_{t = 1}^T f_i(M_t^{-1}(y))|J_t|\right]^{w_i}
+% \end{align}
+% which, I claim, will only be equal if $T = 1$, that is,  if $M(\cdot)$ is invertible in the usual sense.
+% }
 
-\textbf{\large Can we prove the reverse (Equivalence$\to$Invertibility) ?}
-
-Here go my two cents.
-Suppose $M(\cdot)$ is not invertible on the whole of $\mathcal{Y}$, but instead is \textbf{piece-wise invertible}.
-Let $\mathcal{Y}_1, \mathcal{Y}_2, \ldots, \mathcal{Y}_T$ be a  partition of $\mathcal{Y}$, i.e., $\mathcal{Y}_i\cap\mathcal{Y}_j = \emptyset,\: \forall i\neq j \in \{1, 2, \ldots, T\}$ and $\bigcup_{t = 1}^T\mathcal{Y}_t = \mathcal{Y}$.
-Then define the inverse functions $M_{t}^{-1}(y)\,:\, \mathcal{Y}_t \to \Theta, \: t \in \{1, 2, \ldots, T\}$.
-Last, let $J_t$ be the Jacobian of $M_{t}^{-1}(\cdot)$.
-Then we are prepared to write:
-\begin{align}
-\label{eq:piecewiseTransf}
-\pi_{y}(y |\boldsymbol\alpha) &\propto \sum_{t = 1}^T\left(\prod_{i=0}^K f_i(M_t^{-1}(y))^{w_i}\right)|J_t|, \quad \text{and}\\
-\pi^{\prime}_{y}(y|\boldsymbol\alpha) &\propto \prod_{i=0}^K\left[\sum_{t = 1}^T f_i(M_t^{-1}(y))|J_t|\right]^{w_i}
-\end{align}
-which, I claim, will only be equal if $T = 1$, that is,  if $M(\cdot)$ is invertible in the usual sense.
-}
 We now move on to study three approaches to assign weights.
 The first two approaches are based on optimality criteria and a third method is based on assigning a Dirichlet hyperprior on the weights.
 \section*{Methods}
