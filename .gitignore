@@ -108,7 +108,6 @@ sympy-plots-for-*.tex/
 *.xdy
 
 ## Specific stuff in my Dropbox folder
-.latex.yml.save
 CODE/.Rhistory
 CODE/beta_elicitator_handSol.R
 R0_uncertainty/
