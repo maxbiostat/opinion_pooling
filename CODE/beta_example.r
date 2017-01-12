@@ -13,6 +13,10 @@ bv <- c(b0, b1, b2, b3)
 K <- length(av)
 
 beta.mode <- function(a, b) (a-1)/(a +b -2)
+beta.mean <- function(a, b) a/ (a + b)
+beta.sd <- function(a, b) sqrt( (a*b)/( (a + b + 1) * (a + b)^2 ))
+beta.mean(av, bv)
+beta.sd(av, bv)
 # Entropy surface (for a future dominance analysis) 
 library(fields)
 ES <- ent.surface.beta(av, bv)
@@ -152,17 +156,19 @@ PaperBeta.tbl[5, 2:3] <- quantile(theta.par.exp, c(.025, .975))
 # Posterior 
 library(rstan)
 betadata.stan <-  list(Y = y, X = X, N = n, K = K, a = av, b = bv)
-betadata.stan.exp <-  list(Y = y, means = log(X), sds = abs(cv*log(X)),
+betadata.stan.exp <-  list(Y = y,
+                           means = digamma(X)-digamma(X[K]),
+                           Sigma = constructSigma(X),
                            N = n, K = K, a = av, b = bv)
-# hierpost <- stan(file = "posterior_beta_pooled.stan",
+# hierpost.dir <- stan(file = "posterior_beta_Dirichlet_pooled.stan",
 #                      data = betadata.stan, iter = 1, thin = 1, chains = 1)
-# save(hierpost, file = "compiled_beta_post_sampler.RData")
-# hierpost.exp <- stan(file = "posterior_beta_gelman_pooled.stan",
+# save(hierpost.dir, file = "compiled_beta_post_Dirichlet_sampler.RData")
+# hierpost.exp <- stan(file = "posterior_beta_logisticNormal_pooled.stan",
 #                      data = betadata.stan.exp, iter = 1, thin = 1, chains = 1)
-# save(hierpost.exp, file = "compiled_beta_post_gelman_sampler.RData")
-load("compiled_beta_post_sampler.RData")
-load("compiled_beta_post_gelman_sampler.RData")
-hierpostsamp.dir <- stan(fit= hierpost,
+# save(hierpost.exp, file = "compiled_beta_post_logisticNormal_sampler.RData")
+load("compiled_beta_post_Dirichlet_sampler.RData")
+load("compiled_beta_post_logisticNormal_sampler.RData")
+hierpostsamp.dir <- stan(fit= hierpost.dir,
                      data = betadata.stan, iter = 50000, thin = 1, chains = 1)
 hierpostsamp.exp <- stan(fit= hierpost.exp,
                          data = betadata.stan.exp, iter = 50000, thin = 1, chains = 1)

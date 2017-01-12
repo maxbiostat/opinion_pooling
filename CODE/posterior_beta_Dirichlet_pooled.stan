@@ -16,11 +16,11 @@ model {
   real astar;
   real bstar; 
     for (k in 1:K){
-       astaraux[k] <- alpha[k]*a[k];
-       bstaraux[k] <- alpha[k]*b[k];
+       astaraux[k] = alpha[k]*a[k];
+       bstaraux[k] = alpha[k]*b[k];
     }
-  astar <- sum(astaraux);
-  bstar <- sum(bstaraux);
+  astar = sum(astaraux);
+  bstar = sum(bstaraux);
   alpha ~ dirichlet(X);
   theta ~ beta(astar, bstar);
   Y ~ binomial(N, theta);
