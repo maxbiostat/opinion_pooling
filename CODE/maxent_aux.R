@@ -159,8 +159,6 @@ alpha.01 <- function(alpha.inv){
   c(exp(alpha.inv) * alphap, alphap)
 }
 ################################
-## Let's sample from the prior in Gelman (1995) JCompGraph Stats (http://www.stat.columbia.edu/~gelman/research/published/moments.pdf)
-## This is the first example, in page 46. See also Gelman, Bois & Jiang (1996) JASA.
 rgelman <- function(N, m, K = NULL, c){
   ## N = number of draws
   ## m vector of means. If a scalar is given, it is recycled K times
@@ -169,5 +167,29 @@ rgelman <- function(N, m, K = NULL, c){
   if(K==1){ means <- rep(m, K)} else{means <- m }  
   draws <- sapply(1:N, function(i) rnorm(K, m = means, s = abs(c*means) ))
   ndraws <- apply(draws, 2, function(x) exp(x)/sum(exp(x)) ) # normalised draws
+  return(t(ndraws))
+}
+################################
+## Let's sample from the prior in Gelman (1995) JCompGraph Stats (http://www.stat.columbia.edu/~gelman/research/published/moments.pdf)
+## This is the first example, in page 46. See also Gelman, Bois & Jiang (1996) JASA.
+rlogisticnorm <- function(N, m, sd){
+  ## N = number of draws
+  ## m is a vector of means. If a scalar is given, it is recycled K times
+  ## sd is a vector of standard deviations. If a scalar is given, it is recycled K times
+  ## c = coefficient of variation. Used to bypass the need to specify a vector of variances. 
+  if(length(m) != length(sd)) stop("means and variances are not the same dimension")
+  K <- length(m)
+  if(K==1){ means <- rep(m, K); sds <- rep(sd, K) } else{means <- m ; sds <- sd}  
+  cat(means, "\n")
+  cat(sds, "\n")
+  draws <- sapply(1:N, function(i) rnorm(K, m = means, s = sds ))
+  logisticNorm <- function(x){
+    D <- length(x)
+    y <- rep(NA, D)
+    for(d in 1:(D-1)) y[d] <- exp(x[d])/(1 + sum(exp(x[-D])) )
+    y[D] <- 1/(1 + sum(exp(x[-D])) )
+    return(y)
+  } 
+  ndraws <- apply(draws, 2, logisticNorm) # normalised draws
   return(t(ndraws))
 }
