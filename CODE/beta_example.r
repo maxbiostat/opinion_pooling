@@ -126,13 +126,16 @@ require("LearnBayes")
 
 M <- 100000
 X <- c(1, 1, 1, 1)/2 # Jeffreys' prior
-# X <- c(1, 1, 1, 1)/4
-cv <- 10
 alpha.MC.dir <- rdirichlet(M, X)
-alpha.MC.exp <- rgelman(N = M, m = log(X), c = cv)
+alpha.MC.exp <- rlogisticnorm(N = M,
+                              m = digamma(X)-digamma(X[K]),
+                              Sigma = constructSigma(X))
 
 apply(alpha.MC.dir, 2, mean)
 apply(alpha.MC.exp, 2, mean)
+
+apply(alpha.MC.dir, 2, sd)
+apply(alpha.MC.exp, 2, sd)
 
 beta.par.dir <- alpha.MC.dir %*% cbind(av, bv)
 beta.par.exp <- alpha.MC.exp %*% cbind(av, bv)

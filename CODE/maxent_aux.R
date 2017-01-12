@@ -170,19 +170,23 @@ rgelman <- function(N, m, K = NULL, c){
   return(t(ndraws))
 }
 ################################
+constructSigma <- function(X){
+  ## Construct the variance-covariance matrix for the logistic normal to match the parameter vector
+  ## X, from the Dirichlet distribution
+  K <- length(X)
+  Sigma <- matrix(rep(trigamma(X[K]), K^2), ncol = K, nrow = K)
+  diag(Sigma) <- trigamma(X) + trigamma(X[K])
+  return(Sigma)
+}
+################################
 ## Let's sample from the prior in Gelman (1995) JCompGraph Stats (http://www.stat.columbia.edu/~gelman/research/published/moments.pdf)
 ## This is the first example, in page 46. See also Gelman, Bois & Jiang (1996) JASA.
-rlogisticnorm <- function(N, m, sd){
+rlogisticnorm <- function(N, m, Sigma){
   ## N = number of draws
   ## m is a vector of means. If a scalar is given, it is recycled K times
-  ## sd is a vector of standard deviations. If a scalar is given, it is recycled K times
-  ## c = coefficient of variation. Used to bypass the need to specify a vector of variances. 
-  if(length(m) != length(sd)) stop("means and variances are not the same dimension")
+  ## Sigma is the variance-covariance matrix
   K <- length(m)
-  if(K==1){ means <- rep(m, K); sds <- rep(sd, K) } else{means <- m ; sds <- sd}  
-  cat(means, "\n")
-  cat(sds, "\n")
-  draws <- sapply(1:N, function(i) rnorm(K, m = means, s = sds ))
+  draws <-  mvtnorm::rmvnorm(n = N, mean = m, sigma = Sigma)
   logisticNorm <- function(x){
     D <- length(x)
     y <- rep(NA, D)
@@ -190,6 +194,6 @@ rlogisticnorm <- function(N, m, sd){
     y[D] <- 1/(1 + sum(exp(x[-D])) )
     return(y)
   } 
-  ndraws <- apply(draws, 2, logisticNorm) # normalised draws
+  ndraws <- apply(draws, 1, logisticNorm) # normalised draws
   return(t(ndraws))
 }
