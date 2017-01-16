@@ -1,28 +1,32 @@
-# Leo Bastos & Luiz Max Carvalho (2015)
-source("maxent_aux.R")
-source("beta_elicitator.R")
+# Leo Bastos & Luiz Max Carvalho (2017)
+source("pooling_aux.r")
+source("beta_elicitator.r")
 
 ## The idea is as follows: all expert priors but one,  will be rather inconsistent
 ## with the data.
 ## Why, you ask? To see how much we can "learn" about \alpha
 
-p0 <- elicit.beta(m0 = 8/10, v0 = 1/1000); a0 <- p0$a ; b0 <- p0$b
-p1 <- elicit.beta(m0 = 7/10, v0 = 1/100); a1 <- p1$a ; b1 <- p1$b
-p2 <- elicit.beta(m0 = 7/10, v0 = 1/100); a2 <- p2$a ; b2 <- p2$b
-p3 <- elicit.beta(m0 = 9/10, v0 = 1/100); a3 <- p3$a ; b3 <- p3$b
+p0 <- elicit.beta(m0 = 9/10, v0 = 1/100); a0 <- p0$a ; b0 <- p0$b
+p1 <- elicit.beta(m0 = 6/10, v0 = 1/100); a1 <- p1$a ; b1 <- p1$b
+p2 <- elicit.beta(m0 = 5/10, v0 = 1/100); a2 <- p2$a ; b2 <- p2$b
+p3 <- elicit.beta(m0 = 8/10, v0 = 1/100); a3 <- p3$a ; b3 <- p3$b
 
 av <- c(a0, a1, a2, a3)
 bv <- c(b0, b1, b2, b3)
 K <- length(av)
 
 beta.mode <- function(a, b) (a-1)/(a +b -2)
+beta.mean <- function(a, b) a/ (a + b)
+beta.sd <- function(a, b) sqrt( (a*b)/( (a + b + 1) * (a + b)^2 ))
+beta.mean(av, bv)
+beta.sd(av, bv)
 # Entropy surface (for a future dominance analysis) 
 library(fields)
 ES <- ent.surface.beta(av, bv)
 image.plot(ES$as, ES$bs, ES$M, xlab = expression(a), ylab = expression(b))
 
 # Data
-y <- 9
+y <- 6
 n <- 10
 
 ### Marginal (integrated) likelihoods for each of the experts' priors
@@ -122,20 +126,26 @@ ab.KL.star <- pool.par(alphaKL.opt, av, bv)
 ######################################################
 ###### Hierarchical prior
 # \pi(theta|alpha)
-# alpha ~ Dirichlet (X)
+# alpha ~ Dirichlet (X) or
+# alpha ~ LogisticNormal(m, Sigma)
 # X = {x_0, x_1, ..., x_K}
 ######################################################
 require("LearnBayes")
 
 M <- 100000
 X <- c(1, 1, 1, 1)/2 # Jeffreys' prior
-# X <- c(1, 1, 1, 1)/4
-cv <- 10
+varCovar <- constructSigma(X)
+
 alpha.MC.dir <- rdirichlet(M, X)
-alpha.MC.exp <- rgelman(N = M, m = log(X), c = cv)
+alpha.MC.exp <- rlogisticnorm(N = M,
+                              m = digamma(X)-digamma(X[K]),
+                              Sigma = varCovar)
 
 apply(alpha.MC.dir, 2, mean)
 apply(alpha.MC.exp, 2, mean)
+
+apply(alpha.MC.dir, 2, sd)
+apply(alpha.MC.exp, 2, sd)
 
 beta.par.dir <- alpha.MC.dir %*% cbind(av, bv)
 beta.par.exp <- alpha.MC.exp %*% cbind(av, bv)
@@ -152,18 +162,20 @@ PaperBeta.tbl[5, 2:3] <- quantile(theta.par.exp, c(.025, .975))
 # Posterior 
 library(rstan)
 betadata.stan <-  list(Y = y, X = X, N = n, K = K, a = av, b = bv)
-betadata.stan.exp <-  list(Y = y, means = log(X), sds = abs(cv*log(X)),
+betadata.stan.exp <-  list(Y = y,
+                           means = digamma(X)-digamma(X[K]),
+                           Sigma = constructSigma(X),
                            N = n, K = K, a = av, b = bv)
-# hierpost <- stan(file = "posterior_beta_pooled.stan",
+# hierpost.dir <- stan(file = "posterior_beta_Dirichlet_pooled.stan",
 #                      data = betadata.stan, iter = 1, thin = 1, chains = 1)
-# save(hierpost, file = "compiled_beta_post_sampler.RData")
-# hierpost.exp <- stan(file = "posterior_beta_gelman_pooled.stan",
+# save(hierpost.dir, file = "compiled_beta_post_Dirichlet_sampler.RData")
+# hierpost.exp <- stan(file = "posterior_beta_logisticNormal_pooled.stan",
 #                      data = betadata.stan.exp, iter = 1, thin = 1, chains = 1)
-# save(hierpost.exp, file = "compiled_beta_post_gelman_sampler.RData")
-load("compiled_beta_post_sampler.RData")
-load("compiled_beta_post_gelman_sampler.RData")
-hierpostsamp.dir <- stan(fit= hierpost,
-                     data = betadata.stan, iter = 50000, thin = 1, chains = 1)
+# save(hierpost.exp, file = "compiled_beta_post_logisticNormal_sampler.RData")
+load("compiled_beta_post_Dirichlet_sampler.RData")
+load("compiled_beta_post_logisticNormal_sampler.RData")
+hierpostsamp.dir <- stan(fit= hierpost.dir,
+                         data = betadata.stan, iter = 50000, thin = 1, chains = 1)
 hierpostsamp.exp <- stan(fit= hierpost.exp,
                          data = betadata.stan.exp, iter = 50000, thin = 1, chains = 1)
 
@@ -272,7 +284,7 @@ ggplot(data = Posterior_experts,
         axis.title.y = element_blank(),
         axis.text.y = element_blank(),
         axis.ticks.y = element_blank()
-)
+  )
 #############
 # Now  let's look at marginal likelihoods for the pooled priors
 

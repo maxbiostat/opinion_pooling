@@ -1,6 +1,6 @@
 # Leo Bastos & Luiz Max Carvalho (2017)
-source("maxent_aux.R")
-source("beta_elicitator.R")
+source("pooling_aux.r")
+source("beta_elicitator.r")
 
 # The example from Savchuk and Martz (1994)
 a0 <- 18.1 ; b0 <- .995

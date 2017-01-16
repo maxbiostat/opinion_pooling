@@ -20,8 +20,13 @@ tpool.positive <- function(alpha, D){ # For those with positive support
   1/integrate(function(x) sapply(x, function(e) dpool(e, D = D, alpha = alpha)), 0, Inf)$value
 } 
 #
-tpool.unit <- function(alpha, D){ # For those with positive support
+tpool.unit <- function(alpha, D){ # For those with support in [0, 1]
   1/integrate(function(x) sapply(x, function(e) dpool(e, D = D, alpha = alpha)), 0, .999999999)$value
+}
+##
+makedf <- function(mc.samples){
+  kde <- density(mc.samples)
+ return(Vectorize(approxfun(kde))) 
 }
 ##
 dpoolnorm <- function(x, D, alphas){
@@ -88,7 +93,7 @@ entropy.normal <- function(v){
   .5*log(2*pi*exp(1)*v)
 }
 #
-ent.surface.beta <- function(av, bv){
+ent.surface.beta <- function(av, bv, N = 100){
   # Since the maximum value for astar is max(av) and
   # the same goes for bstar, we can draw a surface for a given set of a's and b's 
   # to look at the face of the entropy surface
@@ -96,24 +101,22 @@ ent.surface.beta <- function(av, bv){
   amin <- min(av)
   bmax <- max(bv)
   bmin <- min(bv)
-  as <- seq(amin, amax, length.out = 100)
-  bs <- seq(bmin, bmax, length.out = 100)
+  as <- seq(amin, amax, length.out = N)
+  bs <- seq(bmin, bmax, length.out = N)
   grid <- expand.grid(as, bs)
-  N <- length(as)
   Es <- apply(grid, 1, function(row) entropy.beta(row[1], row[2]))
   ME <- matrix(Es, nrow = N)
   return(list(M = ME, as = as, bs = bs))
 } 
 #
-ent.surface.gamma <- function(av, bv){
+ent.surface.gamma <- function(av, bv, N = 100){
   amax <- max(av)
   amin <- min(av)
   bmax <- max(bv)
   bmin <- min(bv)
-  as <- seq(amin, amax, length.out = 100)
-  bs <- seq(bmin, bmax, length.out = 100)
+  as <- seq(amin, amax, length.out = N)
+  bs <- seq(bmin, bmax, length.out = N)
   grid <- expand.grid(as, bs)
-  N <- length(as)
   Es <- apply(grid, 1, function(row) entropy.gamma(row[1], row[2]))
   ME <- matrix(Es, ncol = N)
   return(list(M = ME, as = as, bs = bs))
