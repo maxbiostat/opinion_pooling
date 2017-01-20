@@ -8,14 +8,23 @@ pool.par <- function(alpha, a, b){
 dpool <- function(x, D, alphas){
   # D is a set (list type) of K of densities
   # alphas is a K-dimensional vector with the weights a_i>0  and sum(alphas)=1
-  #   if(sum(alphas)!=1){ break ("The vector of weigths doesn't sum up to unity")}
-  #   if(any(alphas<=0)) { break ("All weigths should be greater than zero")}
+    if(sum(alphas)!=1){ stop ("The vector of weigths doesn't sum up to unity")}
+    if(any(alphas<0)) { stop ("All weigths should be non-negative")}
   sapply(x, function(x) prod(unlist(lapply(D, function(d) d(x)))^alphas))
 }
 ## the constant t(\alpha)
-tpool <- function(alpha, D){
-  1/integrate(function(x) sapply(x, function(e) dpool(e, D = D, alpha = alpha)), -Inf, Inf)$value
+# proper integration
+# tpool <- function(alpha, D){
+#   1/integrate(function(x){
+#     sapply(x, function(e) dpool(e, D = D, alpha = alpha))},
+#   -Inf, Inf, rel.tol = .Machine$double.eps^0.3)$value
+# }
+tpool <- function(alpha, D, lwr = -1E5, upr =  1E5){
+  ## shitty trapezoid integration
+    1/caTools::trapz(x = seq(lwr, upr, length.out = 1000L),
+                     y = dpool(x = seq(lwr, upr, length.out = 1000L), D = D, alpha = alphas))
 }
+##
 tpool.positive <- function(alpha, D){ # For those with positive support
   1/integrate(function(x) sapply(x, function(e) dpool(e, D = D, alpha = alpha)), 0, Inf)$value
 } 
@@ -26,14 +35,16 @@ tpool.unit <- function(alpha, D){ # For those with support in [0, 1]
 ##
 makedf <- function(mc.samples){
   kde <- density(mc.samples)
- return(Vectorize(approxfun(kde))) 
+ return(Vectorize(approxfun(kde)))
 }
+# makedf <- function(mc.samples){
+#   kde <- KernSmooth::bkde(mc.samples)
+#   return(Vectorize( approxfun(kde)) )
+# }
 ##
 dpoolnorm <- function(x, D, alphas){
   # D is a set of K of densities
   # alphas is a K-dimensional vector with the weights a_i>0  and sum(alphas)=1
-#   if(sum(alphas)!=1){ break ("The vector of weigths doesn't sum up to unity")}
-#   if(any(alphas<=0)) { break ("All weigths should be greater than zero")}
   dens <- dpool(x, D, alphas)
   return(tpool(alphas, D)*dens)
 }
@@ -41,8 +52,6 @@ dpoolnorm <- function(x, D, alphas){
 dpoolnorm.positive <- function(x, D, alphas){
   # D is a set of K of densities
   # alphas is a K-dimensional vector with the weights a_i>0  and sum(alphas)=1
-#   if(sum(alphas)!=1){ break ("The vector of weigths doesn't sum up to unity")}
-#   if(any(alphas<=0)) { break ("All weigths should be greater than zero")}
   dens <- dpool(x, D, alphas)
   return(tpool.positive(alphas, D)*dens)
 }
@@ -53,8 +62,6 @@ dpoolnorm.unit <- function(x, D, alphas){
 }
 #
 dpool.entropy <- function(D, alphas){
-#   if(sum(alphas)!=1){ break ("The vector of weigths doesn't sum up to unity")}
-#   if(any(alphas<=0)) { break ("All weigths should be greater than zero")}
   expectlog <- function(x) {-log(x) * dpoolnorm.positive(x, D, alphas)} # using dpoolnorm.positive DELIBERATELY introduces a bug
   ent <- integrate(expectlog, 0, Inf)$value
   return(ent)
@@ -156,7 +163,7 @@ alpha.real <- function(alpha){
   p <- length(alpha)
   log( alpha[-p] / alpha[p]  )
 }
-
+##
 alpha.01 <- function(alpha.inv){
   alphap <- 1/(1 + sum(exp(alpha.inv)))
   c(exp(alpha.inv) * alphap, alphap)
@@ -199,4 +206,26 @@ rlogisticnorm <- function(N, m, Sigma){
   } 
   ndraws <- apply(draws, 1, logisticNorm) # normalised draws
   return(t(ndraws))
+}
+######
+# Logarithmic pooling (LP) via Sampling-importance-resampling (SpIR)
+LP.SpIR <- function(k, l, Model, rq1, dq2, dL1, dL2, alpha){
+  ## currently tuned to perform LP on two dimensions
+  theta.samp <- rq1(n = k)
+  phi.transf <- unlist(
+    parallel::mclapply(1:nrow(theta.samp), function(i) Model(theta.samp[i, ]), mc.cores = 4) 
+  )
+  q1star <- makedf(phi.transf)
+  getWeight <- function(theta, phi){
+    (dq2(phi)/q1star(phi))^{1-alpha} * dL1(theta) * dL2(phi)
+  }
+  ws <- sapply(seq_len(nrow(theta.samp)), function(i) {
+    getWeight(theta = theta.samp[i], phi = phi.transf[i])
+  })
+  resamp.Pos <-  sample(seq_len(nrow(theta.samp)), size = l,
+                        replace = TRUE, prob = ws/sum(ws))
+  return(list(
+    theta.resamp = theta.samp[resamp.Pos, ],
+    phi.resamp = phi.transf[resamp.Pos])
+  )
 }
