@@ -213,32 +213,32 @@ round(AlphasBeta.tbl, 2)
 # png("../manuscript/figures/beta_example_simulated_data.png")
 # par(mfrow = c(2, 1))
 ccx <- 1.5
-curve(fbeta(x, par = c(a0, b0) ), .5, 1,  ylab = "Density", main = "Expert Priors",
+curve(fbeta(x, par = c(a0, b0) ), 0, 1,  ylab = "Density", main = "Expert Priors",
       xlab = expression(theta), lwd = 3 , lty = 3, cex.lab = ccx, cex.axis = ccx, cex.main = ccx, cex.sub = ccx)
-curve(fbeta(x, par = c(a1, b1) ), .5, 1, lwd = 3, col = 1, lty = 4, add = TRUE)
-curve(fbeta(x, par = c(a2, b2) ), .5, 1, lwd = 3, col = 1, lty = 5, add = TRUE)
-curve(fbeta(x, par = c(a3, b3) ), .5, 1, lwd = 3, col = 1, lty = 6, add = TRUE)
+curve(fbeta(x, par = c(a1, b1) ), 0, 1, lwd = 3, col = 1, lty = 4, add = TRUE)
+curve(fbeta(x, par = c(a2, b2) ), 0, 1, lwd = 3, col = 1, lty = 5, add = TRUE)
+curve(fbeta(x, par = c(a3, b3) ), 0, 1, lwd = 3, col = 1, lty = 6, add = TRUE)
 legend(x = "topleft",
        legend = paste("Expert", 1:4),
        col = 1, lwd = 3, lty = 3:6, bty = "n"
 )
 # dev.off()
 # Combined Priors
-curve(fbeta(x, par = ab.Equal.star), .5, 1, ylab = "Density", main = "Pooled Priors and Posteriors",
+curve(fbeta(x, par = ab.Equal.star), 0, 1, ylab = "Density", main = "Pooled Priors and Posteriors",
       xlab = expression(theta), lwd = 2, lty = 2,
       cex.lab = ccx, cex.axis = ccx, cex.main = ccx, cex.sub = ccx)
-curve(fbeta(x, par = ab.MaxEnt.star), .5, 1, col = 2, add = TRUE, lwd = 2, lty = 2)
-curve(fbeta(x, par = ab.KL.star), .5, 1, col = 3, add = TRUE, lwd = 2, lty = 2)
+curve(fbeta(x, par = ab.MaxEnt.star), 0, 1, col = 2, add = TRUE, lwd = 2, lty = 2)
+curve(fbeta(x, par = ab.KL.star), 0, 1, col = 3, add = TRUE, lwd = 2, lty = 2)
 lines(density(theta.par.dir), col = 4, lwd = 2, lty = 2)
 lines(density(theta.par.exp), col = 5, lwd = 2, lty = 2)
 # png("../manuscript/figures/beta_example_simulated_data.png")
 # Posteriors
-curve(fbeta(x, par = ab.Equal.star+ c(y, n-y)), .5, 1, ylab = "Density", main = "",
+curve(fbeta(x, par = ab.Equal.star + c(y, n-y)), 0, 1, ylab = "Density", main = "",
       xlab = expression(theta), lwd = 2, add = TRUE)
-curve(fbeta(x, par = ab.MaxEnt.star+ c(y, n-y)), .5, 1, col = 2, add = TRUE, lwd = 2)
-curve(fbeta(x, par = ab.KL.star+ c(y, n-y)), .5, 1, col = 3, add = TRUE, lwd = 2)
-lines(density(posteriors.dir$theta), xlim = c(.5, 1), col = 4, lwd = 2)
-lines(density(posteriors.exp$theta), xlim = c(.5, 1), col = 5, lwd = 2)
+curve(fbeta(x, par = ab.MaxEnt.star + c(y, n-y)), 0, 1, col = 2, add = TRUE, lwd = 2)
+curve(fbeta(x, par = ab.KL.star + c(y, n-y)), 0, 1, col = 3, add = TRUE, lwd = 2)
+lines(density(posteriors.dir$theta), xlim = c(0, 1), col = 4, lwd = 2)
+lines(density(posteriors.exp$theta), xlim = c(0, 1), col = 5, lwd = 2)
 legend(x = "topleft", bty = "n", col = 1:5, cex = .7,
        legend = c("Equal weights (1/K)", "MaxEnt",
                   "MinKL", "Hierarchical Dirichlet", "Hierarchical ExpNormal"),
