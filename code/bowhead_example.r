@@ -52,8 +52,8 @@ summary(induced.P1993.prior1)
 c(mean(induced.P1993.prior1), quantile(induced.P1993.prior1, probs = c(.025, .5, .975)))
 hist(induced.P1993.prior1, probability = TRUE)
 distFit <- fGarch::snormFit(induced.P1993.prior1)
-curve(fGarch::dsnorm(x, mean = distFit$par["mean"], 
-                     sd = distFit$par["sd"], xi =   distFit$par["xi"]), 
+curve(fGarch::dsnorm(x, mean = distFit$par["mean"],
+                     sd = distFit$par["sd"], xi =   distFit$par["xi"]),
       min(induced.P1993.prior1), max(induced.P1993.prior1), col = 2, lwd = 3, add = TRUE)
 ###########
 # Likelihood for ROI
