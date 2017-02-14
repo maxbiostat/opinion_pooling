@@ -93,10 +93,10 @@ P1993.pooledPrior <- function(x, weights){
   if(is.nan(x)) return(0)
   dpoolnorm(x = x,
             D = list(
-              f0 = function(x) dnorm(x, mean = 7800, sd = 1300),
-              f1 = function(x) fGarch::dsnorm(x, mean = distFit$par["mean"], 
-                                              sd = distFit$par["sd"],
-                                              xi =   distFit$par["xi"])),
+              f0 = function(x) fGarch::dsnorm(x, mean = distFit$par["mean"], 
+                                             sd = distFit$par["sd"],
+                                             xi =   distFit$par["xi"]) ,
+              f1 = function(x) dnorm(x, mean = 7800, sd = 1300) ),
             alphas = weights)
 } 
 ##########
@@ -112,7 +112,7 @@ curve(P1993.pooledPrior(x, weights = c(Alpha, 1-Alpha) ),
       500, 35000,
       col = "blue", lwd = 4, add = TRUE)
 legend(x = "topright",
-       legend = c("Induced prior q_1*", "prior q_2", "Pooled prior alpha = 1/2"),
+       legend = c("prior q_2", "Induced prior q_1*", "Pooled prior alpha = 1/2"),
        col = c("black", "red", "blue"), lwd = 2, bty = "n")
 #########
 # Now let's get the posterior using LP-SpIR [for fixed alpha]
@@ -126,15 +126,33 @@ LP.SpIR_mod <- function(k, l, Model, rq1, dq2, dL1, dL2){
   ## currently tuned to perform LP on two dimensions
   theta.samp <- rq1(n = k)
   phi.transf <- unlist(
-    parallel::mclapply(1:nrow(theta.samp), function(i) Model(theta.samp[i, 1:2]), mc.cores = 4) 
+    parallel::mclapply(1:nrow(theta.samp), 
+                       function(i) Model(theta.samp[i, 1:2]), mc.cores = 4) 
   )
   q1star <- makedf(phi.transf)
-  getWeight <- function(theta, phi){
-    (dq2(phi)/q1star(phi))^{1-theta[3]} * dL1(theta) * dL2(phi)
+  corrected_q1star <-  function(x){
+    res <- q1star(x)
+    res[is.na(res)] <- 0
+    return(res)
+  } 
+  getKa <- function(a){
+    tpool(alpha = c(a, 1-a),
+          D = list(
+            f0 = function(x) corrected_q1star(x),
+            f1 = function(x) dnorm(x, mean = 7800, sd = 1300) )
+    )
   }
-  ws <- sapply(seq_len(nrow(theta.samp)), function(i) {
-    getWeight(theta = theta.samp[i, ], phi = phi.transf[i])
-  })
+  getWeight <- function(theta, phi){
+    getKa(theta[3]) * (dq2(phi)/q1star(phi))^{1-theta[3]} * dL1(theta) * dL2(phi)
+  }
+  # ws <- sapply(seq_len(nrow(theta.samp)), function(i) {
+  #   getWeight(theta = theta.samp[i, ], phi = phi.transf[i])
+  # })
+  ws <- unlist(
+    parallel::mclapply(seq_len(nrow(theta.samp)), function(i) {
+      getWeight(theta = theta.samp[i, ], phi = phi.transf[i])
+    }, mc.cores = 4)
+  ) 
   ws[which(ws == -Inf)] <- 0 ## giving  weight = 0 to "impossible" values
   resamp.Pos <-  sample(seq_len(nrow(theta.samp)), size = l,
                         replace = TRUE, prob = ws/sum(ws))
@@ -145,7 +163,7 @@ LP.SpIR_mod <- function(k, l, Model, rq1, dq2, dL1, dL2){
 }
 SpIR.posterior <- LP.SpIR_mod(
   k = M,
-  l = round(.2 * M),
+  l = M,
   Model = getP1993, 
   rq1 = function(n) cbind(rgamma(n, shape = 2.8085, rate = 0.0002886) + 6400,
                           rgamma(n, shape = 8.2, rate = 372.7),
