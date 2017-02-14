@@ -24,9 +24,15 @@ tpool <- function(alpha, D, lwr = -1E5, upr =  1E5){
                    y = dpool(x = seq(lwr, upr, length.out = 1000L), D = D, alpha = alphas))
 }
 ##
+tpool.positive <- function(alpha, D, lwr = 0, upr =  1E5){
+  ## shitty trapezoid integration
+  1/caTools::trapz(x = seq(lwr, upr, length.out = 1000L),
+                   y = dpool(x = seq(lwr, upr, length.out = 1000L), D = D, alpha = alphas))
+}
+##
 tpool.positive <- function(alpha, D){ # For those with positive support
   1/integrate(function(x) sapply(x, function(e) dpool(e, D = D, alpha = alpha)), 0, Inf)$value
-} 
+}
 #
 tpool.unit <- function(alpha, D){ # For those with support in [0, 1]
   1/integrate(function(x) sapply(x, function(e) dpool(e, D = D, alpha = alpha)), 0, .999999999)$value
