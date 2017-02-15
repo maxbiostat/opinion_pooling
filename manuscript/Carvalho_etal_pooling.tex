@@ -49,7 +49,7 @@ Our findings...
 Key-words: logarithmic pooling; expert opinion; maximum entropy; Kullback-Leibler divergence; Dirichlet prior. 
 \end{abstract}
 
-\section*{Background}
+\section*{Introduction}
 
 Combining probability distributions is a topic of general interest, both in the statistical~\citep{west1984, genest1986A, genest1986B} and decision theory literatures~\citep{genest1984}.
 On the theoretical front, studying opinion pooling operators may give important insights on consensus belief formation and group decision making~\citep{genest1986B}.
@@ -68,12 +68,17 @@ Albeit acknowledging that these approaches have merit, we argue that in many set
 Moreover, assigning a probability distribution over the weights allows one to obtain a posterior distribution using a Bayesian procedure, which in turn enables learning about the weights from data.
 Therefore, it makes possible to sequentially update knowledge about the reliability of each expert/source in the face of new data.
 
+
+DEFINE MSM, MELDING.
+
+
 In this paper we explore previous approaches for deriving the weights for logarithmic pooling, namely by maximising the entropy of the resulting distribution and minimising the KL divergence between the pooled distribution and each individual distribution.
 Additionally, we propose a hierarchical prior approach in which we place a distribution on the weights.
 We also discuss the case where the decision maker is interested in a transformation $y$ of the quantity $\theta$ for which the expert opinions were elicited.
 To conclude, we present an example on proportion estimation by combining Beta priors.
 [EXEMPLO]
 
+\section*{Background}
 \section*{Properties of the logarithmic pooling operator}
 
 In what follows, we introduce the necessary theory and notation and motivate the use of the logarithmic pooling operator by presenting some of its desirable properties.
@@ -161,85 +166,23 @@ The log-pooled prior is also a conjugate prior for $f(y|\theta)$ with hyperparam
 % \pi(\theta|\boldsymbol\alpha) = g(\theta | a^*, b^*) \: ,
 % \end{equation}
 % where $a^* = \sum_{i} \alpha_i a_i$ and $b^* = \sum_{i} \alpha_i b_i$.
-Note that the posterior distribution of $\theta$ is given by $\pi(\theta | y) = g(\theta | a^* + y, b^* + 1)$.
+% Note that the posterior distribution of $\theta$ is given by $\pi(\theta | y) = g(\theta | a^* + y, b^* + 1)$.
 
 The entropy function of the log-pooled prior is given by
 \begin{equation}
 \label{eq:entropypriorEF}
-H_\pi(\theta) = - \log (K(a^*, b^*)) + a^*  E[\theta]-  b^*  E[\psi(\theta)] \: .
+H_\pi(\theta) = - \log (K(a^*, b^*)) + a^*  \mathbb{E}[\theta]-  b^*  \mathbb{E}[\psi(\theta)] \: .
 \end{equation}
 
 And the Kullback-Leibler divergence, $KL(f_i || \pi)$, is the following
 \begin{equation}
 \label{eq:KLpriorEF}
-KL(g_i || \pi) = \log( K(a_i,b_i)) - \log(K(a^*,b^*)) + (a_i - a^*) E[\theta] - (b_i - b^*) E[\psi(\theta)] \: .
+KL(g_i || \pi) = \log( K(a_i,b_i)) - \log(K(a^*,b^*)) + (a_i - a^*) \mathbb{E}[\theta] - (b_i - b^*) \mathbb{E}[\psi(\theta)] \: .
 \end{equation}
-
-%{\color{red}
-\section*{Combining distributions on a transformed quantity} % LM: more informative title, me thinks
-% \section*{Induce-then-pool or pool-then-induce?}
-So far we have discussed the situation where the decision maker combines distributions over $\theta$.
-We now turn our attention to the case where the decision maker is interested in a quantity $y$, given by a deterministic transform of $\theta$.
-This is a slightly different setting to that discussed by~\cite{poole2000}, who discuss invertible and non-invertible transforms in the context of pooling distributions on the input and output of a deterministic model.
-
-Let $\theta \in \Theta \subseteq \mathbb{R}^p$ and $y \in \mathcal{Y} \subseteq \mathbb{R}^q$. 
-Define the transform (model) as $M \,:\, \Theta \to \mathcal{Y}$. 
-This paper concerns the setting where a set $\mathbf{F_\theta}$ of distributions on $\theta$ is available but one is interested in obtaining a pooled distribution on $y$.
-There are two ways of obtaining a pooled distribution $\pi(y)$: (a) combine the distributions in $\mathbf{F_\theta}$ and then apply $M(\cdot)$ to the resulting distribution to get the \underline{induced} distribution on $y$ (``pool-then-induce'' approach) or; (b) apply  $M(\cdot)$ to each component of $\mathbf{F_\theta}$ and combine the resulting induced distributions using the logarithmic pooling operator (``induce-then-pool'' approach). 
-First we note that under some conditions on the transformation $M(\cdot)$, the order in which one performs the pooling and transforming operations does not matter.
-%% "Stolen" from http://math.stackexchange.com/questions/732960/inverse-of-a-multivariable-function
-Consider $M(\theta) = y$ and suppose $M(\cdot)$ is invertible, i.e., there exists $M^{-1}: \: \mathcal{Y} \to \Theta$ such that,
-\[A_0:\quad M(M^{-1}(v)) = v,\: v \in \mathcal{Y}\: \text{and}\: M^{-1}(M(t)) = t, \: t \in \Theta \]
-and $J := det \left[ \frac{\partial M^{-1}}{\partial y_1}, \frac{\partial M^{-1}}{\partial y_2}, \ldots, \frac{\partial M^{-1}}{\partial y_p}\right]$ is the Jacobian.
-
-With some abuse of notation, define
-  \begin{align}
-  \label{eq:transfF}
-  \mathbf{F^{-1}_y} &:= \{h_0(y), \, h_1(y), \ldots, \, h_K(y) \} \\
-  h_i(y) & = f_i(M^{-1}(y))|J|\nonumber
-  \end{align}
-where $|J|$ is the absolute value of $J$.
-\begin{remark}
-\label{rmk:invariance}
-Define $\pi_{\theta}(\theta | \boldsymbol\alpha) =  \mathcal{LP}(\mathbf{F_\theta}, \boldsymbol\alpha)$ and $\pi_{y}(y |\boldsymbol\alpha) = \pi_{\theta}(M^{-1}(y))|J|$.
-Similarly, define $\pi^{\prime}_{y}(y|\boldsymbol\alpha) = \mathcal{LP}(\mathbf{F^{-1}_y}, \boldsymbol\alpha)$.
-If $A_0$ is satisfied, then $\pi_{y}(y |\boldsymbol\alpha) = \pi^{\prime}_{y}(y|\boldsymbol\alpha)$, i.e., the order in which one combines and transforms the distributions does not matter.
-\end{remark}
-\begin{proof}
-To see that Remark~\ref{rmk:invariance} holds, we only need a straightforward calculation from the definition of the logarithmic pooling operator in~(\ref{eq:logpool}):
-\[\pi_{y}(y |\boldsymbol\alpha) \propto \prod_{i=0}^K f_i(M^{-1}(y))^{w_i}|J| \]
-whereas
-\begin{align*}
- \pi^{\prime}_{y}(y|\boldsymbol\alpha) &\propto  \prod_{i=0}^K \left[ f_i(M^{-1}(y))|J| \right] ^{w_i} = \prod_{i=0}^K f_i(M^{-1}(y))^{w_i} \prod_{i=0}^K|J|^{w_i}\\
- &\propto  \prod_{i=0}^K f_i(M^{-1}(y))^{w_i}|J|, %TODO: maybe = instead of \propto ?
-\end{align*}
-as claimed.
-%% LM: if this embarassingly simple ``proof'' does not convince you, take a look at https://github.com/maxbiostat/R0_uncertainty/blob/master/code/invertible_model_equivalence.r
-This is very similar in nature to the ``external Bayesianity'' property of the logarithmic pooling operator, by which one can either pool the prior distributions and then combine the resulting distribution with the likelihood or combine each prior with the likelihood separately and then pool the resulting posteriors to obtain the same posterior distribution.
-%% TODO: if we can show that combining the prior with the likelihood is an invertible transform, then this result is a generalisation of EB. But we first need to see the degree of generality EB was actually proven in the original paper.
-\end{proof}
-
-% We note, however, that if $M(\cdot)$ is not invertible...
-% 
-% \textbf{\large Can we prove the reverse (Equivalence$\to$Invertibility) ?}
-% 
-% Here go my two cents.
-% Suppose $M(\cdot)$ is not invertible on the whole of $\mathcal{Y}$, but instead is \textbf{piece-wise invertible}.
-% Let $\mathcal{Y}_1, \mathcal{Y}_2, \ldots, \mathcal{Y}_T$ be a  partition of $\mathcal{Y}$, i.e., $\mathcal{Y}_i\cap\mathcal{Y}_j = \emptyset,\: \forall i\neq j \in \{1, 2, \ldots, T\}$ and $\bigcup_{t = 1}^T\mathcal{Y}_t = \mathcal{Y}$.
-% Then define the inverse functions $M_{t}^{-1}(y)\,:\, \mathcal{Y}_t \to \Theta, \: t \in \{1, 2, \ldots, T\}$.
-% Last, let $J_t$ be the Jacobian of $M_{t}^{-1}(\cdot)$.
-% Then we are prepared to write:
-% \begin{align}
-% \label{eq:piecewiseTransf}
-% \pi_{y}(y |\boldsymbol\alpha) &\propto \sum_{t = 1}^T\left(\prod_{i=0}^K f_i(M_t^{-1}(y))^{w_i}\right)|J_t|, \quad \text{and}\\
-% \pi^{\prime}_{y}(y|\boldsymbol\alpha) &\propto \prod_{i=0}^K\left[\sum_{t = 1}^T f_i(M_t^{-1}(y))|J_t|\right]^{w_i}
-% \end{align}
-% which, I claim, will only be equal if $T = 1$, that is,  if $M(\cdot)$ is invertible in the usual sense.
-% }
 
 We now move on to study three approaches to assign weights.
 The first two approaches are based on optimality criteria and a third method is based on assigning a Dirichlet hyperprior on the weights.
-\section*{Methods}
+\section*{Assigning the weights in logarithmic pooling}
 
 \subsubsection*{Choosing the weights by maximising entropy}
 
@@ -332,10 +275,14 @@ The marginal prior for $\theta$ is then
 
 \subsubsection*{Computational approach}
 
-\section*{Applications}
+\section*{Examples}
 \label{sec:apps}
 
-\subsection*{Binomial probabilities}
+\subsection*{HIV prevalence among MSM populations in Brazil}
+
+[DATA TABLE]
+
+\subsection*{Combining expert priors on failure probabilities [MELHORAR]}
 \label{sec:beta}
 We now turn our attention to combining expert opinions about probabilities and proportions.
 In this setting we are interested in the random variable $Y | \theta \sim Bernoulli(\theta)$.
@@ -387,66 +334,10 @@ The marginal likelihood for the $i-th$ expert and $J$ observations of the form $
 l_i(y_j) &= \int_{0}^{1}\mathcal{L}(\theta|y_j, n_j)\pi_i(\theta)d\theta\nonumber\\
  &= \prod_{j = 1}^{J}\frac{\Gamma(n_j-1)}{\Gamma(n_j-y_j + 1)\Gamma(y_j+1)}\frac{\Gamma(a_i + b_i)}{\Gamma(a_i + b_i + n_j)}\frac{\Gamma(a_i + y_j)}{\Gamma(a_i)}\frac{\Gamma(b_i + n_j - y_j) }{\Gamma(b_i)}
  \end{align}
- 
-\subsection*{Poisson rate $\lambda$}
-\label{sec:gamma}
 
-Suppose we are interested in a certain count $Y\sim Poisson(\lambda)$ and $K + 1$ experts are called upon to elicit prior distributions for $\lambda$.
-A convenient parametric choice for $\mathbf{F}(\lambda)$ is the Gamma family of distributions, for which densities are of the form
-$$ f_i(\lambda;a_i,b_i) = \frac{b_i^{a_i}}{\Gamma(a_i)} \lambda^{a_i-1} e^{-b_i\lambda}$$
-The log-pooled prior $\pi(\lambda)$ is then
-\begin{align}
-\pi(\lambda)&= t(\boldsymbol\alpha)\prod_{i=0}^{K}f_i(\lambda;a_i,b_i)^{\alpha_i}\\
-&\propto \prod_{i=0}^{K} \left(\lambda^{a_i-1} e^{-b_i\lambda}\right)^{\alpha_i}\\
-\label{eq:gammapois}
-&\propto \lambda^{a^*-1} e^{-b^*\lambda}
-\end{align}
-where $a^* =\sum_{i=0}^{K}\alpha_ia_i$ and $b^* = \sum_{i=0}^{K}\alpha_ib_i$.
-Noticing (\ref{eq:gammapois}) is the kernel of a gamma distribution with parameters $a^*$ and $b^*$, $H_{\pi}(\lambda)$ becomes
-\begin{equation}
-\label{eq:entropygamma}
-H_{\pi}(\lambda) = a^* - \ln b^* + \ln \Gamma(a^*) + (1-a^*)\psi(a^*)
-\end{equation}
-where $\psi(\cdot)$ is the digamma function.
+\subsubsection*{Simulated data}
 
-The Kullback-Liebler divergence between each density and the pooled density is:
-\begin{equation}
- \label{eq:KLgamma}
- d_i = \text{KL}(f_i||\pi) = (a_i-a^*)\psi(a_i) - \ln\Gamma(a_i) + \ln\Gamma(a^*) + a^*(\ln\frac{b_i}{b^*}) + a_i\frac{b^*-b_i}{b_i}
-\end{equation}
-
-blablablablablabla
-
-blablablablablabla
-
-blablablablablabla
-
-The marginal prior is then
-\begin{equation}
-\label{eq:marginalgamma}
-\pi(\lambda) = \frac{1}{\mathcal{B}(X)}\int_{A} \frac{{b^*}^{a^*}}{\Gamma(a^*)}\lambda^{a^* - 1} e^{b^*\lambda} \alpha_i^{x_i-1}d\boldsymbol\alpha 
-\end{equation}
-
-\subsection*{Normal priors} %TODO: find a better name
-\label{sec:normal}
-Now suppose one is interested in combining prior distributions on a quantity $\mu \in \mathbb{R}$.
-Suppose further that the expert priors are densities in the normal family, i.e.,
-$$ f_i(\mu; m_i, v_i) = \frac{1}{\sqrt{v_i2\pi}} \exp\left(\frac{-(\mu-m_i)^2}{2v_i}\right) $$
-Thus 
-\begin{align}
-\pi(\mu)&= t(\boldsymbol\alpha)\prod_{i=0}^{K}f_i(\mu; m_i, v_i)^{\alpha_i}\\
- &\propto \prod_{i=0}^{K} \left[ \exp \left(-\frac{(\mu-m_i)^2}{2v_i} \right) \right]^{\alpha_i} \\
-&\propto \exp\left[-\frac{1}{2}\left\{\mu^2 \sum_{i=0}^K\frac{\alpha_i}{v_i} - 2 \mu \sum_{i=0}^K \frac{\alpha_i m_i}{v_i} \right\} \right] % \\
- %&\propto \exp \left( -\frac{1}{2}\frac{(\mu-m^*)^2}{v^*} \right) 
-\end{align}
-which yields a normal distribution with parameters and $m^* = \frac{\sum_{i=0}^K w_i m_i}{\sum_{i=0}^K w_i}$ and $v^* = [\sum_{i=0}^K w_i]^{-1}$,  where $w_i = \alpha_i/v_i$.
-The entropy function is then:
-\begin{equation}
- \label{eq:normalpoolentropy}
- H_{\pi}(\mu) = \frac{1}{2}\left[ \ln(2\pi e) - \ln\sum_{i=0}^K w_i\right]
-\end{equation}
-which achieves its maximum when $\alpha_j = 1$ for $s_j = max(s_1, s_2, \ldots, s_K)$.
-
+\subsection*{Bayesian melding with varying weights: bowhead whale population growth}
 
 \section*{Results} % TODO: LM: maybe remove and just present results as they go
 
@@ -512,7 +403,7 @@ Method & Prior & Posterior  \\
 \end{table}
 %%%%%%%%%%%%%%%%%%%%
 \section*{Acknowledgements}
-The authors would like to thank Professor Adrian Raftery (University of Washington) for helpful suggestions.
+The authors would like to thank Professor Adrian Raftery (University of Washington) and David Poole for helpful suggestions.
 DAMV and LSB were supported in part by Capes under Capes/Cofecub project (N. 833/15).
 FCC is grateful to Funda\c{c}\~ao Getulio Vargas for funding during this 
 project.
@@ -530,6 +421,7 @@ The dashed vertical line marks the maximum likelihood estimate of $\theta$, $\ha
 \label{fig:priors_posteriors_beta}
 \end{figure}
 
+\newpage 
 \newpage
 
 \section*{Appendix}
