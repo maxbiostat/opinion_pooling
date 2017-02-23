@@ -68,10 +68,6 @@ Albeit acknowledging that these approaches have merit, we argue that in many set
 Moreover, assigning a probability distribution over the weights allows one to obtain a posterior distribution using a Bayesian procedure, which in turn enables learning about the weights from data.
 Therefore, it makes possible to sequentially update knowledge about the reliability of each expert/source in the face of new data.
 
-
-DEFINE MSM, MELDING.
-
-
 In this paper we explore previous approaches for deriving the weights for logarithmic pooling, namely by maximising the entropy of the resulting distribution and minimising the KL divergence between the pooled distribution and each individual distribution.
 Additionally, we propose a hierarchical prior approach in which we place a distribution on the weights.
 We also discuss the case where the decision maker is interested in a transformation $y$ of the quantity $\theta$ for which the expert opinions were elicited.
@@ -79,6 +75,10 @@ To conclude, we present an example on proportion estimation by combining Beta pr
 [EXEMPLO]
 
 \section*{Background}
+
+In this section we introduce the necessary concepts and notation for the remainder of the paper.
+DEFINE MSM, MELDING.
+
 \section*{Properties of the logarithmic pooling operator}
 
 In what follows, we introduce the necessary theory and notation and motivate the use of the logarithmic pooling operator by presenting some of its desirable properties.
@@ -180,8 +180,10 @@ And the Kullback-Leibler divergence, $KL(f_i || \pi)$, is the following
 KL(g_i || \pi) = \log( K(a_i,b_i)) - \log(K(a^*,b^*)) + (a_i - a^*) \mathbb{E}[\theta] - (b_i - b^*) \mathbb{E}[\psi(\theta)] \: .
 \end{equation}
 
-We now move on to study three approaches to assign weights.
-The first two approaches are based on optimality criteria and a third method is based on assigning a Dirichlet hyperprior on the weights.
+
+We now move on to study several approaches to assign weights.
+We consider approaches based on optimality criteria and also study a full Bayesian solution that involves placing a hyperprior on the weights.
+
 \section*{Assigning the weights in logarithmic pooling}
 
 \subsubsection*{Choosing the weights by maximising entropy}
