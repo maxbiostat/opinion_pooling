@@ -98,7 +98,7 @@ entropy.gamma <- function(a, b){
 }
 #
 entropy.beta <- function(a, b){
-  log(beta(a, b)) - (a-1)*digamma(a) - (b-1)*digamma(b) + (a + b -2)*digamma(a+b)
+  -lbeta(a, b) - (a-1)*digamma(a) - (b-1)*digamma(b) + (a+b-2)*digamma(a+b)
 }
 #
 entropy.normal <- function(v){
@@ -157,10 +157,12 @@ kl.gamma <- function(a0, b0, a1, b1){
   (a0-a1)*digamma(a0) - log(gamma(a0)) + log(gamma(a1)) +
     a1*(log(b0/b1)) + a0*((b1-b0)/b0)
 }
-kl.beta <- function(a0, b0, a1, b1){
-  ## KL(f||g), where f ~ B(a0, b0) and g ~ B(a1, b1)
-  log(beta(a1, b1)/beta(a0, b0)) + (a0-a1)*digamma(a0) +
-    (b0-b1)*digamma(b0) + (a1-a0 + b1-b0)*digamma(a0+b0)
+#
+# Fixed! D_KL(pi||f_i)
+kl.beta <- function(astar, bstar, ai, bi){
+  ## KL(pi||f), where pi ~ Beta(astar, bstar) and f ~ B(ai, bi)
+  - lbeta(astar, bstar) + lbeta(ai, bi)  + (astar-ai)*digamma(astar) +
+    (bstar-bi)*digamma(bstar) - (astar+bstar-ai-bi)*digamma(astar+bstar)
 }
 #####################################
 ## optim section

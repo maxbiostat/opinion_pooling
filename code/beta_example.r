@@ -8,6 +8,7 @@ a1 <- 3.44 ; b1 <- .860
 a2 <- 8.32 ; b2 <- .924
 a3 <- 1.98 ; b3 <- .848
 
+
 av <- c(a0, a1, a2, a3)
 bv <- c(b0, b1, b2, b3)
 K <- length(av)
@@ -47,7 +48,7 @@ PaperBeta.tbl <- data.frame( mean.prior = rep(NA, 5), lower.prior = NA,
                              upper.post = NA)
 rownames(PaperBeta.tbl) <- c("Equal weights", "maxEnt", "min KL div.", "Hier. prior Diri", "Hier prior Exp")
 
-AlphasBeta.tbl <- data.frame(matrix(NA, nrow = 4, ncol = length(av)))
+AlphasBeta.tbl <- data.frame(matrix(NA, nrow = K, ncol = length(av)))
 rownames(AlphasBeta.tbl) <- c("maxEnt", "min KL div.", "Hier. prior Diri", "Hier prior Exp")
 colnames(AlphasBeta.tbl) <- paste("alpha", 0:(length(av)-1), sep = "")
 ######################################################
@@ -74,8 +75,8 @@ optentbeta.inv <- function(alpha.inv, ap, bp){
   -optentbeta(alpha, ap, bp)
 }
 
-a.ent <- optim(c(0, 0, 0), optentbeta.inv, ap = av, bp = bv) 
-#            method = "SANN", control=list(maxit = 100000))
+a.ent <- optim(c(0, 0, 0), optentbeta.inv, ap = av, bp = bv,
+            method = "SANN", control=list(maxit = 100000))
 alphaMaxEnt.opt <- alpha.01(a.ent$par)
 (AlphasBeta.tbl[1,] <- alphaMaxEnt.opt)
 
@@ -90,7 +91,7 @@ ab.MaxEnt.star <- pool.par(alphaMaxEnt.opt, av, bv)
 ######################################################
 # Minimising KL divergence between each density and the pooled prior
 # F = { f_0, f_1, ..., f_K}
-# d_i = KL(f_i || \pi) ; L(alpha) = sum(d_i)
+# d_i = KL(\pi || f_i ) ; L(alpha) = sum(d_i)
 # minimise the loss function L(F; alpha)
 ######################################################
 optklbeta <- function(alpha, ap, bp){
@@ -98,7 +99,7 @@ optklbeta <- function(alpha, ap, bp){
   astar <- sum(alpha*ap)
   bstar <- sum(alpha*bp)
   ds <- rep(NA, K) # the distances from each f_i to \pi
-  for (i in 1:K){ ds[i] <-  kl.beta(a0 = ap[i], b0 = bp[i], a1 = astar , b1 = bstar)} 
+  for (i in 1:K){ ds[i] <-  kl.beta(astar = astar, bstar = bstar, ai = ap[i], bi = bp[i])} 
   return(ds)
 }
 optklbeta.inv <- function(alpha.inv, ap, bp){
@@ -106,8 +107,7 @@ optklbeta.inv <- function(alpha.inv, ap, bp){
   sum(optklbeta(alpha, ap, bp))
 }
 
-a.kl <- optim(c(0, 0, 0), optklbeta.inv, ap = av, bp = bv)
-#            method = "SANN", control=list(maxit = 100000))
+a.kl <- optim(rep(0,3), optklbeta.inv, ap = av, bp = bv,            method = "SANN", control=list(maxit = 100000))
 
 alphaKL.opt <- alpha.01(a.kl$par)
 (AlphasBeta.tbl[2, ] <- alphaKL.opt)
