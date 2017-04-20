@@ -20,51 +20,45 @@ stanData <- list(
   alpha = 1/2
 )
 library(rstan)
-Nit <- 1
+Nit <- 2E5
 # fixed_alpha <- stan(file = "bowhead.stan",
 #                     data = stanData, iter = 1,
 #                     pars = c("P0", "MSYR", "ROI", "P1993"),
 #                     init = list(c1 = list(P0 = 14000, MSYR = .021)),
 #                     thin = 1, chains = 1)
 # save(fixed_alpha, file = "compiled_bowhead_fixedAlpha.RData")
-# fixedAlpha.Lik <- stan_model(file = "bowhead.stan")
-# fixedAlphaOpt <- optimizing(fixedAlpha.Lik, data = stanData,
-#                             init = list(P0 = 18000, MSYR = .02)
-# )
-# 
 load("compiled_bowhead_fixedAlpha.RData")
 fixed_alpha_sampling <- stan(fit = fixed_alpha, data = stanData,
                              pars = c("P0", "MSYR", "ROI", "P1993"),
                              init = list(c1 = list(P0 = 18000, MSYR = .011),
                                          c2 = list(P0 = 10000, MSYR = .021)),
                              control = list(adapt_delta = .95),
-                             iter = Nit, thin = 1, chains = 2, cores = 2)
-stan_trace(fixed_alpha_sampling)
-pairs(fixed_alpha_sampling)
-
+                             iter = Nit, thin = 1, chains = 2)
 fixedAlpha_posterior <- as.data.frame(extract(fixed_alpha_sampling))
 apply(fixedAlpha_posterior[, 1:4], 2, coda::effectiveSize)
 apply(fixedAlpha_posterior[, 1:4], 2,
       function(x) c(mean = mean(x), quantile(x, probs = c(.025, .5, .975))))
+coda::traceplot(As.mcmc.list(fixed_alpha_sampling))
+plot(fixedAlpha_posterior[, 1:4])
 #####################
 # Now sampling with alpha
 stanData2 <- stanData
 stanData2$alpha <- NULL
 stanData2$a_alpha <- 1
 stanData2$b_alpha <- 1
-bowhead_dirichlet <- stan(file = "bowhead_alpha_dirichlet.stan",
-                    data = stanData2, iter = 1,
-                    pars = c("P0", "MSYR", "ROI", "P1993", "alpha"),
-                    init = list(c1 = list(P0 = 14000, MSYR = .021, alpha = 1/2)),
-                    thin = 1, chains = 1)
-save(bowhead_dirichlet, file = "compiled_bowhead_Dirichilet.RData")
-# load("compiled_bowhead_Dirichilet.RData")
+# bowhead_dirichlet <- stan(file = "bowhead_alpha_dirichlet.stan",
+#                     data = stanData2, iter = 1,
+#                     pars = c("P0", "MSYR", "ROI", "P1993", "alpha"),
+#                     init = list(c1 = list(P0 = 14000, MSYR = .021, alpha = 1/2)),
+#                     thin = 1, chains = 1)
+# save(bowhead_dirichlet, file = "compiled_bowhead_Dirichilet.RData")
+load("compiled_bowhead_Dirichilet.RData")
 dirichlet_sampling <- stan(fit = bowhead_dirichlet, data = stanData2,
                            pars = c("P0", "MSYR", "ROI", "P1993", "alpha"),
-                           init = list(c1 = list(P0 = 18000, MSYR = .011, alpha = 1/2),
-                                       c2 = list(P0 = 10000, MSYR = .021, alpha = 1/2)),
+                             init = list(c1 = list(P0 = 18000, MSYR = .011, alpha = 1/2),
+                                         c2 = list(P0 = 10000, MSYR = .021, alpha = 1/2)),
                            control = list(adapt_delta = .85),
-                           iter = Nit, thin = 1, chains = 2)
+                             iter = Nit, thin = 1, chains = 2)
 Dirichlet_posterior <- as.data.frame(extract(dirichlet_sampling))
 apply(Dirichlet_posterior[, 1:5], 2, coda::effectiveSize)
 apply(Dirichlet_posterior[, 1:5], 2,
