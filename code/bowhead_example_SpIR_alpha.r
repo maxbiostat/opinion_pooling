@@ -16,7 +16,7 @@ P1993.prior <- rnorm(M, mean = 7800, sd = 1300) ## q_2(\phi)
 hist(P1993.prior, probability = TRUE)
 P1993.prior.dens <- density(P1993.prior)
 
-P1993.likelihood2 <- function(x) dnorm(x, m = 8293,  sd = 626) ## L_2(\phi)
+P1993.likelihood2 <- function(x) dnorm(x, mean = 8293,  sd = 626) ## L_2(\phi)
 
 CtData <- read.csv("../data/bowhead_kills_1848-2002.csv")
 CtData <- subset(CtData, year <= 1992)
@@ -127,7 +127,7 @@ LP.SpIR_mod <- function(k, l, Model, rq1, dq2, dL1, dL2){
   theta.samp <- rq1(n = k)
   phi.transf <- unlist(
     parallel::mclapply(1:nrow(theta.samp), 
-                       function(i) Model(theta.samp[i, 1:2]), mc.cores = 4) 
+                       function(i) Model(theta.samp[i, 1:2]), mc.cores = 10) 
   )
   q1star <- makedf(phi.transf)
   corrected_q1star <-  function(x){
@@ -151,7 +151,7 @@ LP.SpIR_mod <- function(k, l, Model, rq1, dq2, dL1, dL2){
   ws <- unlist(
     parallel::mclapply(seq_len(nrow(theta.samp)), function(i) {
       getWeight(theta = theta.samp[i, ], phi = phi.transf[i])
-    }, mc.cores = 4)
+    }, mc.cores = 10)
   ) 
   ws[which(ws == -Inf)] <- 0 ## giving  weight = 0 to "impossible" values
   resamp.Pos <-  sample(seq_len(nrow(theta.samp)), size = l,
