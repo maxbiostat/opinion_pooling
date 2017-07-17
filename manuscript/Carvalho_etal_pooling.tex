@@ -402,11 +402,12 @@ Method & Estimated HIV prevalence \\
 \end{tabular}
 \end{table}
 
-\subsection{Combining expert priors on failure probabilities [MELHORAR]}
+\subsection{Computing posteriors on the weights}
 \label{sec:posteriorProbs}
 
-We now turn our attention to combining expert opinions about probabilities and proportions.
-Here we analyse an example proposed by~\cite{savchuk1994} (also discussed in~\cite{rufo2012B}) in which four experts are required supply prior information about the survival probability $\theta$ of a certain unit, for which there have been $y = 9$ successes out of $n = 10$ trials.
+We now turn our attention to an example where one observes some data which can then be used not only to learn about the parameter of interest, $\theta$, but also about the pooling weights $\boldsymbol\alpha$.
+
+We analyse an example proposed by~\cite{savchuk1994} (also discussed in~\cite{rufo2012B}) in which four experts are required supply prior information about the survival probability $\theta$ of a certain unit, for which there have been $y = 9$ successes out of $n = 10$ trials.
 The experts express their opinion as prior means for the survival probability, which~\cite{savchuk1994} then use to construct prior distributions with maximum variance given the restriction on the means.
 From the vector of prior means $\mathbf{m} = \{ m_0 = 0.95, m_1 = 0.80, m_2 = 0.90, m_3 = 0.70 \}$, the authors obtain the parameters of the beta distributions for each expert,  $\mathbf{a} = \{ a_0 = 18.10, a_1 = 3.44 , a_2 = 8.32, a_3 = 1.98 \}$ and  $\mathbf{b} = \{ b_0 = 0.955 , b_1 = 0.860, b_2 = 0.924, b_3 = 0.848\}$.
 Note that this example is quite similar to the previous one in the sense that the aim is to combine beta distributions. 
@@ -453,7 +454,6 @@ l_i(y_j) &= \int_{0}^{1}\mathcal{L}(\theta|y_j, n_j)\pi_i(\theta)d\theta\nonumbe
  &= \prod_{j = 1}^{J}\frac{\Gamma(n_j-1)}{\Gamma(n_j-y_j + 1)\Gamma(y_j+1)}\frac{\Gamma(a_i + b_i)}{\Gamma(a_i + b_i + n_j)}\frac{\Gamma(a_i + y_j)}{\Gamma(a_i)}\frac{\Gamma(b_i + n_j - y_j) }{\Gamma(b_i)}
  \end{align}
 
-
 One can get insight into these results by looking at the integrated likelihoods in Table~\ref{tab:marglikes} and the densities in Figure~\ref{fig:priors_posteriors_beta}, we note that all three methods lead  to similar pooled distributions.
 Note that the only distribution with a substantially different $l(y)$ is that of Expert 3, who gave a rather divergent mean for the survival probability ($m_3=0.70$).
 
@@ -475,7 +475,7 @@ $^1$ Calculated using the posterior mean of $\boldsymbol\alpha$}
 \end{table}
 %%%%%%%%%%%%%%%%%%
 
-In conclusion, if the prior distributions (opinions) are not radically different, all three methods will probably lead to similar combined priors.
+In conclusion, if the prior distributions (opinions) are not radically different, all three optmisation-based methods will likely lead to similar combined priors.
 Although this is the case for the simple univariate example presented, it remains to be seen if this is the case for high-dimensional $\theta$ under complex sampling distributions.
 As the results presented in this paper make clear, future research shall be focused on cases where there is substantial heterogeneity (disagreement) in the available opinions.
 % Moreover, a sensitivity analysis for $\pi(\boldsymbol\alpha)$ is desirable to understand how much we can lead about the experts reliabilities~\textit{a posteriori}. % LM: we should look into a PSA for this.
@@ -532,6 +532,7 @@ The model presented in that paper describes the annual population of bowhead wha
 \begin{equation}
  P_{t + 1} = P_t - C_t \times \text{MSYR} \times P_t \left( 1- (P_t/P_0)^2 \right).
 \end{equation}
+Here, the $C_t$ series is data, whilst $\theta = \{ \text{MSYR}, P_0\}$ are input quantities for which we have a prior $q_1(\theta)$.
 One of the quantities of interest in the model was $P_{\text{1993}}$, due to 1993 being the last year for which independent abundance measurements were available, allowing for model calibration.
 Another important model quantity is the rate of population increase from 1978 to 1993, ROI, such that $P_{1993} = P_{1978}(1 + \text{ROI})^{15}$.
 Consider the model outputs $\phi = \{P_{1993}, \text{ROI}\}$.
@@ -562,7 +563,7 @@ In original paper,~\cite[sec. 3.4]{poole2000} propose a sampling-importance-resa
  \label{eq:SpIRweights}
   w_i = t(\boldsymbol \alpha^{(i)}) \left(\frac{q_2(M(\theta^{(i)}))}{q_1^\star(M(\theta^{(i)}))}\right)^{1 - \boldsymbol \alpha^{(i)}} L_1(\theta^{(i)}) L_2(M(\theta^{(i)})),
  \end{equation}
-where $t(\boldsymbol \alpha^{(i)})$ is $\int_{\Phi} q_1^\ast(\phi)^{\alpha^{(i)}} q_2(\phi)^{1-\alpha^{(i)}} d\phi$, computed using standard numerical quadrature methods;
+where $t(\boldsymbol \alpha^{(i)})$ is $\int_{\Phi} q_1^\ast(\phi)^{\alpha^{(i)}} q_2(\phi)^{1-\alpha^{(i)}} d\phi$ computed using standard numerical quadrature methods;
  \item (Re)Sample $l$ values from $\boldsymbol \theta_k$ according to the weights $\boldsymbol w_k$.
 \end{enumerate}
 
