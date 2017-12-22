@@ -55,7 +55,7 @@ Key-words: logarithmic pooling; expert opinion; hierarchical modelling; Bayesian
 Combining probability distributions is a topic of general interest, both in the statistical~\citep{west1984, genest1986A, genest1986B} and decision theory literatures~\citep{genest1984}.
 On the theoretical front, studying opinion pooling operators may give important insights on consensus belief formation and group decision making~\citep{west1984,genest1986B}.
 Among the various opinion pooling operators proposed in the literature, logarithmic pooling has enjoyed much popularity, mainly due to its many desirable properties such as relative propensity consistency (RPC) and external Bayesianity (EB)~\citep{genest1986A} (see \textbf{Background}). 
-In a practical setting, logarithmic pooling finds use in a range of fields, from infectious disease modelling~\citep{Coelho2009} and wildlife conservation~\citep{poole2000} to engineering~\citep{lind1988, savchuk1994}.
+In a practical setting, logarithmic pooling finds use in a range of fields, from engineering~\citep{lind1988, savchuk1994} to wildlife conservation~\citep{poole2000} and infectious disease modelling~\citep{Coelho2009}. % Chance the order for temporal reasons
 
 A common situation of interest is combining expert opinions about a quantity of interest $\theta \in \mathbf{\Theta} \subseteq \mathbb{R}^p$ when they can be represented as (proper) probability distributions.
 Combining these opinions using logarithmic pooling requires assigning weights to each of the experts.
@@ -71,20 +71,21 @@ Therefore, it makes possible to sequentially update knowledge about the reliabil
 
 In this paper we discuss previous approaches for deriving the weights for logarithmic pooling and propose a hierarchical prior approach to learning about the weights.
 % We also discuss the case where the decision maker is interested in a transformation $y$ of the quantity $\theta$ for which the expert opinions were elicited. % LM:maybe in another short note on arXiv...
-We present three applications illustrating the choice of weights for logarithmic pooling. %an example on proportion estimation by combining Beta priors.
 In section~\ref{sec:background} we provide some background and notation on logarithmic pooling.
-Section~\ref{sec:}
+In section~\ref{sec:weights} we present different approaches to choose the weights, two methods based on optimality criteria and one based on hierarchical modelling.
+%In section~\ref{sec:apps} we present three applications illustrating the choice of weights for logarithmic pooling. %an example on proportion estimation by combining Beta priors.
+
 
 One potential application of logarithmic pooling is in meta analyses.
 Distributions of a quantity of interest estimated in several studies can be combined in a single consensus distribution in a principled way using logarithmic pooling,.
 In addition, one can use features of the studies such as the sample sizes to construct the weights.
 In epidemiology, estimation of disease prevalence and the effect of exposure variables are amongst the most important application of meta-analyses.
-In this paper we explore a meta-analysis application where the interest is to pool results from six studies on HIV prevalence  in men who have sex with men (MSM) populations in Brazil~\citep{malta2010hiv}.
+In this paper, section \ref{sec:metaAnalysis}, we explore a meta-analysis application where the interest is to pool results from six studies on HIV prevalence  in men who have sex with men (MSM) populations in Brazil~\citep{malta2010hiv}.
 
 Another important application of logarithmic pooling is within the Bayesian melding method of~\cite{poole2000}. 
 The Bayesian melding method concerns drawing inference about a deterministic model by combining a natural prior on quantities of interest (inputs and/or outputs) with the prior \textit{induced} by the model through logarithmic pooling.
 The method allows standard Bayesian inference to be carried out about all quantities of interest in the model, which makes it attractive to application in policy making~\citep{alkema2008}, where proper acknowledgement of uncertainty is crucial.
-In section\ref{sec:} we revisit the non-aged-structured population deterministic model (PDM) for bowhead whales explored in~\cite{poole2000} and extend their approach to accommodate uncertainty about the weighting.
+In section\ref{sec:bowhead} we revisit the non-aged-structured population deterministic model (PDM) for bowhead whales explored in~\cite{poole2000} and extend their approach to accommodate uncertainty about the weighting.
 
 \section{Background}
 \label{sec:background}
@@ -143,9 +144,11 @@ where $\boldsymbol\theta :=\{\theta_0, \theta_1, \ldots, \theta_K \}$, $h^\ast (
 The entropy function of the log-pooled distribution is
 \begin{equation}
 \label{eq:entropydistEF}
-H_\pi(Y; \boldsymbol\alpha) :=  - E_{\pi}\left[-\log \pi(Y | \boldsymbol\alpha) \right] = -\log t(\boldsymbol\alpha) + s^\ast (\boldsymbol\theta) - \mathbb{E}_\pi[\log h^\ast (Y)] - \theta^\ast \mathbb{E}_\pi[Y] \: ,
+H_\pi(Y; \boldsymbol\alpha) :=  - \mathbb{E}_{\pi}\left[-\log \pi(Y | \boldsymbol\alpha) \right] = -\log t(\boldsymbol\alpha) + s^\ast (\boldsymbol\theta) - \mathbb{E}_\pi[\log h^\ast (Y)] - \theta^\ast \mathbb{E}_\pi[Y] \: ,
 \end{equation}
-and the Kullback-Leibler divergence between the pooled distribution (\ref{eq:pooldistEF}) and each distribution in $\mathbf{F}_{y}$ can be written as:
+where $\mathbb{E}_{\pi}\left[ g(Y) \right]$ is the expectation of $g(Y)$ given that $Y$ has a probability density function $\pi(y)$, i.e. $\mathbb{E}_{\pi}\left[ g(Y) \right] = \int_{-\infty}^{\infty} g(y) \pi(y) dy$. 
+
+The Kullback-Leibler divergence between the pooled distribution (\ref{eq:pooldistEF}) and each distribution in $\mathbf{F}_{y}$ can be written as:
 \begin{equation}
 \label{eq:KLdistEF}
 KL(\pi || f_i )  =  - H_\pi(Y; \boldsymbol\alpha) - \mathbb{E}_\pi[\log h_i(Y)] - \theta_i \mathbb{E}_\pi[Y] + s_i(\theta_i) \: .
@@ -192,6 +195,8 @@ The first two approaches are based on optimality criteria and a third method is 
 \section{Assigning the weights in logarithmic pooling}
 \label{sec:weights}
 
+\subsection{Choosing weights based on optimality criteria}
+
 \subsubsection{Maximising entropy}
 \label{sec:maxent}
 
@@ -233,7 +238,7 @@ L(\boldsymbol\alpha) &= \sum_{i=0}^K d_i \\
      \hat{\boldsymbol\alpha}:=& \:\argmin L(\boldsymbol\alpha)   
 \end{align}
 
-[DO WE NEED UNIQUENESS?] % TODO: decide on this 
+[DO WE NEED UNIQUENESS?] \todo{If one want to look at the individual weights, then uniqueness would be an important property. } % TODO: decide on this 
 
 \begin{remark}
 \label{remark:uniqueness}
@@ -402,12 +407,11 @@ Method & Estimated HIV prevalence \\
 \end{tabular}
 \end{table}
 
-\subsection{Computing posteriors on the weights}
+\subsection{Combining expert priors on failure probabilities [MELHORAR]}
 \label{sec:posteriorProbs}
 
-We now turn our attention to an example where one observes some data which can then be used not only to learn about the parameter of interest, $\theta$, but also about the pooling weights $\boldsymbol\alpha$.
-
-We analyse an example proposed by~\cite{savchuk1994} (also discussed in~\cite{rufo2012B}) in which four experts are required supply prior information about the survival probability $\theta$ of a certain unit, for which there have been $y = 9$ successes out of $n = 10$ trials.
+We now turn our attention to combining expert opinions about probabilities and proportions.
+Here we analyse an example proposed by~\cite{savchuk1994} (also discussed in~\cite{rufo2012B}) in which four experts are required supply prior information about the survival probability $\theta$ of a certain unit, for which there have been $y = 9$ successes out of $n = 10$ trials.
 The experts express their opinion as prior means for the survival probability, which~\cite{savchuk1994} then use to construct prior distributions with maximum variance given the restriction on the means.
 From the vector of prior means $\mathbf{m} = \{ m_0 = 0.95, m_1 = 0.80, m_2 = 0.90, m_3 = 0.70 \}$, the authors obtain the parameters of the beta distributions for each expert,  $\mathbf{a} = \{ a_0 = 18.10, a_1 = 3.44 , a_2 = 8.32, a_3 = 1.98 \}$ and  $\mathbf{b} = \{ b_0 = 0.955 , b_1 = 0.860, b_2 = 0.924, b_3 = 0.848\}$.
 Note that this example is quite similar to the previous one in the sense that the aim is to combine beta distributions. 
@@ -532,7 +536,6 @@ The model presented in that paper describes the annual population of bowhead wha
 \begin{equation}
  P_{t + 1} = P_t - C_t \times \text{MSYR} \times P_t \left( 1- (P_t/P_0)^2 \right).
 \end{equation}
-Here, the $C_t$ series is data, whilst $\theta = \{ \text{MSYR}, P_0\}$ are input quantities for which we have a prior $q_1(\theta)$.
 One of the quantities of interest in the model was $P_{\text{1993}}$, due to 1993 being the last year for which independent abundance measurements were available, allowing for model calibration.
 Another important model quantity is the rate of population increase from 1978 to 1993, ROI, such that $P_{1993} = P_{1978}(1 + \text{ROI})^{15}$.
 Consider the model outputs $\phi = \{P_{1993}, \text{ROI}\}$.
@@ -563,7 +566,7 @@ In original paper,~\cite[sec. 3.4]{poole2000} propose a sampling-importance-resa
  \label{eq:SpIRweights}
   w_i = t(\boldsymbol \alpha^{(i)}) \left(\frac{q_2(M(\theta^{(i)}))}{q_1^\star(M(\theta^{(i)}))}\right)^{1 - \boldsymbol \alpha^{(i)}} L_1(\theta^{(i)}) L_2(M(\theta^{(i)})),
  \end{equation}
-where $t(\boldsymbol \alpha^{(i)})$ is $\int_{\Phi} q_1^\ast(\phi)^{\alpha^{(i)}} q_2(\phi)^{1-\alpha^{(i)}} d\phi$ computed using standard numerical quadrature methods;
+where $t(\boldsymbol \alpha^{(i)})$ is $\int_{\Phi} q_1^\ast(\phi)^{\alpha^{(i)}} q_2(\phi)^{1-\alpha^{(i)}} d\phi$, computed using standard numerical quadrature methods;
  \item (Re)Sample $l$ values from $\boldsymbol \theta_k$ according to the weights $\boldsymbol w_k$.
 \end{enumerate}
 
@@ -591,7 +594,6 @@ The dashed vertical line marks the maximum likelihood estimate of $\theta$, $\ha
 \end{figure}
 
 \newpage 
-\newpage
 
 \section{Appendix}
 
@@ -608,10 +610,10 @@ Let $X_j = \frac{f_j(\theta)}{f_0(\theta)}, j=1, 2,\ldots, K$.
 Then integrating the expression in (\ref{eq:pirewritten}) is equivalent to finding 
 \begin{equation}
 \label{eq:expectations}
-E_{0}\left[\prod_{j=1}^KX_j^{\alpha_j}\right] \leq \prod_{j=1}^KE_{0}[X_j]^{\alpha_j},
+\mathbb{E}_{0}\left[\prod_{j=1}^KX_j^{\alpha_j}\right] \leq \prod_{j=1}^K \mathbb{E}_{0}[X_j]^{\alpha_j},
 \end{equation}
-where $E_{0}[\cdot]$ is the expectation w.r.t $f_0$ and (\ref{eq:expectations}) follows from H\"{o}lder's inequality for expectations~\citep{yeh2011}.
-Since $\forall j$ we have $E_{0}[X_j]^{\alpha_j} = \left(\int_{\boldsymbol\Theta}f_0(\theta)\frac{f_j(\theta)}{f_0(\theta)}\right)^{\alpha_j}d\theta=1^{\alpha_j}=1$, Theorem~\ref{thm:normalisation} is proven.
+where $\mathbb{E}_{0}[\cdot]$ is the expectation w.r.t $f_0$ and (\ref{eq:expectations}) follows from H\"{o}lder's inequality for expectations~\citep{yeh2011}.
+Since $\forall j$ we have $\mathbb{E}_{0}[X_j]^{\alpha_j} = \left(\int_{\boldsymbol\Theta}f_0(\theta)\frac{f_j(\theta)}{f_0(\theta)}\right)^{\alpha_j}d\theta=1^{\alpha_j}=1$, Theorem~\ref{thm:normalisation} is proven.
 \end{proof}
 It is straightforward to show that remark~\ref{rmk:concavity} holds:
 \begin{proof}
@@ -623,16 +625,16 @@ It is straightforward to show that remark~\ref{rmk:concavity} holds:
 \end{proof}
 To see that equation~\ref{eq:entropypriorEF} holds:
 \begin{eqnarray*} 
-H_\pi(\theta) & = & E[-\log(\pi(\theta)] \\
+H_\pi(\theta) & = & \mathbb{E}[-\log(\pi(\theta)] \\
               & = & - \int \log(\pi(\theta) \pi(\theta) d\theta \\
               & = & - \int (\log(K(a^*, b^*) + \theta a^* - \psi(\theta) b^*) \pi(\theta) d\theta \\
-              & = & - \log(K(a^*, b^*) + a^*  E[\theta]-  b^*  E[\psi(\theta)]
+              & = & - \log(K(a^*, b^*) + a^*  \mathbb{E}[\theta]-  b^*  \mathbb{E}[\psi(\theta)]
 \end{eqnarray*}
 Likewise for equation~\ref{eq:KLpriorEF}, we have 
 \begin{eqnarray*} 
-KL(f_i || \pi) & = & E_\pi[\log(f_i(\theta)-\log(\pi(\theta)] \\
+KL(f_i || \pi) & = & \mathbb{E}_\pi[\log(f_i(\theta)-\log(\pi(\theta)] \\
               & = & \int [\log( K(a_i,b_i) e^{\theta a_i - b_i \psi(\theta)}) - \log(K(a^*,b^*) e^{\theta a^* - b^* \psi(\theta)}) ] \pi(\theta) d\theta \\
               & = & \int [\log( K(a_i,b_i)) - \log(K(a^*,b^*)) + (a_i - a^*) \theta  - (b_i - b^*) \psi(\theta) \pi(\theta) d\theta \\
-              & = & \log( K(a_i,b_i)) - \log(K(a^*,b^*)) + (a_i - a^*) E[\theta] - (b_i - b^*) E[\psi(\theta)] 
+              & = & \log( K(a_i,b_i)) - \log(K(a^*,b^*)) + (a_i - a^*) \mathbb{E}[\theta] - (b_i - b^*) \mathbb{E}[\psi(\theta)] 
 \end{eqnarray*}
 \end{document} 
