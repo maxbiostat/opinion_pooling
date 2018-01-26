@@ -13,7 +13,10 @@ k = (bx-ax)*(by-ay);
 L = max({ax, ay/z});
 U = min({bx, by/z});
 return(log(((U *fabs(U))- (L *fabs(L)))/(2*k))) ; 
-} 
+}
+real q_tilde_theta_lpdf(real z, real alpha, real mX, real MX, real mY, real MY){
+return(alpha * uniform_lpdf(z |0, 5) + (1-alpha)*fZ_exact_lpdf(z | mX, MX, mY, MY));
+}
 }
 data{
 real<lower=0, upper=1> alpha;
@@ -24,10 +27,15 @@ real<lower=0> max_Y;
 real<lower=0, upper=max_Y> min_Y;
 }
 parameters {
-real<lower=min_Y/max_X, upper=max_Y/min_X> Z;
+real<lower=min_X, upper=max_X> X;
+real<lower=min_Y, upper=max_Y> Y;
 }
 model{
-target += alpha * uniform_lpdf(Z |0,5) + (1-alpha)*fZ_exact_lpdf(Z | min_X, max_X, min_Y, max_Y);
+target += q_tilde_theta_lpdf(Y/X | alpha, min_X, max_X, min_Y, max_Y) + uniform_lpdf( X | min_X, max_X) + uniform_lpdf(Y | min_Y, max_Y) - fZ_exact_lpdf(Y/X | min_X, max_X, min_Y, max_Y);
+}
+generated quantities{
+real<lower=min_Y/max_X, upper=max_Y/min_X> Z;
+Z = Y/X;
 }
 '
 #####################
@@ -39,14 +47,14 @@ fixed_alpha_run <- stan(model_code = fixed_alpha,
                                     M = 1000,
                                     min_X = 2, max_X = 4,
                                     min_Y = 6, max_Y = 9),
-                        iter = 5000
+                        iter = 5000,
+                        init = list(
+                          chain1 = list(X = 3.2, Y = 7),
+                          chain2 = list(X = 3.5, Y = 6.5),
+                          chain3 = list(X = 3, Y = 7),
+                          chain4 = list(X = 2.1, Y = 8)
+                        )
 )
-# init = list(
-#   chain1 = list(Z = 7/3.2, X = 3.2, Y = 7),
-#   chain2 = list(Z = 6.5/3.5,X = 3.5, Y = 6.5),
-#   chain3 = list(Z = 7/3, X = 3, Y = 7),
-#   chain4 = list(Z = 8/2.1, X = 2.1, Y = 8)
-# )
 ######################
 fixed_alpha_run
 
@@ -69,6 +77,7 @@ hist(Z_samples,
      probability = TRUE, main = "Z", xlab = expression(Z))
 curve(dZ_exact, 1.5, 4.5, lwd = 2, add = TRUE)
 curve(dZ_approx, 1.5, 4.5, lwd = 2, col = 2, add = TRUE)
+legend(x = "topright", legend = c("Exact", "Gamma approximation"), col = 1:2, lwd = 2, bty = "n")
 
 mu <- integrate( function(x) x * dZ_exact(x), 0 , Inf)
 sq <- integrate( function(x) x^2 * dZ_exact(x), 0 , Inf)
