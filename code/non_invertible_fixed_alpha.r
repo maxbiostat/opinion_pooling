@@ -20,7 +20,6 @@ return(alpha * uniform_lpdf(z |0, 5) + (1-alpha)*fZ_exact_lpdf(z | mX, MX, mY, M
 }
 data{
 real<lower=0, upper=1> alpha;
-int<lower=0> M; // number of samples for method of moments
 real<lower=0> max_X;
 real<lower=0, upper=max_X> min_X;
 real<lower=0> max_Y;
