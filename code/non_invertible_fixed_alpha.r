@@ -1,4 +1,4 @@
-### This script implements example from page 1250 in Poole & Rafetery (2000), JASA
+### This script implements example from page 1250 in Poole & Raftery (2000), JASA
 ### Original code by Gabriel Mendes (Berkeley): http://discourse.mc-stan.org/t/bayesian-melding/3011
 ### Implements the (unormalised) exact target of the example, mainly to demonstrate correctness
 ##### Copyleft (or the one to blame): Luiz Max Carvalho (2018)
@@ -43,7 +43,6 @@ options(mc.cores = parallel::detectCores())
 
 fixed_alpha_run <- stan(model_code = fixed_alpha,
                         data = list(alpha = .5,
-                                    M = 1000,
                                     min_X = 2, max_X = 4,
                                     min_Y = 6, max_Y = 9),
                         iter = 5000,
