@@ -1,142 +1,93 @@
-### This script implements example from page 1250 in Poole & Rafetery (2000), JASA
+### This script implements example from page 1250 in Poole & Raftery (2000), JASA
 ### Original code by Gabriel Mendes (Berkeley): http://discourse.mc-stan.org/t/bayesian-melding/3011
-### I provide a couple very minor improvements:
-#### (i) explicit dependence on the pooling parameter (alpha);
-#### (ii) an extension where alpha is given a prior rather than fixed at 1/2;
-#### (iii) a simple method-of-moments estimation function to facilitate approximating the induced distribution on Z;
-### Please notice this last step could easily be done (better) outside of Stan and then plugged in.
+### Implements the (unormalised) exact target of the example, mainly to demonstrate correctness
 ##### Copyleft (or the one to blame): Luiz Max Carvalho (2018)
-fixed_alpha <- '
-functions{
-real [] get_MM_ests (real [] X) {
-  real x_bar;
-  real var_x;
-  real ans[2];
-  x_bar = mean(X);
-  var_x = pow(sd(X), 2);
-  ans[1] = pow(x_bar, 2)/var_x; // shape
-  ans[2] = x_bar/var_x; // rate
-  return(ans);
- }
-}
-data{
-real<lower=0, upper=1> alpha;
-int<lower=0> M; // number of samples for method of moments
-real<lower=0> max_X;
-real<lower=0, upper=max_X> min_X;
-real<lower=0> max_Y;
-real<lower=0, upper=max_Y> min_Y;
-}
-transformed data{
-  real<lower=0> X_rep[M];
-  real<lower=0> Y_rep[M];
-  real<lower=0> Z_rep[M];
-  real<lower=0> parms[2];
-  for(m in 1:M) X_rep[m] = uniform_rng(min_X, max_X);
-  for(m in 1:M) Y_rep[m] = uniform_rng(min_Y, max_Y);
-  for(m in 1:M) Z_rep[m] = Y_rep[m]/X_rep[m];  
-  parms = get_MM_ests(Z_rep);
-}
-parameters {
-real<lower=0> X;
-real<lower=0> Y;
-}
-transformed parameters {
-real<lower=0> Z;
-Z = Y/X;
-}
-model{
-X ~ uniform(min_X, max_X);
-Y ~ uniform(min_Y, max_Y);
-target += alpha * uniform_lpdf(Z |0,5) + (1-alpha)*gamma_lpdf(Z | parms[1], parms[2]);
-}'
 varying_alpha <- '
 functions{
-real [] get_MM_ests (real [] X) {
-  real x_bar;
-  real var_x;
-  real ans[2];
-  x_bar = mean(X);
-  var_x = pow(sd(X), 2);
-  ans[1] = pow(x_bar, 2)/var_x; // shape
-  ans[2] = x_bar/var_x; // rate
-  return(ans);
- }
+real fZ_exact_lpdf(real z, real ax, real bx, real ay, real by){
+// notice the lack of in-built check: ay/bx < x < by/ax
+real k;
+real L;
+real U;
+k = (bx-ax)*(by-ay);
+L = max({ax, ay/z});
+U = min({bx, by/z});
+return(log(((U *fabs(U))- (L *fabs(L)))/(2*k))) ; 
+}
+real q_tilde_theta_lpdf(real z, real alpha, real mX, real MX, real mY, real MY){
+return(alpha * uniform_lpdf(z |0, 5) + (1-alpha)*fZ_exact_lpdf(z | mX, MX, mY, MY));
+}
 }
 data{
-int<lower=0> M; // number of samples for method of moments
+real<lower=0> a_alpha;
+real<lower=0> b_alpha;
 real<lower=0> max_X;
 real<lower=0, upper=max_X> min_X;
 real<lower=0> max_Y;
 real<lower=0, upper=max_Y> min_Y;
-real<lower=0> a_alpha;
-real<lower=0> b_alpha;
-}
-transformed data{
-  real<lower=0> X_rep[M];
-  real<lower=0> Y_rep[M];
-  real<lower=0> Z_rep[M];
-  real<lower=0> parms[2];
-  for(m in 1:M) X_rep[m] = uniform_rng(min_X, max_X);
-  for(m in 1:M) Y_rep[m] = uniform_rng(min_Y, max_Y);
-  for(m in 1:M) Z_rep[m] = Y_rep[m]/X_rep[m];  
-  parms = get_MM_ests(Z_rep);
 }
 parameters {
 real<lower=0, upper=1> alpha;
-real<lower=0> X;
-real<lower=0> Y;
-}
-transformed parameters {
-real<lower=0> Z;
-Z = Y/X;
+real<lower=min_X, upper=max_X> X;
+real<lower=min_Y, upper=max_Y> Y;
 }
 model{
-X ~ uniform(min_X, max_X);
-Y ~ uniform(min_Y, max_Y);
 alpha ~ beta(a_alpha, b_alpha);
-target += alpha * uniform_lpdf(Z |0,5) + (1-alpha)*gamma_lpdf(Z | parms[1], parms[2]);
-}'
+target += q_tilde_theta_lpdf(Y/X | alpha, min_X, max_X, min_Y, max_Y) + uniform_lpdf( X | min_X, max_X) + uniform_lpdf(Y | min_Y, max_Y) - fZ_exact_lpdf(Y/X | min_X, max_X, min_Y, max_Y);
+}
+generated quantities{
+real<lower=min_Y/max_X, upper=max_Y/min_X> Z;
+Z = Y/X;
+}
+'
 #####################
 library(rstan)
 options(mc.cores = parallel::detectCores())
 
-fixed_alpha_run <- stan(model_code = fixed_alpha,
-                     data = list(alpha = .5,
-                                 M = 1000,
-                                 min_X = 2, max_X = 4,
-                                 min_Y = 6, max_Y = 9),
-                     iter = 5000,
-                     init = list(
-                       chain1 = list(X = 3, Y = 7),
-                       chain2 = list(X = 3.5, Y = 6.5),
-                       chain3 = list(X = 3, Y = 7),
-                       chain4 = list(X = 2.1, Y = 8)
-                     ) )
-
-alpha_varying_run <- stan(model_code = varying_alpha,
-                          data = list(M = 1000,
-                                      min_X = 2, max_X = 4,
-                                      min_Y = 6, max_Y = 9,
-                                      a_alpha = 1, b_alpha = 1),
-                          iter = 5000,
-                          init = list(
-                            chain1 = list(X = 3, Y = 7),
-                            chain2 = list(X = 3.5, Y = 6.5),
-                            chain3 = list(X = 3, Y = 7),
-                            chain4 = list(X = 2.1, Y = 8)
-                          ) )
-
+varying_alpha_run <- stan(model_code = varying_alpha,
+                        data = list(a_alpha = 1,
+                                    b_alpha = 1,
+                                    min_X = 2, max_X = 4,
+                                    min_Y = 6, max_Y = 9),
+                        iter = 5000,
+                        init = list(
+                          chain1 = list(X = 3.2, Y = 7),
+                          chain2 = list(X = 3.5, Y = 6.5),
+                          chain3 = list(X = 3, Y = 7),
+                          chain4 = list(X = 2.1, Y = 8)
+                        )
+)
 ######################
-fixed_alpha_run
-alpha_varying_run
+varying_alpha_run
 
-pairs(fixed_alpha_run)
-stan_trace(fixed_alpha_run)
+pairs(varying_alpha_run)
+stan_trace(varying_alpha_run)
 
-pairs(alpha_varying_run)
-stan_trace(alpha_varying_run)
+source("../code/pooling_aux.r")
+devtools::source_url("https://raw.githubusercontent.com/maxbiostat/CODE/b8473512151b0d205fd843bc291e45eac9c52e50/R/DISTRIBUTIONS/ratio_two_uniforms.r")
+dZ_exact <- function(x) dpoolnorm.positive(x = x, D = list(function(x) {dunif(x, 0, 5)},
+                                                           function(x) {analytic_Z(x, ax = 2, bx = 4, ay = 6, by = 9)}),
+                                           alphas = c(.5, .5)
+)
+dZ_approx <- function(x) dpoolnorm.positive(x = x, D = list(function(x) {dunif(x, 0, 5)},
+                                                            function(x) {dgamma(x, 18.3, 7.05)}),
+                                            alphas = c(.5, .5)
+)
 
-hist(extract(alpha_varying_run, 'alpha')$alpha,
-     probability = TRUE, main = "Pooling parameter", xlab = expression(alpha))
+Z_samples <- extract(varying_alpha_run, 'Z')$Z
+hist(Z_samples,
+     probability = TRUE, main = "Z", xlab = expression(Z))
+curve(dZ_exact, 1.5, 4.5, lwd = 2, add = TRUE)
+curve(dZ_approx, 1.5, 4.5, lwd = 2, col = 2, add = TRUE)
+legend(x = "topright", legend = c("Exact", "Gamma approximation"), col = 1:2, lwd = 2, bty = "n")
+
+mu <- integrate( function(x) x * dZ_exact(x), 0 , Inf)
+sq <- integrate( function(x) x^2 * dZ_exact(x), 0 , Inf)
+
+mean(Z_samples); mu$value
+var(Z_samples); sq$value-mu$value^2
+
+Alpha_samples <- extract(varying_alpha_run, 'alpha')$alpha
+hist(Alpha_samples,
+     probability = TRUE, main = "Alpha", xlab = expression(alpha))
 curve(dbeta(x, 1, 1), lwd = 2, add = TRUE)
