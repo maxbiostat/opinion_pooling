@@ -46,7 +46,7 @@ parameters {
   real<lower=0> MSYR;// mean s year rate
 }
 transformed parameters{
-  real P1993; // we'll treat P1993 and ROI as parameters
+  real<lower=0> P1993; // we'll treat P1993 and ROI as parameters
   real ROI;
   real P[N + 1];
   P[1] = P0;
