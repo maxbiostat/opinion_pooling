@@ -15,8 +15,8 @@ elicit.beta <- function(m0, v0 = NULL, cv = 1){
 }
 ##
 # Testing
-m <- .15
-v <- 0.019
-c0 <- 2
-elicit.beta(m0 = m, v0 = v)
-elicit.beta(m0 = m, cv = c0)
+#m <- .15
+#v <- 0.019
+#c0 <- 2
+#elicit.beta(m0 = m, v0 = v)
+#elicit.beta(m0 = m, cv = c0)
