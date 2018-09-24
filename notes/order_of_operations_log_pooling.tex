@@ -49,7 +49,7 @@ Key-words: logarithmic pooling; invertible; log-normal.
 \section*{Background}
 
 Logarithmic pooling is a popular method for combining opinions on an agreed quantity, specially when these opinions can be framed as probability distributions.
-Let $\mathbf{F_\theta} := \{f_1(\theta), f_2(\theta), \ldots, f_K(\theta)\}$ be a set of distributions representing the opinions of $K$ experts and let $\boldsymbol\alpha :=\{\alpha_1, \alpha_2, \ldots, \alpha_K \} \in \mathcal{S}^K$ be the vector of weights, such that $\alpha_i > 0\: \forall i$ and $\sum_{i=0}^K \alpha_i = 1$, i.e., $\mathcal{S}^K$ is the space of all open simplices of dimension $K$.
+Let $\mathbf{F_\theta} := \{f_0(\theta), f_1(\theta), \ldots, f_K(\theta)\}$ be a set of distributions representing the opinions of $K + 1$ experts and let $\boldsymbol\alpha :=\{\alpha_0, \alpha_1, \ldots, \alpha_K \} \in \mathcal{S}^K$ be the vector of weights, such that $\alpha_i > 0\: \forall i$ and $\sum_{i=0}^K \alpha_i = 1$, i.e., $\mathcal{S}^{K + 1}$ is the space of all open simplices of dimension $K + 1$.
 The \textbf{logarithmic pooling operator} $\mathcal{LP}(\mathbf{F_\theta}, \boldsymbol\alpha)$ is defined as
 \begin{equation}
 \label{eq:logpool}
@@ -60,53 +60,7 @@ This pooling method enjoys several desirable properties and yields tractable dis
 
 \section*{Pool then transform or transform and then pool?}
 
-% Suppose the we are interested in the distribution of a random variable $Z \in \mathcal{Z} \subseteq \mathbb{R}^d$ when one has random variables $X \in \mathcal{X} \subseteq \mathbb{R}^p$ and $Y \in \mathcal{Y}\subseteq \mathbb{R}^q$, with $\phi : (\mathcal{X}, \mathcal{Y}) \to \mathcal{Z}$.
-% For simplicity let us assume that $X$ and $Y$ are independent.
-% Suppose further that each expert $i$ produces a pair $\{f_i(X), g_i(X)\}$ such that we can construct the objects $\mathbf{F}_X = \{f_1(X), f_2(X), \ldots, f_K(X) \}$ and $\mathbf{G}_Y = \{g_1(Y), g_2(Y), \ldots, g_K(Y) \}$.
-% Then one can either:
-% \begin{itemize}
-%  \item[(a)] \textbf{Pool-then-Transform:} construct $\pi(X | \boldsymbol \alpha) = \mathcal{LP}(\mathbf{F}_X, \boldsymbol \alpha)$ and $\pi(Y | \boldsymbol \alpha) = \mathcal{LP}(\mathbf{G}_Y, \boldsymbol \alpha)$ and then apply $\phi$ to obtain $\pi(Z | \boldsymbol \alpha)$ or;
-%  \item[(b)] \textbf{Transform-then-pool:} apply the transform to each component $i$ of $\mathbf{F}_X$ and $\mathbf{G}_Y$ to build
-%  \[\mathbf{R}_{Z}:= \{r_i(Z), r_2(Z), \ldots, r_K(Z)\} \]
-%  and obtain $\pi^{\prime}(Z |  \boldsymbol \alpha) = \mathcal{LP}(\mathbf{R}_{Z},  \boldsymbol \alpha)$.
-% \end{itemize}
-% 
-% \begin{definition}
-% %  A function  $h: A \to B$ is \textbf{invertible} iff $\: \exists \: h^{-1}: B \to A |  h^{-1}(b) = a \: \forall \: a \in S_B = \{ x: h(x) = b \}$. 
-%  A function  $h: A \to B$ is \textbf{invertible} iff $\: \exists \: h^{-1}: B \to A |  h^{-1}(h(a)) = a \: \forall \: a \in A$. 
-%  Let $\pi$ be an arbitrary probability measure in A. 
-% If $h$ is monotonic and differentiable we can write $\pi^\prime(B) = \pi(h^{-1}(A))|J|$, where $|J|$ is the absolute determinant of the Jacobian matrix with entries $J_{ik} := \partial h_k^{-1}/\partial a_i$, $i,k = 1, 2, \ldots, p$.
-% \end{definition}
-% 
-% 
-% \begin{remark}
-% \label{rmk:invariance}
-% If $\phi$ is invertible, then $\pi(Z | \boldsymbol \alpha) \equiv \pi^{\prime}(Z |  \boldsymbol \alpha)$.
-% \end{remark}
-% \begin{proof}
-% Let $\phi_x^{-1}(z) = x$ and $\phi_y^{-1}(z) = y$ be the inverse functions w.r.t. $X$ and $Y$, respectively.
-% First, 
-% \begin{align}
-%  \pi(z | \boldsymbol \alpha) & \propto f_{XY}(\phi^{-1}(z))|J_\phi|, \\
-% &= \prod_{i = 0}^K \left[f_i(\phi_x^{-1}(z))|J_\phi^x| \right]^{\alpha_i}\prod_{i = 0}^K \left[g_i(\phi_y^{-1}(z))|J_\phi^y| \right]^{\alpha_i},\\
-% &= \prod_{i = 0}^K \left[f_i(\phi_x^{-1}(z))g_i(\phi_y^{-1}(z))\right]^{\alpha_i} |J_\phi^x||J_\phi^y|,
-% \end{align}
-% with $|J_\phi^x|$ and $|J_\phi^y|$ being the appropriate Jacobian determinants.
-% For situation (b) we have:
-% \begin{equation}
-%  r_i(z) = f_i(\phi_x^{-1}(z))|J_\phi^x| g_i(\phi_y^{-1}(z))|J_\phi^y|.
-% \end{equation}
-% And,
-% \begin{align}
-%  \pi^{\prime}(z |  \boldsymbol \alpha) & \propto  \prod_{i=0}^K r_i(z)^{\alpha_i} \\
-%   & =  \prod_{i=0}^K \left[ f_i(\phi_x^{-1}(z))|J_\phi^x| g_i(\phi_y^{-1}(z))|J_\phi^y| \right]^{\alpha_i} \\
-%   & = \left[f_i(\phi_x^{-1}(z))g_i(\phi_y^{-1}(z))\right]^{\alpha_i} |J_\phi^x||J_\phi^y|
-% \end{align}
-% as claimed.
-% \end{proof} %TODO: notation with (X,Y) -> Z. I've simplified the notation below.
-
 \begin{definition}
-%  A function  $h: A \to B$ is \textbf{invertible} iff $\: \exists \: h^{-1}: B \to A |  h^{-1}(b) = a \: \forall \: a \in S_B = \{ x: h(x) = b \}$. 
 Let $A, B \subseteq \mathbb{R}^p$.
 A function  $h: A \to B$ is \textbf{invertible} iff $\: \exists \: h^{-1}: B \to A \: \text{with} \: h^{-1}(h(a)) = a \: \forall \: a \in A$. 
 Let $\pi_A$ be an arbitrary probability measure in A. 
