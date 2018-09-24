@@ -40,10 +40,12 @@ c -- School of Applied Mathematics, Getulio Vargas Foundation (FGV).
 \begin{abstract}
 Combining different prior distributions is an important issue in decision theory and Bayesian inference.
 Logarithmic pooling is a popular method to aggregate expert opinions by using a set of weights that reflect the reliability of each information source.
-The resulting pooled distribution however heavily depends set of weights given to each opinion/prior.
-In this paper we explore three approaches to assigning weights to opinions.
+The resulting pooled distribution however depends heavily on set of weights given to each opinion/prior.
+In this paper we explore% three
+approaches to assigning weights to opinions.
 Two methods are stated in terms of optimisation problems and a third one uses a hierarchical prior that accounts for uncertainty on the weights. 
 We explore several examples of interest, such as proportion and rate estimation and combining Normal distributions.
+%TODO: more on the examples, make them prominent
 Our findings...
 
 Key-words: logarithmic pooling; expert opinion; hierarchical modelling; Bayesian melding. 
@@ -74,7 +76,6 @@ In this paper we discuss previous approaches for deriving the weights for logari
 In section~\ref{sec:background} we provide some background and notation on logarithmic pooling.
 In section~\ref{sec:weights} we present different approaches to choose the weights, two methods based on optimality criteria and one based on hierarchical modelling.
 %In section~\ref{sec:apps} we present three applications illustrating the choice of weights for logarithmic pooling. %an example on proportion estimation by combining Beta priors.
-
 
 One potential application of logarithmic pooling is in meta analyses.
 Distributions of a quantity of interest estimated in several studies can be combined in a single consensus distribution in a principled way using logarithmic pooling,.
@@ -156,7 +157,7 @@ KL(\pi || f_i )  =  - H_\pi(Y; \boldsymbol\alpha) - \mathbb{E}_\pi[\log h_i(Y)] 
 
 These expressions allow for easy computation of information measures for a broad class of distributions, which will be useful in the remainder of this paper.
 
-\subsection{Conjugate priors for exponential family}
+\subsection{Conjugate priors to the exponential family}
 \label{sec:conjugexpofamily}
 
 A conjugate prior family for $f(y|\theta)$, given in (\ref{eq:exponentialfamily}), is the following
@@ -637,4 +638,53 @@ KL(f_i || \pi) & = & \mathbb{E}_\pi[\log(f_i(\theta)-\log(\pi(\theta)] \\
               & = & \int [\log( K(a_i,b_i)) - \log(K(a^*,b^*)) + (a_i - a^*) \theta  - (b_i - b^*) \psi(\theta) \pi(\theta) d\theta \\
               & = & \log( K(a_i,b_i)) - \log(K(a^*,b^*)) + (a_i - a^*) \mathbb{E}[\theta] - (b_i - b^*) \mathbb{E}[\psi(\theta)] 
 \end{eqnarray*}
+
+\subsection*{Pooling of common distributions}
+
+%TODO: organise
+
+\subsection*{Gamma distributions}
+\label{sec:gamma}
+Suppose we are interested in a certain count $Y\sim Poisson(\lambda)$ and $K + 1$ experts are called upon to elicit prior distributions for $\lambda$.
+A convenient parametric choice for $\mathbf{F}(\lambda)$ is the Gamma family of distributions, for which densities are of the form
+$$ f_i(\lambda;a_i,b_i) = \frac{b_i^{a_i}}{\Gamma(a_i)} \lambda^{a_i-1} e^{-b_i\lambda}$$
+The log-pooled prior $\pi(\lambda)$ is then
+\begin{align}
+\pi(\lambda)&= t(\boldsymbol\alpha)\prod_{i=0}^{K}f_i(\lambda;a_i,b_i)^{\alpha_i}\\
+&\propto \prod_{i=0}^{K} \left(\lambda^{a_i-1} e^{-b_i\lambda}\right)^{\alpha_i}\\
+\label{eq:gammapois}
+&\propto \lambda^{a^*-1} e^{-b^*\lambda}
+\end{align}
+where $a^* =\sum_{i=0}^{K}\alpha_ia_i$ and $b^* = \sum_{i=0}^{K}\alpha_ib_i$.
+Noticing (\ref{eq:gammapois}) is the kernel of a gamma distribution with parameters $a^*$ and $b^*$, $H_{\pi}(\lambda)$ becomes
+\begin{equation}
+\label{eq:entropygamma}
+H_{\pi}(\lambda) = a^* - \ln b^* + \ln \Gamma(a^*) + (1-a^*)\psi(a^*)
+\end{equation}
+where $\psi(\cdot)$ is the digamma function.
+ The Kullback-Liebler divergence between each density and the pooled density is:
+\begin{equation}
+ \label{eq:KLgamma}
+ d_i = \text{KL}(f_i||\pi) = (a_i-a^*)\psi(a_i) - \ln\Gamma(a_i) + \ln\Gamma(a^*) + a^*(\ln\frac{b_i}{b^*}) + a_i\frac{b^*-b_i}{b_i}
+\end{equation}
+
+\subsubsection*{Gaussian distributions} 
+\label{sec:normal}
+Now suppose one is interested in combinining prior distributions on a quantity $\mu \in \mathbb{R}$.
+Suppose further that the expert priors are densities in the normal family, i.e.,
+$$ f_i(\mu; m_i,s_i) = \frac{1}{s_i\sqrt{2\pi}} \exp\left(\frac{-(\mu-m_i)^2}{2s_i^2}\right) $$
+Thus 
+\begin{align}
+\pi(\mu)&= t(\boldsymbol\alpha)\prod_{i=0}^{K}f_i(\mu; m_i, s_i)^{\alpha_i}\\
+&\propto \prod_{i=0}^{K} \left[ \exp\left(\frac{-(\mu-m_i)^2}{2s_i^2}\right) \right]^{\alpha_i}\\
+&\propto \exp\left[-\frac{1}{2}\left\{\mu\sum_{i=0}^K\frac{\alpha_i}{s_i^2} - 2\mu\sum_{i=0}^K \frac{\alpha_im_i}{s_i^2} - \sum_{i=0}^K\frac{\alpha_im_i^2}{s_i^2} \right\}\right]
+\end{align}
+which yields a normal distribution with parameters and $m^* = \frac{\sum_{i=0}^K w_im_i}{\sum_{i=0}^K w_i}$ and $v^* = [\sum_{i=0}^K w_i]^{-1}$,  where $w_i = \alpha_i/s_i^2$.
+The entropy function is then:
+\begin{equation}
+ \label{eq:normalpoolentropy}
+ H_{\pi}(\mu) = \frac{1}{2}\left[ \ln(2\pi e) - \ln\sum_{i=0}^K w_i\right]
+\end{equation}
+which achieves its maximum when $\alpha_j = 1$ for $s_j = max(s_1, s_2, \ldots, s_K)$.
+
 \end{document} 
