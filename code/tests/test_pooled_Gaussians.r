@@ -1,4 +1,4 @@
-source("pooling_aux.r")
+source("../pooling_aux.r")
 # #########
 # m0 <- 6 ; v0 <- .25
 # m1 <- 5.5; v1 <- .25
