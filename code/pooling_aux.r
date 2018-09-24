@@ -13,29 +13,29 @@ dpool <- function(x, D, alphas){
 }
 ## the constant t(\alpha)
 # proper integration
-# tpool <- function(alpha, D){
-#   1/integrate(function(x){
-#     sapply(x, function(e) dpool(e, D = D, alpha = alpha))},
-#   -Inf, Inf, rel.tol = .Machine$double.eps^0.3)$value
-# }
-tpool <- function(alpha, D, lwr = -1E5, upr =  1E5){
-  ## shitty trapezoid integration
-  1/caTools::trapz(x = seq(lwr, upr, length.out = 1000L),
-                   y = dpool(x = seq(lwr, upr, length.out = 1000L), D = D, alpha = alphas))
+tpool <- function(alpha, D){
+  1/integrate(function(x){
+    sapply(x, function(e) dpool(e, D = D, alphas = alpha))},
+  -Inf, Inf, abs.tol = .Machine$double.eps)$value
 }
+# tpool <- function(alpha, D, lwr = -1E5, upr =  1E5){
+#   ## shitty trapezoid integration
+#   1/caTools::trapz(x = seq(lwr, upr, length.out = 1000L),
+#                    y = dpool(x = seq(lwr, upr, length.out = 1000L), D = D, alphas = alpha))
+# }
 ##
 tpool.positive <- function(alpha, D, lwr = 0, upr =  1E5){
   ## shitty trapezoid integration
   1/caTools::trapz(x = seq(lwr, upr, length.out = 1000L),
-                   y = dpool(x = seq(lwr, upr, length.out = 1000L), D = D, alpha = alphas))
+                   y = dpool(x = seq(lwr, upr, length.out = 1000L), D = D, alphas = alpha))
 }
 ##
-tpool.positive <- function(alpha, D){ # For those with positive support
-  1/integrate(function(x) sapply(x, function(e) dpool(e, D = D, alpha = alpha)), 0, Inf)$value
-}
+# tpool.positive <- function(alpha, D){ # For those with positive support
+#   1/integrate(function(x) sapply(x, function(e) dpool(e, D = D, alpha = alpha)), 0, Inf)$value
+# }
 #
 tpool.unit <- function(alpha, D){ # For those with support in [0, 1]
-  1/integrate(function(x) sapply(x, function(e) dpool(e, D = D, alpha = alpha)), 0, .999999999)$value
+  1/integrate(function(x) sapply(x, function(e) dpool(e, D = D, alphas = alpha)), 0, .999999999)$value
 }
 ##
 makedf <- function(mc.samples){
