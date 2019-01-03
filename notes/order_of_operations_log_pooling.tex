@@ -109,46 +109,46 @@ as claimed.
 \end{proof}
 
 An interesting idea is whether Remark~\ref{rmk:invariance} is an iff result. 
-% Let $\eta : \mathcal{X} \to \mathcal{Y}$ be a surjective non-injective differentiable function, which is not invertible on the whole of $\mathcal{Y}$, but instead is \textbf{piece-wise invertible}.
+% Let $\phi : \mathcal{X} \to \mathcal{Y}$ be a surjective non-injective differentiable function, which is not invertible on the whole of $\mathcal{Y}$, but instead is \textbf{piece-wise invertible}.
 % Let $\mathcal{Y}_1, \mathcal{Y}_2, \ldots, \mathcal{Y}_T$ be a  partition of $\mathcal{Y}$, i.e., $\mathcal{Y}_i\cap\mathcal{Y}_j = \emptyset,\: \forall i\neq j \in \{1, 2, \ldots, T\}$ and $\bigcup_{t = 1}^T\mathcal{Y}_t = \mathcal{Y}$.
-% Then define the inverse functions $\eta_{t}^{-1}(y)\,:\, \mathcal{Y}_t \to \mathcal{X}, \: t \in \{1, 2, \ldots, T\}$.
-% Lastly, let $|J_t|$ be the Jacobian of $\eta_{t}^{-1}(\cdot)$.
+% Then define the inverse functions $\phi_{t}^{-1}(y)\,:\, \mathcal{Y}_t \to \mathcal{X}, \: t \in \{1, 2, \ldots, T\}$.
+% Lastly, let $|J_t|$ be the Jacobian of $\phi_{t}^{-1}(\cdot)$.
 % Then we are prepared to write:
 % \begin{align}
 % \label{eq:piecewiseTransf}
-% \pi_{Y}(y |\boldsymbol\alpha) &\propto \sum_{t = 1}^T\left(\prod_{i=0}^K f_i(\eta_t^{-1}(y))^{\alpha_i}\right)|J_t| \quad \text{and}\\
-% \pi^{\prime}_{Y}(y|\boldsymbol\alpha) &\propto \prod_{i=0}^K\left[\sum_{t = 1}^T f_i(\eta_t^{-1}(y))|J_t|\right]^{\alpha_i}
+% \pi_{Y}(y |\boldsymbol\alpha) &\propto \sum_{t = 1}^T\left(\prod_{i=0}^K f_i(\phi_t^{-1}(y))^{\alpha_i}\right)|J_t| \quad \text{and}\\
+% \pi^{\prime}_{Y}(y|\boldsymbol\alpha) &\propto \prod_{i=0}^K\left[\sum_{t = 1}^T f_i(\phi_t^{-1}(y))|J_t|\right]^{\alpha_i}
 % \end{align}
-% which, I claim, will only be equal if $T = 1$, i.e. if $\eta(\cdot)$ is invertible in the usual sense.
+% which, I claim, will only be equal if $T = 1$, i.e. if $\phi(\cdot)$ is invertible in the usual sense.
 % Below I try to establish a result in general for any surjective non-injective mapping, not just piece-wise invertible ones.
 \begin{remark}
  \label{rmk:invertibleIFF}
- It is possible to have  $\pi_Y( \cdot | \boldsymbol \alpha) \equiv \pi_Y^{\prime}( \cdot |  \boldsymbol \alpha)$ even when $\eta$ is not invertible.
+ It is possible to have  $\pi_Y( \cdot | \boldsymbol \alpha) \equiv \pi_Y^{\prime}( \cdot |  \boldsymbol \alpha)$ even when $\phi$ is not invertible.
 \end{remark}
 \begin{proof}
 We will show this by way of an explicit example.
 In general, we can define 
 \begin{equation}
- g_i(y) = \sum_{\omega \in \Omega(y)} \frac{f_i(\omega)}{|\eta^\prime(\omega)|}.
+ g_i(y) = \sum_{\omega \in \Omega(y)} \frac{f_i(\omega)}{|\phi^\prime(\omega)|}.
 \end{equation}
-where $\Omega(y) := \{ x: \eta(x) = y \}$ \footnote{Notice there is no guarantee that $|\Omega(y)| < \infty$.}.
+where $\Omega(y) := \{ x: \phi(x) = y \}$ \footnote{Notice there is no guarantee that $|\Omega(y)| < \infty$.}.
 Notice that for any $x \in \mathcal{X}$, there exists $y$ such that $x \in \Omega(y)$. 
-Assume that the transform $\eta$ is non-invertible, i.e., that $|\Omega(y)| > 1$ for some $y \in \mathcal{Y}$, and $f_i \not\equiv f_j,$ for some $i, j$.
+Assume that the transform $\phi$ is non-invertible, i.e., that $|\Omega(y)| > 1$ for some $y \in \mathcal{Y}$, and $f_i \not\equiv f_j,$ for some $i, j$.
 We have
 \begin{align}
 \label{eq:generalTransf}
-\pi_{Y}(y |\boldsymbol\alpha) &= T(\boldsymbol\alpha) \sum_{\omega \in \Omega(y)} \frac{\prod_{i=0}^K f_i(\omega)^{\alpha_i}}{|\eta^\prime(\omega)|}
+\pi_{Y}(y |\boldsymbol\alpha) &= T(\boldsymbol\alpha) \sum_{\omega \in \Omega(y)} \frac{\prod_{i=0}^K f_i(\omega)^{\alpha_i}}{|\phi^\prime(\omega)|}
 \quad \text{and}\\
-\pi^{\prime}_{Y}(y|\boldsymbol\alpha) &= T^\prime(\boldsymbol\alpha)  \prod_{i=0}^K g_i(y)^{\alpha_i} = T^\prime(\boldsymbol\alpha)  \prod_{i=0}^K\left[\sum_{\omega \in \Omega(y)} \frac{f_i(\omega)}{|\eta^\prime(\omega)|}\right]^{\alpha_i},
+\pi^{\prime}_{Y}(y|\boldsymbol\alpha) &= T^\prime(\boldsymbol\alpha)  \prod_{i=0}^K g_i(y)^{\alpha_i} = T^\prime(\boldsymbol\alpha)  \prod_{i=0}^K\left[\sum_{\omega \in \Omega(y)} \frac{f_i(\omega)}{|\phi^\prime(\omega)|}\right]^{\alpha_i},
 \end{align}
 with
 \begin{equation*}
- T(\boldsymbol\alpha)  = \int_{\mathcal{Y}} \sum_{\omega \in \Omega(y)}\prod_{i=0}^K \left(\frac{f_i(\omega)}{|\eta^\prime(\omega)|}\right)^{\alpha_i}dy = \int_{\mathcal{X}}  \prod_{i=0}^K f_i(x)^{\alpha_i} dx \quad \text{and} \quad T(\boldsymbol\alpha)^{\prime}= \int_{\mathcal{Y}} \prod_{i=0}^K\left[\sum_{\omega \in \Omega(y)} \frac{f_i(\omega)}{|\eta^\prime(\omega)|}\right]^{\alpha_i} dy.
+ T(\boldsymbol\alpha)  = \int_{\mathcal{Y}} \sum_{\omega \in \Omega(y)}\prod_{i=0}^K \left(\frac{f_i(\omega)}{|\phi^\prime(\omega)|}\right)^{\alpha_i}dy = \int_{\mathcal{X}}  \prod_{i=0}^K f_i(x)^{\alpha_i} dx \quad \text{and} \quad T(\boldsymbol\alpha)^{\prime}= \int_{\mathcal{Y}} \prod_{i=0}^K\left[\sum_{\omega \in \Omega(y)} \frac{f_i(\omega)}{|\phi^\prime(\omega)|}\right]^{\alpha_i} dy.
 \end{equation*}
 Now let us construct an explicit example.
 Let $X$ be a quantity of interest and let $\boldsymbol F_X$ be such that each $f_i$ is a Gaussian density with zero mean\footnote{This is important so we can employ a symmetry argument later on.} and variance $v_i$, i.e.,
 \[ f_i (x) = \frac{1}{\sqrt{2\pi v_i}} \exp\left(-\frac{x^2}{2v_i}\right) \]
-Now consider $\eta(x) = x^2$ and  $Y = \eta(X)$.
+Now consider $\phi(x) = x^2$ and  $Y = \phi(X)$.
 Clearly, $\Omega(y) = \{ \omega_0, \omega_1 \} = \{ -\sqrt{y}, \sqrt{y} \}$ and hence
 \begin{align}
  \label{eq:normalInvert}
@@ -173,12 +173,12 @@ which establishes $ \pi_{Y}(y) =  \pi^{\prime}_{Y}(y)$ for any $ y \in \mathcal{
 % There probably exists a measure-theoretic proof that is way more elegant, but this should suffice.
 See Figure~\ref{fig:normal_square_example} for graphical depiction of the example given above.
 Notice that we could have chosen any distribution on $(-\infty, \infty)$ symmetric about $0$.
-This result shows that it is indeed possible to obtain the same density even when $\eta$ is not one-to-one.
+This result shows that it is indeed possible to obtain the same density even when $\phi$ is not one-to-one.
 
 \begin{figure}[!ht]
 \centering
 \includegraphics[scale=0.5]{figures/normal_square_example.pdf}
-\caption{\textbf{Equivalent densities under a non-invertible transform}. Solid line displays $\pi_Z(Z | \boldsymbol\alpha)$, obtained by first pooling the distributions on $X$ and then computing the induced distribution on $Y$.
+\caption{\textbf{Equivalent densities under a non-invertible transform}. Solid line displays $\pi_Y(Y | \boldsymbol\alpha)$, obtained by first pooling the distributions on $X$ and then computing the induced distribution on $Y$.
 Dashed line displays the logarithmic pooling of individual distributions $g_{i}$, $\pi_Y^{\prime}(Y | \boldsymbol\alpha)$.
 For this example $K=5$, $\boldsymbol \alpha = \{0.31, 0.08, 0.39, 0.08, 0.15 \} $, $\boldsymbol v = \{ 0.25, 0.75, 1.00, 1.00, 0.50 \}$.
 }
