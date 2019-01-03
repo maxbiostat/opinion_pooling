@@ -158,17 +158,17 @@ Clearly, $\Omega(y) = \{ \omega_0, \omega_1 \} = \{ -\sqrt{y}, \sqrt{y} \}$ and 
 where the second line follows by using the symmetry of the Gaussian density around zero.
 We are now prepared to write 
 \begin{equation}
- \pi_Y(y) = \frac{1}{\sqrt{2\pi v^\ast y}} \exp\left(-\frac{y}{2v^\ast}\right). \\
+ \pi_Y(y |  \boldsymbol \alpha) = \frac{1}{\sqrt{2\pi v^\ast y}} \exp\left(-\frac{y}{2v^\ast}\right). \\
 \end{equation}
 whence $v^\ast =  \left[\sum_{i=0}^K \frac{\alpha_i}{v_i} \right]^{-1}$.
 This stems from the pool of Gaussians being also a Gaussian (see manuscript for derivation).
 An explicit computation gives $\pi^{\prime}_{Y}$:
 \begin{align}
- \pi^{\prime}_{Y}(y) &\propto \prod_{i=0}^K g_i(y)^{\alpha_i}, \\
+ \pi^{\prime}_{Y}(y|  \boldsymbol \alpha) &\propto \prod_{i=0}^K g_i(y)^{\alpha_i}, \\
  & \propto \prod_{i=0}^K \left( \frac{1}{\sqrt{2\pi v_i y}} \right)^{\alpha_i} \exp\left(-\frac{\alpha_i y}{2v_i}\right),\\
  &= \frac{1}{\sqrt{2\pi v^\ast y}} \exp\left(-\frac{y}{2v^\ast}\right).
 \end{align}
-which establishes $ \pi_{Y}(y) =  \pi^{\prime}_{Y}(y)$ for any $ y \in \mathcal{Y}$.
+which establishes $ \pi_{Y}(y|  \boldsymbol \alpha) =  \pi^{\prime}_{Y}(y|  \boldsymbol \alpha)$ for any $ y \in \mathcal{Y}$.
 \end{proof}
 % There probably exists a measure-theoretic proof that is way more elegant, but this should suffice.
 See Figure~\ref{fig:normal_square_example} for graphical depiction of the example given above.
