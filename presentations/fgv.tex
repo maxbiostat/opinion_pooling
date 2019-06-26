@@ -144,7 +144,7 @@ L(\boldsymbol\alpha) &= \sum_{i=0}^Kd_i \\
 \end{align*}
 where $\psi(\cdot)$ is the digamma function, and $\psi'(\cdot)$ is the trigamma function.
 \item Exploit a non-centering trick to sample from the logistic normal~\textit{via} Cholesky decomposition of $\boldsymbol \Sigma$;  
-\item We explore two sets of hyperparameters: $\boldsymbol X = \{1, 1, \ldots, 1\}$ and $\boldsymbol X^\prime = \boldsymbol X/10$;
+\item We explore two sets of hyperparameters: $\boldsymbol X = \{1, 1, \ldots, 1\}$ and $\boldsymbol X^\prime = \boldsymbol X/10$ (``flexible'' henceforth);
  \end{itemize}
 \end{frame}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -155,7 +155,7 @@ where $\psi(\cdot)$ is the digamma function, and $\psi'(\cdot)$ is the trigamma 
 a certain unit for which there have been $y = 9$ successes out of $n = 10$ trials;
   \item $Y\sim Bernoulli(\theta)$ and
   \[f_i(\theta;a_i, b_i) = \frac{\Gamma(a_i + b_i)}{\Gamma(a_i b_i)} \theta^{a_i-1}(1-\theta)^{b_i-1}\]
-  \item Allows for simple expressions for the entropy and KL divergence [$\pi(\theta; \boldsymbol\alpha)$ is also Beta], and efficient sampling from the hyperpriors; 
+  \item Allows for simple expressions for the entropy and KL divergence -- $\pi(\theta \mid \boldsymbol\alpha)$ is also Beta -- and efficient sampling from the hyperpriors; 
   \item For this example, we can evaluate performance using integrated (marginal) likelihoods, a.k.a., prior evidence.
  \end{itemize}
 \end{frame}
@@ -233,7 +233,7 @@ Setup:  Five experts elicit Beta priors on a quantity $p$. Data will be $x/n = 5
  \item If the data are $x = 5$ and $n = 10$, computing marginal likelihoods and normalising would lead to weights $\boldsymbol\alpha^{\prime\prime} = \{0.006, 0.095, \mathbf{0.710}, 0.142, 0.048\}$;\pause
  \item However, by calculating $a^{\star\star} = \sum_{i = 0}^K \alpha_i^{\prime\prime} a_i = 19.75$ and $b^{\star\star} =  \sum_{i = 0}^K \alpha_i^{\prime\prime} b_i = 44.00$, we obtain a pooled prior with $\mathbb{E}_\pi [p] =  0.31$, far off the ``optimal'' $1/2$;\pause
  \item If the data were, say, $x = 50, n = 100$, then one would obtain a pooled prior for which $\mathbb{E}_\pi [p] = 0.51$.\pause
- \item [\textcolor{red}{\textbullet}] \textcolor{red}{Let $c_2 = 0.001$. Then $a_2 = b_2 = 499999.5$. Can you see the problem?}
+ \item [\textcolor{red}{\textbullet}] \textcolor{red}{ Now let $c_2 = 0.001$. Then $a_2 = b_2 = 499999.5$. Can you see the problem?}
 \end{itemize}
 \end{frame}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -273,7 +273,7 @@ The basic reproductive number is
 \label{eq:r0def}
 R_0 = \frac{\beta N}{\gamma}. 
 \end{equation}
-We choose $\beta, \gamma \sim \text{log-normal}(0, 1)$ ($q_1$) and $R_0 \sim  \text{log-normal}(\mu_2, \sigma_2)$ such that $R_0$ has a mean of $1.5$ and a standard deviation of $0.25$ ($q_2$) which is informed by seasonal flu. 
+We choose $\beta, \gamma \sim \text{log-normal}(0, 1)$ ($q_1$) and $R_0 \sim  \text{log-normal}(\mu_2, \sigma_2)$ ($q_2$) such that $R_0$ has a mean of $1.5$ and a standard deviation of $0.25$ ($q_2$) which is informed by seasonal flu. 
 \end{frame}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -294,7 +294,7 @@ Posterior for $\alpha$: \textbf{0.77} (0.18--0.99).
  \item Optimality criteria often give weird results;\pause
  \item It is possible to learn about the weights from data, for some configurations of the opinions $\boldsymbol F_X$ (and the data $\boldsymbol y$);\pause
  \item Interpretation of the weights is not always straightforward;\pause
- \item In Bayesian melding, letting the pooling weight $\alpha$ vary leads to more robust inferences.
+ \item In Bayesian melding, letting the pooling weight $\alpha$ vary can protect against prior misspecification.
  \end{itemize}
 \end{frame}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
