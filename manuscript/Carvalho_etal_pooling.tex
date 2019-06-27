@@ -134,7 +134,6 @@ We then say that $\mathcal{T}$ enjoys \textit{relative propensity consistency} (
  U(\boldsymbol \xi_1) \geq U(\boldsymbol \xi_2) \implies  V(\boldsymbol \xi_1) \geq V(\boldsymbol \xi_2),
 \end{equation}
 for all $\boldsymbol \xi_1, \boldsymbol \xi_2$.
-
 \end{remark}
 We refer the reader to~\cite{genest1984} for a proof.
 Informally, this property says that if all experts consider a particular event $A$ more probable than another event $B$, then the pooled opinion should be consistent with these relative judgments. 
@@ -152,7 +151,7 @@ Then $\pi(\theta\mid \boldsymbol \alpha)$ is also log-concave.
  \pi(\theta \mid \boldsymbol \alpha) &\propto \prod_{i=0}^{K} [\exp(\nu_i(\theta))]^{\alpha_i},\\
              &\propto \exp(\nu^{\ast}(\theta)),
 \end{align}
- where $\nu^{\ast}(\theta) = \sum_{i=0}^{K}\alpha_i\nu_i(\theta)$ is a concave function due to being a linear combination of concave functions.
+ where $\nu^{\ast}(\theta) = \sum_{i=0}^{K}\alpha_i\nu_i(\theta)$ is a concave function because it is a linear combination of concave functions.
 \end{proof}
 
 \subsection{Exponential family}
@@ -288,7 +287,7 @@ We can define a loss function such that
 \nonumber
 L(\boldsymbol\alpha) &= \sum_{i=0}^K  \text{KL}(\pi || f_i), \\
 \label{eq:KLexpanded}
-     &= - (K+1) H_\pi(\theta; \boldsymbol\alpha)  - \sum_{i=0}^K \mathbb{E}_\pi\left[\log f_i\right], 
+     &= - (K+1) \sum_{i=0}^K\alpha_i\mathbb{E}_\pi [\log f_i ]  - \sum_{i=0}^K \mathbb{E}_\pi\left[\log f_i\right] - \log t(\boldsymbol\alpha), 
 \end{align}
 and we want to find 
 \begin{equation}
@@ -319,7 +318,7 @@ In this section we propose placing a hierarchical prior on the weights, allowing
 A natural choice for a prior distribution for $\boldsymbol\alpha$ is the $(K+1)-$dimensional Dirichlet distribution
 \begin{equation}
  \label{eq:generalcondprior}
- \pi_D(\boldsymbol\alpha) = \frac{1}{\mathcal{B}(\boldsymbol x)}\prod_{i=0}^K \alpha_i^{x_i-1},
+ \pi_A(\boldsymbol\alpha) = \frac{1}{\mathcal{B}(\boldsymbol x)}\prod_{i=0}^K \alpha_i^{x_i-1},
 \end{equation}
 where $\boldsymbol x = \{ x_0, x_1, \ldots, x_K\}$ is the vector of hyperparameters for the Dirichlet prior and $\mathcal{B}(X)$ is the multinomial beta function.
 The Dirichlet offers a simple, albeit potentially inflexible prior.
@@ -327,7 +326,7 @@ The Dirichlet offers a simple, albeit potentially inflexible prior.
 A more flexible prior for $\boldsymbol\alpha$ is the logistic-normal distribution~\citep{aitchson1980}:
 \begin{equation}
  \label{eq:aitchinsonprior}
- \pi_A(\boldsymbol\alpha) = \frac{1}{|2\pi \boldsymbol \Sigma|^{\frac{1}{2}}}\frac{1}{\prod_{i=0}^K \alpha_i}
+ \pi_A(\boldsymbol\alpha \mid \boldsymbol \mu, \boldsymbol \Sigma) = \frac{1}{|2\pi \boldsymbol \Sigma|^{\frac{1}{2}}}\frac{1}{\prod_{i=0}^K \alpha_i}
   \exp\left(
      \left(\log\left(\frac{\boldsymbol \alpha_{-K}}{\alpha_K}\right) - \boldsymbol \mu\right)^T
      {\boldsymbol \Sigma}^{-1}
@@ -335,7 +334,7 @@ A more flexible prior for $\boldsymbol\alpha$ is the logistic-normal distributio
      \right),
 \end{equation}
 where $\boldsymbol \alpha_{-K}$ represents the vector $\boldsymbol \alpha$ without the $K$-th element, $\boldsymbol \mu$ is a $K$-size mean vector, and $\boldsymbol \Sigma$ is a $K \times K$ covariance matrix.
-\citet{aitchson1980} propose choosing $\boldsymbol \mu$ and $\boldsymbol \Sigma$ minimizing the KL divergence between the Dirichlet (\ref{eq:generalcondprior}) and the logistic-normal (\ref{eq:aitchinsonprior}) distributions, i.e.
+\citep{aitchson1980} propose choosing $\boldsymbol \mu$ and $\boldsymbol \Sigma$ minimizing the KL divergence between the Dirichlet (\ref{eq:generalcondprior}) and the logistic-normal (\ref{eq:aitchinsonprior}) distributions, i.e.
 \begin{align}
  \label{eq:momentmatching}
  \mu_i & = \psi(x_i) - \psi(x_K), \quad i=0,1,\ldots,K-1, \\
@@ -460,14 +459,14 @@ Method  & $\alpha_0$ & $\alpha_1$ & $\alpha_2$ & $\alpha_3$ \\
 Maximum entropy & 0.00 & 0.00 & 0.00 & 1.00 \\ 
 Minimum KL$^1$ divergence & 0.04 & 0.96 & 0.00 & 0.00 \\
 \cite{rufo2012A} & 0.00 & 0.00 & 0.00& 1.00\\
-Dirichlet prior$^2$ & 0.26 & 0.24 & 0.28 & 0.22 \\ 
-Logistic-normal prior$^2$ & 0.22 & 0.43 & 0.22 & 0.13\\
+Dirichlet prior$^2$ & 0.26 & 0.24 & 0.27 & 0.23 \\ 
+Logistic-normal prior$^2$ & 0.27 & 0.24 & 0.31 & 0.18\\
  \hline
 \end{tabular}
 \label{tab:alphasBeta}
 \end{table}
 
-Figure~\ref{fig:priors_posteriors_Savchuk} and Table~\ref{tab:prior_posteriorsSavchuk} show the prior and posterior  densities and credibility intervals, respectively, from each of the methods and also the case in which we assign an equal weight ($1/K$) to each opinion.
+Figure~\ref{fig:priors_pooled_Savchuk} shows the prior densities for each expert and pooling method and Table~\ref{tab:prior_posteriorsSavchuk} contains the prior and posterior mean and credibility intervals from each of the methods and also the case in which we assign an equal weight ($1/K$) to each opinion.
 Assigning equal weights actually gives a prior mean that is the same as the maximum likelihood estimate of $\theta$, $\hat{\theta} = 9/ 10$.
 This explains why both hierarchical posteriors resemble equal weights so closely.
 Finally, we use the integrated (marginal) likelihood (\cite{raftery2007}, eq. 9), $l(y) = \int_{0}^{1}f(y|\theta)\pi(\theta)d\theta$, as a univariate summary to compare the priors.
@@ -490,14 +489,14 @@ While in this example one can gain insight into prior-data conflict from just th
 
 \begin{figure}[!ht]
 \begin{center}
-\subfigure[][Expert priors]{\includegraphics[scale=.45]{../plots/expert_densities_Savchuk.pdf}}
-\subfigure[][Pooled posteriors]{\includegraphics[scale=.45]{../plots/method_posterior_densities_Savchuk.pdf}}
+\subfigure[][Expert priors]{\includegraphics[scale=.35]{../plots/expert_densities_Savchuk.pdf}}
+\subfigure[][Pooled priors]{\includegraphics[scale=.35]{../plots/method_prior_densities_Savchuk.pdf}}
 \end{center}
 \caption{\textbf{Prior and posterior densities for the survival probability $\theta$}.
 Panel (a) shows the distributions elicited by each expert (data from~\cite{savchuk1994}) and panel (b) shows the pooled priors and posteriors obtained using the methods discussed in this paper and the solution found by~\cite{rufo2012B}.
 The black dashed vertical line marks the maximum likelihood estimate of $\theta$, $\hat{\theta}= 9/10$.
 }
-\label{fig:priors_posteriors_Savchuk}
+\label{fig:priors_pooled_Savchuk}
 \end{figure}
 
 \begin{table}[ht]
@@ -866,7 +865,7 @@ In panel (c) we show the posterior mean and 95\% credibility intervals for the p
 \label{fig:SIR_results}
 \end{figure}
 
-Our results agree somewhat with the estimate obtained by~\cite{Murray2002}, who estimates $\rho = N/R_0 = 202$ and hence $R_0 = 3.78$ using purely numerical methods with no acknowledgement of uncertainty.
+Our results agree somewhat with the estimate obtained by~\cite{Murray2002}, who finds $\rho = N/R_0 = 202$ and hence $R_0 = 3.78$, using purely numerical methods with no acknowledgement of uncertainty.
 The highest estimates we obtained were for fixed $\alpha = 1$, $R_0$ = 3.02 (2.27--3.83).
 This example showcases a desirable consequence of letting $\alpha$ vary: when the ``natural'' prior $q_2$, which is normally informative, is incompatible with the data, it will receive a lower weight ($\alpha$ closer 1) and hence allow the induced prior ($q_1$), which is usually more diffuse, to dominate.
 In fact, as discussed by~\cite{Biggerstaff2014}, the spread of the 1978 boarding school epidemic is unusually fast when compared to regular seasonal Influenza and was likely caused by the lack of previous exposure of the population to the causing strain, H1N1.
