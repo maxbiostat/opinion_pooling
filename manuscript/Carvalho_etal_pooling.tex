@@ -35,6 +35,7 @@ c -- School of Applied Mathematics, Getulio Vargas Foundation (FGV).
 \newtheorem{theo}{Theorem}[]
 \newtheorem{proposition}{Proposition}[]
 \newtheorem{remark}{Remark}[]
+\newtheorem{lemma}{Lemma}[]
 \setcounter{theo}{0} % assign desired value to theorem counter
 \begin{document}
 \maketitle
@@ -122,6 +123,7 @@ In addition, log-linear pools enjoy the~\textit{external Bayesianity} property, 
 Much less trivially,~\cite{genest1984} show that the logarithmic pooling operator in~\ref{eq:logpool} is the~\textbf{only} aggregation (pooling) operator that enjoys external Bayesianity.
 Moreover, the logarithmic pooling operator has the relative propensity consistency (RPC) property, whereby the pooled opinion preserves relative judgments from the experts.
 \begin{remark}
+\label{rmk:properties_RPC}
 \textbf{Relative propensity consistency~\citep{genest1984}}.
 Taking $\boldsymbol F_{X}$ as a set of expert opinions with support on a space $\mathcal{X}$, define $\boldsymbol \xi = \{\boldsymbol F_{X}, a, b\}$ for arbitrary $a , b \in \mathcal{X}$.
 Let $\mathcal{T}$ be a pooling operator and define two functions $U$ and $V$ such that 
@@ -143,16 +145,10 @@ Log-concavity of the pooled prior may be important to consider in order to guara
 \begin{remark}
 \label{rmk:concavity}
 \textbf{Log-concavity}. 
- Let $\mathbf{F}_{\theta}$ be a set of log-concave distributions, i.e., each $f_i$ can be written as $ f_i(\theta) \propto e^{\nu_i(\theta)}$, where $\nu_i(\cdot)$ is a concave function.
-Then $\pi(\theta\mid \boldsymbol \alpha)$ is also log-concave.
+If $\mathbf{F}_{\theta}$ is a set of log-concave distributions, then $\pi(\theta\mid \boldsymbol \alpha)$ is also log-concave.
+Moreover, logarithmic pooling is the only pooling operator that will always produce a log-concave density.
 \end{remark}
-\begin{proof}
-\begin{align}
- \pi(\theta \mid \boldsymbol \alpha) &\propto \prod_{i=0}^{K} [\exp(\nu_i(\theta))]^{\alpha_i},\\
-             &\propto \exp(\nu^{\ast}(\theta)),
-\end{align}
- where $\nu^{\ast}(\theta) = \sum_{i=0}^{K}\alpha_i\nu_i(\theta)$ is a concave function because it is a linear combination of concave functions.
-\end{proof}
+We give a proof in the Appendix.
 
 \subsection{Exponential family}
 \label{sec:expofamily}
@@ -963,6 +959,33 @@ Then, integrating the expression in (\ref{eq:pirewritten}) is equivalent to find
 \end{equation}
 where $\mathbb{E}_{0}[\cdot]$ is the expectation w.r.t $f_0$ and (\ref{eq:expectations}) follows from H\"{o}lder's inequality for expectations~\citep{yeh2011}.
 Since $\forall j$ we have $\mathbb{E}_{0}[X_j]^{\alpha_j} = \left(\int_{\boldsymbol\Theta}f_0(\theta)\frac{f_j(\theta)}{f_0(\theta)}\right)^{\alpha_j}d\theta=1^{\alpha_j}=1$, Theorem~\ref{thm:normalisation} is proven.
+\end{proof}
+
+To establish Remark~\ref{rmk:concavity}, we will need the following result from~\cite{genest1984}.
+\begin{lemma}
+\label{lem:RPC_representation}
+\textbf{Representation of a pooling operator with RPC}~\citep[eq. 3.1]{genest1984}.
+The only relative propensity consistent operator can always be represented by
+\[ \mathcal{T} \left( \boldsymbol F_\theta \right)(\theta) = \boldsymbol B\left( \boldsymbol F_\theta \right) c(\theta) \prod_{i=0}^K \left[f_i(\theta) \right]^{w_i},\]
+with $\boldsymbol B\left( \boldsymbol F_\theta \right) > 0$, $c(\theta) >0$  and $w_0, w_1, \ldots, w_K \geq 0$ arbitrary. 
+\end{lemma}
+Now we can state the proof of Remark~\ref{rmk:concavity}.
+\begin{proof}
+First, we will show by direct calculation that logarithmic pooling (LP) leads to a log-concave distribution.
+Notice that each $f_i$ can be written as $ f_i(\theta) \propto e^{\nu_i(\theta)}$, where $\nu_i(\cdot)$ is a concave function.
+We can then write
+\begin{align*}
+ \pi(\theta \mid \boldsymbol \alpha) &\propto \prod_{i=0}^{K} [\exp(\nu_i(\theta))]^{\alpha_i},\\
+             &\propto \exp(\nu^{\ast}(\theta)),
+\end{align*}
+ where $\nu^{\ast}(\theta) = \sum_{i=0}^{K}\alpha_i\nu_i(\theta)$ is a concave function because it is a linear combination of concave functions.
+ 
+ We will now show that LP is the only operator that guarantees log-concavity when $\boldsymbol F_\theta$ is a set of concave distributions.
+ First, recall that LP is the only pooling operator that enjoys RPC (Remark~\ref{rmk:properties_RPC}).
+ Then, with the goal of obtaining a contradiction, suppose that there exists a pooling operator $\mathcal{T}$ that is log-concave but does not enjoy RPC.
+ From Lemma~\ref{lem:RPC_representation}, we know that $\mathcal{T}$ cannot be represented as $\boldsymbol B(\boldsymbol F_\theta) c(\theta) \prod_{i=0}^K f_i(\theta)^{w_i} $.
+ But every non-negative log-concave function $g(x)$ can be represented as $ g(x) = a \cdot c(x) \cdot h(x)$, with $a \geq 0$ and $c(x)$ and $h(x)$ non-negative and log-concave.
+ Since under the assumptions on $\boldsymbol F_\theta$ we have that $h(\theta) := \prod_{i=0}^K f_i(\theta)^{w_i}$ is non-negative and log-concave, a contradiction is reached and the result follows. 
 \end{proof}
 
 
