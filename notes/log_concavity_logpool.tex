@@ -56,6 +56,9 @@ The \textbf{logarithmic pooling operator} $\mathcal{LP}(\mathbf{F_\theta}, \bold
 where $t(\boldsymbol\alpha) = \int_{\boldsymbol\Theta}\prod_{i=0}^K f_i(\theta)^{\alpha_i}d\theta$.
 This pooling method enjoys several desirable properties and yields tractable distributions for a large class of distribution families~\citep{genest1984,genest1986A}.
 
+Another desirable property of the logarithmic pooling operator is log-concavity.
+Log-concavity of the pooled prior may be important to consider in order to guarantee unimodality and certain conditions on tail behaviour~\citep{Bagnoli2005}.
+
 \begin{definition}
 \label{def:RPC}
 \textbf{Relative propensity consistency~\citep{genest1984}}.
@@ -96,7 +99,7 @@ Now we can state and prove the result (Remark~\ref{rmk:concavity}).
 \label{rmk:concavity}
 \textbf{Log-concavity}. 
 If $\mathbf{F}_{\theta}$ is a set of log-concave distributions, then $\pi(\theta\mid \boldsymbol \alpha)$ is also log-concave.
-Moreover, logarithmic pooling is the only pooling operator that will always produce a log-concave density.
+Moreover, logarithmic pooling is the only pooling operator to preserve log-concavity.
 \end{remark}
 \begin{proof}
 First, we will show by direct calculation that logarithmic pooling (LP) leads to a log-concave distribution.
