@@ -34,6 +34,7 @@ Luiz Max F. de Carvalho\\
 \newtheorem{remark}{Remark}[]
 \newtheorem{definition}{Definition}[]
 \newtheorem{lemma}{Lemma}[]
+\newtheorem{corollary}{Corollary}[]
 \setcounter{theorem}{0} % assign desired value to theorem counter
 \begin{document}
 \maketitle
@@ -47,7 +48,7 @@ Key-words: logarithmic pooling; log-concavity; uniqueness.
 \section*{Background}
 
 Logarithmic pooling is a popular method for combining opinions on an agreed quantity, specially when these opinions can be framed as probability distributions.
-Let $\mathbf{F_\theta} := \{f_0(\theta), f_1(\theta), \ldots, f_K(\theta)\}$ be a set of distributions representing the opinions of $K + 1$ experts and let $\boldsymbol\alpha :=\{\alpha_0, \alpha_1, \ldots, \alpha_K \} \in \mathcal{S}^K$ be the vector of weights, such that $\alpha_i > 0\: \forall i$ and $\sum_{i=0}^K \alpha_i = 1$, i.e., $\mathcal{S}^{K + 1}$ is the space of all open simplices of dimension $K + 1$.
+Let $\theta \in \Theta \subseteq \mathbb{R}$, $|\Theta| \geq 3$,  be a quantity of interest and let $\mathbf{F_\theta} := \{f_0(\theta), f_1(\theta), \ldots, f_K(\theta)\}$ be a set of distributions representing the opinions of $K + 1$ experts and let $\boldsymbol\alpha :=\{\alpha_0, \alpha_1, \ldots, \alpha_K \} \in \mathcal{S}^K$ be the vector of weights, such that $\alpha_i > 0\: \forall i$ and $\sum_{i=0}^K \alpha_i = 1$, i.e., $\mathcal{S}^{K + 1}$ is the space of all open simplices of dimension $K + 1$.
 The \textbf{logarithmic pooling operator} $\mathcal{LP}(\mathbf{F_\theta}, \boldsymbol\alpha)$ is defined as
 \begin{equation}
 \label{eq:logpool}
@@ -77,24 +78,26 @@ for all $\boldsymbol \xi_1, \boldsymbol \xi_2$.
 Informally, this property says that if all experts consider a particular event $A$ more probable than another event $B$, then the pooled opinion should be consistent with these relative judgments. 
 
 \begin{lemma}
-\label{lem:RPC_LP}
-\textbf{Uniqueness of LP for RPC }~\citep{genest1984}.
-Logarithmic pooling is the~\textbf{only} pooling operator that enjoys RPC.
+\label{lem:RPC_representation}
+\textbf{Representation of a pooling operator with RPC}~\citep[eq. 1.4]{genest1984}.
+When $|\Theta| \geq 3$, a relative propensity consistent operator is always of the form
+\[ \mathcal{T} \left( \boldsymbol F_\theta \right)(\theta) = \boldsymbol B\left( \boldsymbol F_\theta \right) c(\theta) \prod_{i=0}^K \left[f_i(\theta) \right]^{w_i},\]
+with $\boldsymbol B\left( \boldsymbol F_\theta \right) > 0$, $c(\theta) >0$  and $w_0, w_1, \ldots, w_K \geq 0$ arbitrary.
 \end{lemma}
 We refer the reader to~\cite{genest1984} for a proof.
 
-\begin{lemma}
-\label{lem:RPC_representation}
-\textbf{Representation of a pooling operator with RPC}~\citep[eq. 3.1]{genest1984}.
-The only relative propensity consistent operator can always be represented by
-\[ \mathcal{T} \left( \boldsymbol F_\theta \right)(\theta) = \boldsymbol B\left( \boldsymbol F_\theta \right) c(\theta) \prod_{i=0}^K \left[f_i(\theta) \right]^{w_i},\]
-with $\boldsymbol B\left( \boldsymbol F_\theta \right) > 0$, $c(\theta) >0$  and $w_0, w_1, \ldots, w_K \geq 0$ arbitrary. 
-\end{lemma}
-Again, see~\cite{genest1984} for a proof.
+\begin{corollary}
+\label{cor:uniqueness_LP}
+\textbf{Uniqueness of RPC for LP}.
+Logarithmic pooling is the~\textbf{only} pooling operator that enjoys RPC.
+\end{corollary}
+\begin{proof}
+The result follows trivially from the general definition of the logarithmic pool (see e.g.~\cite{genest1986B}, eq. 1.7) and Lemma~\ref{lem:RPC_representation}.
+\end{proof}
 
 \section*{The result}
 
-Now we can state and prove the result (Remark~\ref{rmk:concavity}).
+Now we can state and prove the following result.
 \begin{remark}
 \label{rmk:concavity}
 \textbf{Log-concavity}. 
@@ -112,7 +115,7 @@ We can then write
  where $\nu^{\ast}(\theta) = \sum_{i=0}^{K}\alpha_i\nu_i(\theta)$ is a concave function because it is a linear combination of concave functions.
  
  We will now show that LP is the only operator that guarantees log-concavity when $\boldsymbol F_\theta$ is a set of concave distributions.
- First, recall that LP is the only pooling operator that enjoys RPC (Lemma~\ref{lem:RPC_LP}).
+ First, recall that LP is the only pooling operator that enjoys RPC as implied by Corollary~\ref{cor:uniqueness_LP}.
  Then, with the goal of obtaining a contradiction, suppose that there exists a pooling operator $\mathcal{T}$ that is log-concave but does not enjoy RPC.
  From Lemma~\ref{lem:RPC_representation}, we know that $\mathcal{T}$ cannot be represented as $\boldsymbol B(\boldsymbol F_\theta) c(\theta) \prod_{i=0}^K f_i(\theta)^{w_i} $.
 Every non-negative log-concave function $g(\theta)$ can be represented as
@@ -124,8 +127,8 @@ with $a \geq 0$ and $c(\theta)$ and $h(\theta)$ non-negative and log-concave.
 But under the assumptions on $\boldsymbol F_\theta$, we have that $h(\theta) := \prod_{i=0}^K f_i(\theta)^{w_i}$ is non-negative and log-concave and therefore $\mathcal{T}$ can in fact be represented in the form of~(\ref{eq:lc_rep}) and thus the form of Lemma~\ref{lem:RPC_representation}, a contradiction. 
 \end{proof}
 
-\section*{Acknowledgements}
-To Professor Christian Genest for taking a look at this note.
+\section*{Acknowledgments}
+I am grateful to Felipe Figueiredo for insightful discussions and to Professor Christian Genest for taking a look at this note.
 \bibliography{../manuscript/pooling.bib}
 
 % \begin{figure}[!ht]
