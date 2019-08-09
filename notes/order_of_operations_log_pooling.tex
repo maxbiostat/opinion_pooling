@@ -3,7 +3,6 @@
 % WSC 2015 configs
 \fontfamily{times}
 \geometry{verbose,tmargin=30mm,bmargin=25mm,lmargin=25mm,rmargin=25mm}
-\pagestyle{empty}
 % end configs
 \usepackage{setspace,relsize}               
 \usepackage{moreverb}                        
@@ -33,6 +32,7 @@ Luiz Max F. de Carvalho\\
 \newtheorem{theo}{Theorem}[]
 \newtheorem{proposition}{Proposition}[]
 \newtheorem{remark}{Remark}[]
+\newtheorem{corollary}{Corollary}[]
 \newtheorem{definition}{Definition}[]
 \setcounter{theo}{0} % assign desired value to theorem counter
 \begin{document}
@@ -43,8 +43,18 @@ In this note I discuss the order of operations between transforming and pooling 
 I give an explicit example where both procedures lead to the same density even when the transform is not invertible and also discuss an example where the transform-then-pool and pool-then-transform with a non-invertible transform lead to distributions in the same family which are nonetheless distinct.
 The lesson to be learned is that while the order of operations usually matters, it may not, depending on the distributions under consideration.
 
-Key-words: logarithmic pooling; invertible; log-normal. 
+Key-words: logarithmic pooling; transformations; log-normal. 
 \end{abstract}
+
+\section*{TODO}
+\begin{itemize}
+ \item Get rid of all abuse of notation. 
+ The statement $ \phi(\mathcal{LP}(\mathbf{F_X}, \boldsymbol\alpha)) = \pi_{Y}(y | \boldsymbol\alpha)$ is an abomination.
+ \item Clearly establish the conditions under which $\phi()$ produces a pushforward measure that admits Radon-Nikodym derivatives. 
+ Without this, it becomes meaningless to talk about ``induce-then-pool''; you can only pool proper probability densities and thus one needs to guarantee said densities in fact exist.
+ \item Maybe formulate a measure-theoretic version of LP to deal with the difficulties above.
+\end{itemize}
+
 
 \section*{Background}
 
@@ -55,24 +65,10 @@ The \textbf{logarithmic pooling operator} $\mathcal{LP}(\mathbf{F_\theta}, \bold
 \label{eq:logpool}
  \mathcal{LP}(\mathbf{F_\theta}, \boldsymbol\alpha) :=  \pi(\theta | \boldsymbol\alpha) = t(\boldsymbol\alpha) \prod_{i=0}^K f_i(\theta)^{\alpha_i},
 \end{equation}
-where $t(\boldsymbol\alpha) = \int_{\boldsymbol\Theta}\prod_{i=0}^K f_i(\theta)^{\alpha_i}d\theta$.
-This pooling method enjoys several desirable properties and yields tractable distributions for a large class of distribution families~\citep{genest1984}.
+where $t(\boldsymbol\alpha) = \left[ \int_{\boldsymbol\Theta}\prod_{i=0}^K f_i(\theta)^{\alpha_i}d\theta \right]^{-1}$.
+This pooling method enjoys several desirable properties and yields tractable distributions for a large class of distribution families~\citep{genest1984,genest1986A,Carvalho2019}.
 
 \section*{Pool then transform or transform and then pool?}
-
-\begin{definition}
-Let $A, B \subseteq \mathbb{R}^p$.
-A function  $h: A \to B$ is \textbf{invertible} iff $\: \exists \: h^{-1}: B \to A \: \text{with} \: h^{-1}(h(a)) = a \: \forall \: a \in A$. 
-Let $\pi_A$ be an arbitrary probability measure in A. 
-If $h$ is monotonic and differentiable we can write $\pi_B(B) = \pi_A(h^{-1}(A))|J|$, where $|J|$ is the absolute determinant of the Jacobian matrix with entries $J_{ik} := \partial h_k^{-1}/\partial a_i$, $i,k = 1, 2, \ldots, p$.
-\end{definition}
-
-\begin{definition}
- Let $f$ and $g$ be probability density functions with support on $\mathcal{X} \subseteq \mathbb{R}^d$.
- We say $f \equiv g$ if $f(x) = g(x)$ for almost every point $x \in \mathcal{X}$, that is, \textit{almost everywhere, a.e.}
- This equivalent to stating that $\mu(A) = 0$ where $A := \{ x \in \mathcal{X} : f(x) \neq g(x) \}$ and $\mu$ is the dominating measure.
-\end{definition}
-
 
 Suppose the we are interested in the distribution of a random variable $Y \in \mathcal{Y}\subseteq \mathbb{R}^q$  when one has a random variable $X \in \mathcal{X} \subseteq \mathbb{R}^p$ with $\phi : \mathcal{X} \to \mathcal{Y}$.
 Let $|J_\phi|$ be the (absolute) Jacobian determinant w.r.t. $\phi$.
@@ -85,9 +81,22 @@ Then one can either:
  and obtain $\pi_Y^{\prime}(Y |  \boldsymbol \alpha) = \mathcal{LP}(\mathbf{G}_{Y},  \boldsymbol \alpha)$.
 \end{itemize}
 
+First, let us start with a couple definitions
+\begin{definition}
+Let $A, B \subseteq \mathbb{R}^p$.
+A function  $h: A \to B$ is \textbf{invertible} iff $\: \exists \: h^{-1}: B \to A \: \text{with} \: h^{-1}(h(a)) = a \: \forall \: a \in A$. 
+Let $\pi_A$ be an arbitrary probability measure in A. 
+If $h$ is monotonic and differentiable we can write $\pi_B(B) = \pi_A(h^{-1}(A))|J|$, where $|J|$ is the absolute determinant of the Jacobian matrix with entries $J_{ik} := \partial h_k^{-1}/\partial a_i$, $i,k = 1, 2, \ldots, p$.
+\end{definition}
+
+\begin{definition}
+ Let $f$ and $g$ be probability density functions with support on $\mathcal{X} \subseteq \mathbb{R}^d$.
+ We say $f \equiv g$ if $f(x) = g(x)$ for almost every point $x \in \mathcal{X}$, that is, \textit{almost everywhere, a.e.}
+ This is equivalent to stating that $\mu(A) = 0$ where $A := \{ x \in \mathcal{X} : f(x) \neq g(x) \}$ and $\mu$ is the dominating measure.
+\end{definition}
 \begin{remark}
 \label{rmk:invariance}
-If $\phi$ is invertible, then $\pi_Y(Y | \boldsymbol \alpha) \equiv \pi_Y^{\prime}(Y|  \boldsymbol \alpha)$.
+If $\phi$ is invertible, then $\pi_Y \equiv \pi_Y^{\prime}$.
 \end{remark}
 \begin{proof}
 First, 
@@ -107,8 +116,18 @@ And,
 \end{align}
 as claimed.
 \end{proof}
-
-An interesting idea is whether Remark~\ref{rmk:invariance} is an iff result. 
+\begin{corollary}
+\label{clr:inverseGamma}
+ The log-pooled distribution from a collection of inverse-Gamma densities with parameters $\eta_i$, $\beta_i$ is inverse-Gamma with parameters $\eta^\star = \sum_{i = 0}^K \alpha_i \eta_i$ and $\beta^\star = \sum_{i = 0}^K \alpha_i \beta_i$.
+\end{corollary}
+\begin{proof}
+First, recall that if $X \sim \text{Gamma}(a, b)$ then $ 1/X \sim \text{Inverse-Gamma}(a, b)$.
+\cite{Carvalho2019} show that if the $f_i$ are Gamma densities  with parameters $\eta_i$ and $\beta_i$ (shape/rate parametrisation) then the pooled distribution is a Gamma distribution with parameters $\eta^\star = \sum_{i = 0}^K \alpha_i \eta_i$ and $\beta^\star = \sum_{i = 0}^K \alpha_i \beta_i$.
+Since $\phi(x) = 1/x$ is invertible, the result follows from Remark~\ref{rmk:invariance}.
+\end{proof}
+While Corollary~\ref{clr:inverseGamma} is straightforward to get by direct calculation, our goal here is to illustrate how Remark~\ref{rmk:invariance} could be used in situations where direct calculation is unwieldly.
+An interesting idea is whether Remark~\ref{rmk:invariance} is an ``if and only if'' (iff) result.
+As we shall see, the answer is no (Remark~\ref{rmk:invertibleIFF}).
 % Let $\phi : \mathcal{X} \to \mathcal{Y}$ be a surjective non-injective differentiable function, which is not invertible on the whole of $\mathcal{Y}$, but instead is \textbf{piece-wise invertible}.
 % Let $\mathcal{Y}_1, \mathcal{Y}_2, \ldots, \mathcal{Y}_T$ be a  partition of $\mathcal{Y}$, i.e., $\mathcal{Y}_i\cap\mathcal{Y}_j = \emptyset,\: \forall i\neq j \in \{1, 2, \ldots, T\}$ and $\bigcup_{t = 1}^T\mathcal{Y}_t = \mathcal{Y}$.
 % Then define the inverse functions $\phi_{t}^{-1}(y)\,:\, \mathcal{Y}_t \to \mathcal{X}, \: t \in \{1, 2, \ldots, T\}$.
@@ -123,7 +142,7 @@ An interesting idea is whether Remark~\ref{rmk:invariance} is an iff result.
 % Below I try to establish a result in general for any surjective non-injective mapping, not just piece-wise invertible ones.
 \begin{remark}
  \label{rmk:invertibleIFF}
- It is possible to have  $\pi_Y( \cdot | \boldsymbol \alpha) \equiv \pi_Y^{\prime}( \cdot |  \boldsymbol \alpha)$ even when $\phi$ is not invertible.
+ It is possible to have  $\pi_Y \equiv \pi_Y^{\prime}$ even when $\phi$ is not invertible.
 \end{remark}
 \begin{proof}
 We will show this by way of an explicit example.
@@ -161,7 +180,7 @@ We are now prepared to write
  \pi_Y(y |  \boldsymbol \alpha) = \frac{1}{\sqrt{2\pi v^\ast y}} \exp\left(-\frac{y}{2v^\ast}\right). \\
 \end{equation}
 whence $v^\ast =  \left[\sum_{i=0}^K \frac{\alpha_i}{v_i} \right]^{-1}$.
-This stems from the pool of Gaussians being also a Gaussian (see manuscript for derivation).
+This follows from the pool of log-normals being also a log-normal -- see the Appendix of~\cite{Carvalho2019} for the derivation.
 An explicit computation gives $\pi^{\prime}_{Y}$:
 \begin{align}
  \pi^{\prime}_{Y}(y|  \boldsymbol \alpha) &\propto \prod_{i=0}^K g_i(y)^{\alpha_i}, \\
@@ -172,7 +191,7 @@ which establishes $ \pi_{Y}(y|  \boldsymbol \alpha) =  \pi^{\prime}_{Y}(y|  \bol
 \end{proof}
 % There probably exists a measure-theoretic proof that is way more elegant, but this should suffice.
 See Figure~\ref{fig:normal_square_example} for graphical depiction of the example given above.
-Notice that we could have chosen any distribution on $(-\infty, \infty)$ symmetric about $0$.
+We could have chosen any distribution on $(-\infty, \infty)$ symmetric about $0$.
 This result shows that it is indeed possible to obtain the same density even when $\phi$ is not one-to-one.
 
 \begin{figure}[!ht]
@@ -205,7 +224,7 @@ It is not hard to show that  $\pi_U(U | \boldsymbol\alpha) := \mathcal{LP}(\math
  v_U^\ast &:= \frac{1}{\sum_{i=0}^K w_{iU} }, \\
  w_{iU} &:=  \frac{\alpha_i}{\sigma_{iU}^2}.
 \end{align}
-See our paper for a proof.
+See~\cite{Carvalho2019} for a proof.
 Analagously, $\pi_V(V | \boldsymbol\alpha) := \mathcal{LP}(\mathbf{G}_{V}, \boldsymbol \alpha) =  \text{log-normal}(\mu_V^\ast, v_V^\ast)$.
 Then $\pi_Z(Z |  \boldsymbol \alpha) = \text{log-normal}(\mu_Z^{\ast}, v_Z^{\ast})$, with
 \begin{align}
@@ -223,7 +242,7 @@ Since $r_{iZ} = \text{log-normal}(\mu_{iU} - \mu_{iV}, \sigma_{iU}^2 +  \sigma_{
  v_Z^{\ast\ast} &:= \frac{1}{\sum_{i=0}^K w_{iZ} }, \\
  w_{iZ} &:=  \frac{\alpha_i}{\sigma_{iU}^2 + \sigma_{iV}^2}.
 \end{align}
-Clearly, $v_Z^{\ast} \leq v_Z^{\ast\ast}$ and hence $\mu_Z^{\ast\ast} \leq \mu_Z^{\ast} \: \forall \: \boldsymbol\alpha$.
+Clearly, $v_Z^{\ast} \leq v_Z^{\ast\ast}$ and hence $\mu_Z^{\ast\ast} \leq \mu_Z^{\ast} \: \forall \: \boldsymbol\alpha$. [NOPE. THIS AIN'T TRUE AT ALL. NEEDS REVISION].
 
 \begin{figure}[!ht]
 \centering
@@ -236,29 +255,31 @@ For this example $K=2$, $\alpha_0 = 0.70$, $\mu_{0U} = 0.80$, $\sigma_{0U}^2 = 0
 \end{figure}
 
 
-\subsubsection*{Minimising Kullback-Leibler divergence in transformed space}
+\section*{Minimising Kullback-Leibler divergence in transformed space}
 
 One might argue that procedure (b) makes little sense, given that the set of opinions $\mathbf{F}_{X}$ concerns only $X$, i.e, it was not necessarily constructed taking the transformation $\phi(\cdot)$ into account.
 An example is a situation where experts are asked to provide distributions on the probability $p$ of a particular event.
-In general, elicitation for $f_i(p)$ will not take into account the induced distribution on the log-odds, $\phi(p) = \log p/(1-p)$.
+In general, elicitation for $f_i(p)$ will not take into account the induced distribution on the log-odds, $\phi(p) = \log \left( p/(1-p) \right)$.
 %% LM: we can change this dull example to something more involved.
+% \[ f(l \mid a, b) = \frac{1}{\mathcal{B}(a, b)} \left(\frac{e^x}{e^x + 1}\right)^{a-1} \left(1- \frac{e^x}{e^x + 1}\right)^{b-1}\frac{e^x}{(e^x + 1)^2} \]
 Nevertheless, the decision-maker may wish to assign the weights $\boldsymbol\alpha$ in a way that takes $\phi(\cdot)$ into account, e.g., by giving lower weights to experts whose distributions on the log-odds scale are unreasonable.
 
 This decision process can be made more precise.
-In a similar spirit to the paper, one can construct $\boldsymbol\alpha$ so as to minimise the Kullback-Leibler divergence between each distribution in $\mathbf{F^{-1}_y}$ and a transformation of the distribution obtained by procedure (a), $\pi_{Y}(y | \boldsymbol\alpha) = \pi_{\theta}( \phi^{-1}(y)| \boldsymbol\alpha)|J_\phi|$.
-Let $d_i = \text{KL}( h_i(y) || \pi_{Y}(y | \boldsymbol\alpha))$.
-We then aim at solving the problem
+In a similar spirit to~\cite{Carvalho2019}, one can construct $\boldsymbol\alpha$ so as to minimise the Kullback-Leibler divergence between each distribution in $\mathbf{F^{-1}_y}$ and a transformation of the distribution obtained by procedure (a), $ \phi(\mathcal{LP}(\mathbf{F_X}, \boldsymbol\alpha)) = \pi_{Y}(y | \boldsymbol\alpha)$.
+We aim at solving the problem
 \begin{align}
-L(\boldsymbol\alpha) &= \sum_{i=0}^Kd_i \\
+L(\boldsymbol\alpha) &= \sum_{i=0}^K \text{KL}(  \pi_{Y} || h_i), \\
      \hat{\boldsymbol\alpha}:=& \:\argmin L(\boldsymbol\alpha)  \nonumber
 \end{align}
 
 This procedure therefore choses weights for each expert by how coherent the prior provided by each expert is with the pool-then-Transform -- procedure (a) -- prior in the transformed space induced by $\phi(\cdot)$.
+When $\phi()$ is invertible, Remark~\ref{rmk:invariance} tells us that this procedure is the same as minimising the KL divergence between $\pi_X$ and each $f_i$, since the Kullback-Leibler divergence is invariant under invertible differentiable transformations.
+Thus, in the probability/log-odds example mentioned above, the decision maker would not need to worry about the distributions on the log-odds induced by $\phi$, since it is invertible.
 
 
 \section*{Acknowledgements}
 
-I am grateful to Mike West (Duke) for not being impressed about the invertible case and prompting me to look at it in more detail.
+LMFC is grateful to Mike West (Duke University) for not being impressed about the invertible case and prompting us to look at it in more detail.
 
 \bibliography{../manuscript/pooling}
 
