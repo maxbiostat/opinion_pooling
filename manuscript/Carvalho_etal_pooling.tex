@@ -3,7 +3,6 @@
 % WSC 2015 configs
 \fontfamily{times}
 \geometry{verbose,tmargin=30mm,bmargin=25mm,lmargin=25mm,rmargin=25mm}
-\pagestyle{empty}
 % end configs
 \usepackage{setspace,relsize}               
 \usepackage{moreverb}                        
@@ -60,7 +59,7 @@ Key-words: logarithmic pooling; expert opinion; hierarchical modelling; Bayesian
 
 Combining probability distributions is a topic of general interest, both in the statistical~\citep{west1984, genest1986A, genest1986B} and decision theory literatures~\citep{genest1984,French1985,Guardoni2002}.
 On the theoretical front, studying opinion pooling operators may give important insights on consensus belief formation and group decision making~\citep{west1984,genest1986B,Guardoni2002}.
-Among the various opinion pooling operators proposed in the literature, logarithmic pooling has enjoyed much popularity, mainly due to its many desirable properties such as relative propensity consistency (RPC) and external Bayesianity (EB)~\citep{genest1986A} (see \textbf{Background}). 
+Among the various opinion pooling operators proposed in the literature, logarithmic pooling has enjoyed much popularity, mainly due to its many desirable properties such as relative propensity consistency (RPC) and external Bayesianity (EB)~\citep{genest1986A} -- see below. 
 In a practical setting, logarithmic pooling finds use in a range of fields, from engineering~\citep{lind1988, savchuk1994} to wildlife conservation~\citep{poole2000} and infectious disease modelling~\citep{Coelho2009}. 
 
 A common situation of interest is combining expert opinions about a quantity of interest $\theta \in \mathbf{\Theta} \subseteq \mathbb{R}^p$ when they can be represented as (proper) probability distributions.
@@ -93,7 +92,7 @@ The log-pooled prior is
 \label{eq:logpool}
  \mathcal{LP}(\mathbf{F_\theta}, \boldsymbol\alpha) := \pi(\theta \mid \boldsymbol\alpha) = t(\boldsymbol\alpha) \prod_{i=0}^K f_i(\theta)^{\alpha_i},
 \end{equation}
-where $t(\boldsymbol\alpha) = \int_{\boldsymbol\Theta}\prod_{i=0}^K f_i(\theta)^{\alpha_i}d\theta$.
+where $t(\boldsymbol\alpha) = \left[ \int_{\boldsymbol\Theta}\prod_{i=0}^K f_i(\theta)^{\alpha_i}\, d\theta \right]^{-1}$.
 
 Logarithmic pooling will only yield proper probability distributions if it is possible to normalise the expression in (\ref{eq:logpool}).
 This condition is usually assumed implicitly, without proof.
@@ -102,9 +101,9 @@ While \citet{poole2000} provide a proof for the case of two densities (see Theor
 \label{thm:normalisation}
 \textbf{Normalisation~\citep{genest1986A}}. 
 Let $A$ be a $(K+1)$-dimensional open simplex on $[0,1]$.
-For all $\boldsymbol\alpha \in A$ there exists a constant $t(\boldsymbol\alpha)$ such that $\int_{\boldsymbol\Theta}\pi(\theta \mid \boldsymbol \alpha)d\theta = 1$.
+For all $\boldsymbol\alpha \in A$ there exists a constant $t(\boldsymbol\alpha)$ such that $\int_{\boldsymbol\Theta}\pi(\theta \mid \boldsymbol \alpha)\, d\theta = 1$.
 \end{theo}
-A novel, simple proof using H\"{o}lder's inequality is given in the Appendix.
+A simple proof using H\"{o}lder's inequality is given in the Appendix.
 This result ensures any (finite) number of proper distributions can be combined using the logarithmic pooling operator to yield a normalisable (proper) density.
 In addition, log-linear pools enjoy the~\textit{external Bayesianity} property, which guarantees that whether one combines the expert opinions before or after observing evidence does not affect the resulting pooled distribution.
 \begin{remark}
@@ -141,7 +140,7 @@ We refer the reader to~\cite{genest1984} for a proof.
 Informally, this property says that if all experts consider a particular event $A$ more probable than another event $B$, then the pooled opinion should be consistent with these relative judgments. 
 \cite{genest1984} show that for mild conditions on $\mathcal{X}$, namely $|\mathcal{X}| \geq 3$, the logarithmic pooling operator is the only pooling operator with RPC.
 Another desirable property of the logarithmic pooling operator is log-concavity.
-Log-concavity of the pooled prior may be important to consider in order to guarantee unimodality and certain conditions on tail behaviour.
+Log-concavity of the pooled prior may be important to consider in order to guarantee unimodality and certain conditions on tail behaviour (see~\cite{Bagnoli2005}).
 \begin{remark}
 \label{rmk:concavity}
 \textbf{Log-concavity}. 
@@ -262,7 +261,7 @@ In order to choose $\boldsymbol\alpha$ so as to maximise prior
 diffuseness, one can maximise the entropy of the log-pooled prior, i.e.
 \begin{align}
 \nonumber
-H_{\pi}(\theta; \boldsymbol\alpha) &= E_{\pi}\left[-\log \pi(\theta) \right] =-\int_{\boldsymbol\Theta}\pi(\theta)\log\pi(\theta)d\theta,\\
+H_{\pi}(\theta; \boldsymbol\alpha) &= E_{\pi}\left[-\log \pi(\theta) \right] =-\int_{\boldsymbol\Theta}\pi(\theta)\log\pi(\theta)\, d\theta,\\
 \label{eq:entropypiB}
 &= -\sum_{i=0}^{K} \alpha_i E_{\pi}[\log f_i] - \log t(\boldsymbol\alpha).
 \end{align}
@@ -298,7 +297,7 @@ Fortunately, this set up leads to a unique solution.
 \textbf{Uniqueness}~\citep{rufo2012A}.
  The distribution obtained following~(\ref{eq:argminKL}) is unique, i.e., there is only one aggregated prior $\pi(\theta \mid \boldsymbol\alpha)$ that minimizes $L(\boldsymbol\alpha)$.
 \end{remark}
-One can get some intuition into the proof by noting that minimising~(\ref{eq:KLexpanded}) is equivalent to maximising $\ln t(\boldsymbol\alpha) = \ln\int_{\boldsymbol\Theta}\prod_{i=0}^{K}f_i(\theta)^{\alpha_i}d\theta$. 
+One can get some intuition into the proof by noting that minimising~(\ref{eq:KLexpanded}) is equivalent to maximising $\ln t(\boldsymbol\alpha) = \ln\int_{\boldsymbol\Theta}\prod_{i=0}^{K}f_i(\theta)^{\alpha_i}\, d\theta$. 
 \cite{rufo2012A} show that $t(\boldsymbol\alpha)$ is concave, therefore the problem in~(\ref{eq:argminKL}) has a unique solution.
 By contrast, the problem in~(\ref{eq:argmaxEnt}) requires one to minimise $\ln t(\boldsymbol\alpha)$, hence lacking a sufficient condition for the existence of a unique solution.
 See Section~\ref{sec:computation_opt} for implementation details.
@@ -382,7 +381,7 @@ In the original paper,~\cite[sec. 3.4]{poole2000} propose a sampling-importance-
 \begin{enumerate}
 \setcounter{enumi}{-1}
  \item Draw $k$ values from  $q_1(\theta)$, constructing $\boldsymbol \theta_k = (\theta^{(1)}, \theta^{(2)}, \ldots, \theta^{(k)} )$;
- \item Similarly, construct $\boldsymbol \alpha_k$ from $\pi(\boldsymbol \alpha)$;
+ \item Similarly, sample $\boldsymbol \alpha_k$ from $\pi(\boldsymbol \alpha)$;
  \item For each $\theta^{(i)} \in \boldsymbol\theta_k$ run the model to compute $\psi^{(i)} = M(\theta^{(i)})$, constructing $\boldsymbol \phi_k$;
  \item Obtain a density estimate of $q_1^\star(\phi)$ from  $\boldsymbol \phi_k$;
  \item Form the importance weights 
@@ -390,7 +389,7 @@ In the original paper,~\cite[sec. 3.4]{poole2000} propose a sampling-importance-
  \label{eq:SpIRweights}
   w_i = t\left(\boldsymbol \alpha^{(i)}\right) \left(\frac{q_2(M(\theta^{(i)}))}{q_1^\star(M(\theta^{(i)}))}\right)^{1 - \boldsymbol \alpha^{(i)}} L_1(\theta^{(i)}) L_2(M(\theta^{(i)})),
  \end{equation}
-where $t\left(\boldsymbol \alpha^{(i)}\right) = \int_{\Phi} q_1^\ast(\phi)^{\alpha^{(i)}} q_2(\phi)^{1-\alpha^{(i)}} d\phi$ is computed using standard quadrature methods;
+where $t\left(\boldsymbol \alpha^{(i)}\right) = \left( \int_{\Phi} q_1^\ast(\phi)^{\alpha^{(i)}} q_2(\phi)^{1-\alpha^{(i)}} d\phi \right)^{-1}$ is computed using standard quadrature methods;
  \item (Re)Sample $l$ values from $\boldsymbol \theta_k$ according to the weights $\boldsymbol w_k$.
 \end{enumerate}
 
@@ -465,11 +464,11 @@ Logistic-normal prior$^2$ & 0.27 & 0.24 & 0.31 & 0.18\\
 Figure~\ref{fig:priors_pooled_Savchuk} shows the prior densities for each expert and pooling method and Table~\ref{tab:prior_posteriorsSavchuk} contains the prior and posterior mean and credibility intervals from each of the methods and also the case in which we assign an equal weight ($1/K$) to each opinion.
 Assigning equal weights actually gives a prior mean that is the same as the maximum likelihood estimate of $\theta$, $\hat{\theta} = 9/ 10$.
 This explains why both hierarchical posteriors resemble equal weights so closely.
-Finally, we use the integrated (marginal) likelihood (\cite{raftery2007}, eq. 9), $l(y) = \int_{0}^{1}f(y|\theta)\pi(\theta)d\theta$, as a univariate summary to compare the priors.
+Finally, we use the integrated (marginal) likelihood (\cite{raftery2007}, eq. 9), $l(y) = \int_{0}^{1}f(y|\theta)\pi(\theta)\, d\theta$, as a univariate summary to compare the priors.
 The marginal likelihood for the $i$-th expert and $J$ observations of the form $\{ y_j, n_j\}$ is:
 \begin{align}
   \label{eq:marglike}
-l_i(y_j, n_j) &= \int_{0}^{1}\mathcal{L}(\theta|y_j, n_j)\pi_i(\theta)d\theta\nonumber\\
+l_i(y_j, n_j) &= \int_{0}^{1}\mathcal{L}(\theta|y_j, n_j)\pi_i(\theta)\, d\theta\nonumber\\
  &= \prod_{j = 1}^{J}\frac{\Gamma(n_j-1)}{\Gamma(n_j-y_j + 1)\Gamma(y_j+1)}\frac{\Gamma(a_i + b_i)}{\Gamma(a_i + b_i + n_j)}\frac{\Gamma(a_i + y_j)}{\Gamma(a_i)}\frac{\Gamma(b_i + n_j - y_j) }{\Gamma(b_i)}.
  \end{align}
 For the hierarchical priors we take the posterior mean of $(a^\star, b^\star)$ as $(a_i, b_i)$.
@@ -916,7 +915,7 @@ As a final caveat, we note that if interest lies on a multivariate quantity $\th
 In this paper, our goal was to study how to one can assign the weights in logarithmic pooling such that it can be employed in statistical analysis.
 We have shown how it can be a useful tool in constructing prior distributions, combining posterior distributions in meta-analysis and learning about the parameters of deterministic models.
 We discussed how to approach the assigning of the weights based on optimality criteria such as maximum entropy and proposed a novel hierarchical prior approach that accommodates uncertainty about the weights and allows learning about them from data whilst providing more flexible prior modelling.
-Future research will explore further applications of logarithmic pooling in statistical learning like for instance combining several posterior predictive distributions obtained from cross-validation~\citep{Yao2018}.
+Future research will explore further applications of logarithmic pooling in statistical learning like for instance combining several posterior predictive distributions obtained from cross-validation (see e.g.~\cite{Yao2018}).
 Another interesting avenue for the future is studying the interaction between variable transformations and logarithmic pooling.
 An example is a situation where one has distributions about a probability $p$ but is interested in the log-odds, $\omega = \log(p/(1-p))$.
 Should the experts/information sources be judged by how reasonable their distributions look in transformed space?
@@ -925,7 +924,7 @@ In closing, we hope this paper showcases the usefulness -- and potential pitfall
 
 
 \section*{Acknowledgements}
-The authors would like to thank Professor Adrian Raftery (University of Washington) and David Poole for helpful suggestions.
+The authors would like to thank Professor Adrian Raftery, Professor Christian Genest, Felipe Figueiredo and David Poole for helpful suggestions.
 DAMV and LSB were supported in part by CAPES under CAPES/Cofecub project (N. 833/15).
 FCC is grateful to Funda\c{c}\~ao Getulio Vargas for funding during this 
 project.
@@ -958,7 +957,7 @@ Then, integrating the expression in (\ref{eq:pirewritten}) is equivalent to find
 \mathbb{E}_{0}\left[\prod_{j=1}^KX_j^{\alpha_j}\right] \leq \prod_{j=1}^K \mathbb{E}_{0}[X_j]^{\alpha_j},
 \end{equation}
 where $\mathbb{E}_{0}[\cdot]$ is the expectation w.r.t $f_0$ and (\ref{eq:expectations}) follows from H\"{o}lder's inequality for expectations~\citep{yeh2011}.
-Since $\forall j$ we have $\mathbb{E}_{0}[X_j]^{\alpha_j} = \left(\int_{\boldsymbol\Theta}f_0(\theta)\frac{f_j(\theta)}{f_0(\theta)}\right)^{\alpha_j}d\theta=1^{\alpha_j}=1$, Theorem~\ref{thm:normalisation} is proven.
+Since $\forall j$ we have $\mathbb{E}_{0}[X_j]^{\alpha_j} = \left(\int_{\boldsymbol\Theta}f_0(\theta)\frac{f_j(\theta)}{f_0(\theta)}\right)^{\alpha_j}\, d\theta=1^{\alpha_j}$, Theorem~\ref{thm:normalisation} is proven.
 \end{proof}
 
 To establish Remark~\ref{rmk:concavity}, we will need the following result from~\cite{genest1984}.
@@ -980,31 +979,36 @@ We can then write
 \end{align*}
  where $\nu^{\ast}(\theta) = \sum_{i=0}^{K}\alpha_i\nu_i(\theta)$ is a concave function because it is a linear combination of concave functions.
  
- We will now show that LP is the only operator that guarantees log-concavity when $\boldsymbol F_\theta$ is a set of concave distributions.
- First, recall that LP is the only pooling operator that enjoys RPC (Remark~\ref{rmk:properties_RPC}).
- Then, with the goal of obtaining a contradiction, suppose that there exists a pooling operator $\mathcal{T}$ that is log-concave but does not enjoy RPC.
- From Lemma~\ref{lem:RPC_representation}, we know that $\mathcal{T}$ cannot be represented as $\boldsymbol B(\boldsymbol F_\theta) c(\theta) \prod_{i=0}^K f_i(\theta)^{w_i} $.
- But every non-negative log-concave function $g(x)$ can be represented as $ g(x) = a \cdot c(x) \cdot h(x)$, with $a \geq 0$ and $c(x)$ and $h(x)$ non-negative and log-concave.
- Since under the assumptions on $\boldsymbol F_\theta$ we have that $h(\theta) := \prod_{i=0}^K f_i(\theta)^{w_i}$ is non-negative and log-concave, a contradiction is reached and the result follows. 
+We will now show that LP is the only operator that guarantees log-concavity when $\boldsymbol F_\theta$ is a set of concave distributions.
+First, recall that LP is the only pooling operator that enjoys RPC (Remark~\ref{rmk:properties_RPC}).
+With the goal of obtaining a contradiction, suppose that there exists a pooling operator $\mathcal{T}$ that is log-concave but does not enjoy RPC.
+ From Lemma~\ref{lem:RPC_representation}, we know that, under this assumption, $\mathcal{T}$ cannot be represented as $\boldsymbol B(\boldsymbol F_\theta) c(\theta) \prod_{i=0}^K f_i(\theta)^{w_i} $.
+But every non-negative log-concave function $g(\theta)$ can be represented as
+ \begin{equation}
+ \label{eq:lc_rep}
+  g(\theta) = a \cdot c(\theta) \cdot h(\theta),
+ \end{equation}
+with $a \geq 0$ and $c(\theta)$ and $h(\theta)$ non-negative and log-concave and  under the assumptions on $\boldsymbol F_\theta$, we have that $h(\theta) := \prod_{i=0}^K f_i(\theta)^{w_i}$ is non-negative and log-concave.
+Therefore $\mathcal{T}$ can in fact be represented in the form of~(\ref{eq:lc_rep}) and thus the form of Lemma~\ref{lem:RPC_representation}, contradicting our initial assumption.  
 \end{proof}
 
-
+Now we move on to the exponential family results in Section~\ref{sec:expofamily}.
 To see that equation~(\ref{eq:entropypriorEF}) holds:
 \begin{eqnarray*} 
 H_\pi(\theta) & = & \mathbb{E}[-\log(\pi(\theta)], \\
-              & = & - \int \log(\pi(\theta)) \pi(\theta) d\theta, \\
-              & = & - \int (\log(K(a^*, b^*) + \theta a^* - s(\theta) b^*) \pi(\theta) d\theta, \\
+              & = & - \int \log(\pi(\theta)) \pi(\theta) \, d\theta, \\
+              & = & - \int (\log(K(a^*, b^*) + \theta a^* - s(\theta) b^*) \pi(\theta) \, d\theta, \\
               & = & - \log(K(a^*, b^*)) - a^*  \mathbb{E}[\theta] +  b^*  \mathbb{E}[s(\theta)].
 \end{eqnarray*}
 Likewise for equation~(\ref{eq:KLpriorEF}), we have 
 \begin{eqnarray*} 
 KL(f_i || \pi) & = & \mathbb{E}_\pi[\log(f_i(\theta)-\log(\pi(\theta)], \\
-              & = & \int [\log( K(a_i,b_i) e^{\theta a_i - b_i s(\theta)}) - \log(K(a^*,b^*) e^{\theta a^* - b^* s(\theta)}) ] \pi(\theta) d\theta, \\
-              & = & \int [\log( K(a_i,b_i)) - \log(K(a^*,b^*)) + (a_i - a^*) \theta  - (b_i - b^*) s(\theta) \pi(\theta) d\theta, \\
+              & = & \int [\log( K(a_i,b_i) e^{\theta a_i - b_i s(\theta)}) - \log(K(a^*,b^*) e^{\theta a^* - b^* s(\theta)}) ] \pi(\theta) \, d\theta, \\
+              & = & \int [\log( K(a_i,b_i)) - \log(K(a^*,b^*)) + (a_i - a^*) \theta  - (b_i - b^*) s(\theta) \pi(\theta) \, d\theta, \\
               & = & \log( K(a_i,b_i)) - \log(K(a^*,b^*)) + (a_i - a^*) \mathbb{E}_\pi[\theta] - (b_i - b^*) \mathbb{E}_\pi[s(\theta)]. 
 \end{eqnarray*}
 
-
+\newpage
 \subsection{Bowhead population growth model: details}
 
 For convenience, here we will describe the priors and likelihoods used by~\cite{poole2000} in their analysis of the bowhead whale population model, as well as some of our modelling choices.
@@ -1056,6 +1060,7 @@ We show the posterior distributions obtained by SpIR for $P_0$, MSYR, ROI and $P
 \label{sfig:alpha_sensitivity_bowhead}
 \end{figure}
 
+\newpage
 \subsection{Pooling of common distributions}
 \label{sec:common_poolings}
 

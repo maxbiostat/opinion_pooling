@@ -48,13 +48,13 @@ Key-words: logarithmic pooling; log-concavity; uniqueness.
 \section*{Background}
 
 Logarithmic pooling is a popular method for combining opinions on an agreed quantity, specially when these opinions can be framed as probability distributions.
-Let $\theta \in \Theta \subseteq \mathbb{R}$, $|\Theta| \geq 3$,  be a quantity of interest and let $\mathbf{F_\theta} := \{f_0(\theta), f_1(\theta), \ldots, f_K(\theta)\}$ be a set of distributions representing the opinions of $K + 1$ experts and let $\boldsymbol\alpha :=\{\alpha_0, \alpha_1, \ldots, \alpha_K \} \in \mathcal{S}^K$ be the vector of weights, such that $\alpha_i > 0\: \forall i$ and $\sum_{i=0}^K \alpha_i = 1$, i.e., $\mathcal{S}^{K + 1}$ is the space of all open simplices of dimension $K + 1$.
+Let $\theta \in \Theta \subseteq \mathbb{R}$\footnote{If $\Theta$ is atomic, we need $|\Theta| \geq 3$.}, be a quantity of interest and let $\mathbf{F_\theta} := \{f_0(\theta), f_1(\theta), \ldots, f_K(\theta)\}$ be a set of distributions representing the opinions of $K + 1$ experts and let $\boldsymbol\alpha :=\{\alpha_0, \alpha_1, \ldots, \alpha_K \} \in \mathcal{S}^K$ be the vector of weights, such that $\alpha_i > 0\: \forall i$ and $\sum_{i=0}^K \alpha_i = 1$, i.e., $\mathcal{S}^{K + 1}$ is the space of all open simplices of dimension $K + 1$.
 The \textbf{logarithmic pooling operator} $\mathcal{LP}(\mathbf{F_\theta}, \boldsymbol\alpha)$ is defined as
 \begin{equation}
 \label{eq:logpool}
  \mathcal{LP}(\mathbf{F_\theta}, \boldsymbol\alpha) :=  \pi(\theta | \boldsymbol\alpha) = t(\boldsymbol\alpha) \prod_{i=0}^K f_i(\theta)^{\alpha_i},
 \end{equation}
-where $t(\boldsymbol\alpha) = \int_{\boldsymbol\Theta}\prod_{i=0}^K f_i(\theta)^{\alpha_i}d\theta$.
+where $t(\boldsymbol\alpha) = \left[ \int_{\boldsymbol\Theta}\prod_{i=0}^K f_i(\theta)^{\alpha_i}d\theta \right]^{-1}$.
 This pooling method enjoys several desirable properties and yields tractable distributions for a large class of distribution families~\citep{genest1984,genest1986A}.
 
 Another desirable property of the logarithmic pooling operator is log-concavity.
