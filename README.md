@@ -21,10 +21,10 @@ Lives on its own [repo](https://github.com/maxbiostat/R0_uncertainty).
 [Presentation slides](https://github.com/maxbiostat/opinion_pooling/blob/master/EBEB_2016/PRESENTATION/lmcarvalho_etal_ebeb_2016.pdf), [pic](https://www.flickr.com/photos/71896367@N06/25559117746/in/album-72157664878730109/) and [video](https://youtu.be/MGft1XnW3es?list=PL3T2Ppt4bgDJBiGZlan-qNY6PsLOGXdAB).
 
 ## General Manuscript ([PDF](https://github.com/maxbiostat/opinion_pooling/blob/master/manuscript/Carvalho_etal_pooling.pdf))
-- [ ] Dynamic model example;
+- [x] Dynamic model example;
 - [ ] Dominance analysis for H() and KL() for Beta and Gamma = surfaces;
 - [ ] Method comparison: integrated likelihoods only?;
-- [ ] PSA for \pi(\alpha);
+- [x] PSA for \pi(\alpha);
 - [ ] Arxiving
 
 ## Extras
