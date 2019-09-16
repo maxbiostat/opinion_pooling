@@ -1,0 +1,7 @@
+"","mean.prior","lower.prior","upper.prior"
+"equal_weights",0.122,0.099,0.145
+"maximum_entropy",0.241,0.202,0.28
+"minimum_KL",0.16,0.129,0.192
+"hierarchical_Dirichlet",0.133,0.063,0.25
+"hierarchical_LogisticNormal",0.138,0.059,0.259
+"Sample_size",0.132,0.109,0.155
