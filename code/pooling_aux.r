@@ -1,5 +1,4 @@
 ######################## Pooling-related functions #############
-
 pool_par <- function(alpha, a, b){
   if(any(alpha <0)) stop("weights must be non-negative")
   if(!identical(sum(alpha), 1)) stop("weights do not sum to 1")
@@ -16,12 +15,15 @@ pool_par_gauss <- function(alpha, m, v){
   c(mstar, sqrt(vstar))
 }
 ### Log-pooled density
-dpool <- function(x, D, alphas){
+dpool <- function(x, D, alphas, log = FALSE){
   # D is a set (list type) of K of densities
   # alphas is a K-dimensional vector with the weights a_i>0  and sum(alphas)=1
   # if(sum(alphas)!=1){ stop ("The vector of weigths doesn't sum up to unity")}
   if(any(alphas<0)) { stop ("All weigths should be non-negative")}
-  sapply(x, function(x) prod(unlist(lapply(D, function(d) d(x)))^alphas))
+  log_dens <- function(x) sum(unlist(lapply(D, function(d) log(d(x)) )) * alphas)
+  ans <- sapply(x,  function(x) sum(log_dens(x)))
+  if(!log) ans <- exp(ans)
+  return(ans)
 }
 ### the constant t(\alpha)
 tpool <- function(alpha, D, trapez = TRUE, lwr = -1E5, upr =  1E5){
@@ -37,7 +39,7 @@ tpool <- function(alpha, D, trapez = TRUE, lwr = -1E5, upr =  1E5){
   return(1/the_int)
 }
 ##
-tpool_positive <- function(alpha, D, trapez = TRUE, lwr = 0, upr =  1E5){
+tpool_positive <- function(alpha, D, trapez = FALSE, lwr = 0, upr =  1E5){
   if(trapez){
     ## shitty trapezoid integration
     the_int <- caTools::trapz(x = seq(lwr, upr, length.out = 1000L),
@@ -73,7 +75,7 @@ dpoolnorm.positive <- function(x, D, alphas){
   # D is a set of K of densities
   # alphas is a K-dimensional vector with the weights a_i>0  and sum(alphas)=1
   dens <- dpool(x, D, alphas)
-  return(tpool.positive(alphas, D)*dens)
+  return(tpool_positive(alphas, D)*dens)
 }
 dpoolnorm.unit <- function(x, D, alphas){
   ## same as before, but integrating on the open interval (0, 1)
@@ -482,7 +484,7 @@ optentgauss_inv <- function(alpha.inv, mp, vp){
 kl_gauss <- function(mstar, vstar, mi, vi, type = c("pf", "fp")){
   ## WARNING: parametrisation is MEAN and VARIANCE!
   if(type == "pf"){
-    m0 = astar
+    m0 = mstar
     v0 = vstar
     m1 = mi
     v1 = vi  
