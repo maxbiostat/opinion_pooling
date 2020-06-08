@@ -1,27 +1,37 @@
 data {
   int<lower=0> N; // number of trials
-  int Y; // successes
+    real Y[N]; // data
   int<lower=1> K; // number of priors to combine
   vector[K] means; // mean hyperparameters for the logistic Normal (alphas prior)
   cov_matrix[K] Sigma; // variance-covariance matrix for the logistic Normal (alphas prior)
-  vector<lower=0>[K] a; // parameters of the K priors
-  vector<lower=0>[K] b;
+  vector[K] mu; // parameters of the K priors
+  row_vector[K] sigma_sq;
+}
+transformed data{
+  matrix[K, K] LS = cholesky_decompose(Sigma);
 }
 parameters {
-  real<lower=0,upper=1> theta;
-  vector[K] m;
+  vector[K] eta;
 }
 transformed parameters{
   row_vector[K] alpha;
-  real astar;
-  real bstar;
-  for (j in 1:(K-1)) alpha[j] = exp(m[j])/(1 + sum(exp(m[1:(K-1)]))); 
-  alpha[K] = 1/(1 + sum(exp(m[1:(K-1)]))); 
-  astar = alpha * a;
-  bstar = alpha * b;
+  real<lower=0> vstar;
+  real mustar;
+  vector[K] w;
+  vector[K] m = means + LS * eta;
+  for (j in 1:(K-1)){
+    alpha[j] = exp(m[j])/(1 + sum(exp(m[1:(K-1)]))); 
+    w[j] = alpha[j] / sigma_sq[j];
+  } 
+  alpha[K] = 1/(1 + sum(exp(m[1:(K-1)])));
+  w[K] = alpha[K] / sigma_sq[K];
+  vstar = 1/sum(w);
+  mustar =  sum(w .* mu) * vstar;
 }
 model {
-  m ~ multi_normal(means, Sigma);
-  theta ~ beta(astar, bstar);
-  Y ~ binomial(N, theta);
+  // target += normal_lpdf(tau | 0, 5);
+  // target += normal_lpdf(eta | 0, 1);
+  // target += normal_lpdf(Y | mustar, sqrt(vstar));
+  eta ~ std_normal();
+  Y ~ normal(mustar, sqrt(vstar));
 }

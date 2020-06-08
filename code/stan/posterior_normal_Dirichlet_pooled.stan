@@ -1,27 +1,22 @@
 data {
-  int<lower=0> N; // number of trials
-  int Y; // successes
+  int<lower=0> N; // number of observations
+  real Y[N]; // data
   int<lower=1> K; // number of priors to combine
+  vector[K] mu; // parameters of the K priors
+  vector[K] sigma_sq;
   vector<lower=0>[K] X; // hyperparameter for the alphas prior 
-  real<lower=0> a[K]; // parameters of the K priors
-  real<lower=0> b[K];
 }
 parameters {
-real<lower=0,upper=1> theta;
-simplex[K] alpha;
+  simplex[K] alpha;
+}
+transformed parameters{
+  real<lower=0> vstar;
+  real mustar;
+  vector[K] w = alpha ./ sigma_sq;
+  vstar = 1/sum(w);
+  mustar =  sum(w .* mu) * vstar;
 }
 model {
-  real astaraux[K];
-  real bstaraux[K];
-  real astar;
-  real bstar; 
-    for (k in 1:K){
-       astaraux[k] = alpha[k]*a[k];
-       bstaraux[k] = alpha[k]*b[k];
-    }
-  astar = sum(astaraux);
-  bstar = sum(bstaraux);
   alpha ~ dirichlet(X);
-  theta ~ beta(astar, bstar);
-  Y ~ binomial(N, theta);
+  Y ~ normal(mustar, sqrt(vstar));
 }
