@@ -74,6 +74,7 @@ Therefore, it makes possible to sequentially update knowledge about the reliabil
 
 In this paper we discuss previous approaches for assigning the weights based on optimality criteria and study assigning hierarchical priors to the weights in order to learn about them from data.
 This paper is organised as follows: in Section~\ref{sec:background} we introduce the necessary concepts and notation on logarithmic pooling, as well as some its key properties.
+We also prove a new result about log-concavity of the pooled distribution when all distributions are log-concave.
 In Section~\ref{sec:weights} we present different approaches to choose the weights, two methods based on optimality criteria, namely maximising the entropy of the pooled prior and minimising Kullback-Leibler divergence between the pooled distribution and the expert distributions.
 In addition we also lay out an approach hierarchical modelling of the weights.
 Section~\ref{sec:apps} contains applications of logarithmic pooling to reliability analysis (Sections~\ref{sec:survivalProbs} and~\ref{sec:learning_rate}), meta-analysis (Section~\ref{sec:metaAnalysis}) and Bayesian melding (Section~\ref{sec:melding_apps}).
@@ -95,18 +96,20 @@ where $t(\boldsymbol\alpha) = \left[ \int_{\boldsymbol\Theta}\prod_{i=0}^K f_i(\
 
 Logarithmic pooling will only yield proper probability distributions if it is possible to normalise the expression in (\ref{eq:logpool}).
 This condition is usually assumed implicitly, without proof.
-While \citet{Poole2000} provide a proof for the case of two densities (see Theorem 1 therein),~\cite{Genest1986A} (pg.489) prove the result for a finite number of densities.
+While \citet{Poole2000} provide a proof for the case of two densities (see Theorem 1 therein),~\cite{Genest1986A} (pg.489) prove the result for a finite number of densities:
 \begin{theo}
 \label{thm:normalisation}
 \textbf{Normalisation~\citep{Genest1986A}}. 
 Let $A$ be a $(K+1)$-dimensional open simplex on $[0,1]$.
 For all $\boldsymbol\alpha \in A$ there exists a constant $t(\boldsymbol\alpha)$ such that $\int_{\boldsymbol\Theta}\pi(\theta \mid \boldsymbol \alpha)\, d\theta = 1$.
 \end{theo}
-A simple proof using H\"{o}lder's inequality is given in the Appendix.
+We give a simple proof using H\"{o}lder's inequality in the Appendix.
 This result ensures any (finite) number of proper distributions can be combined using the logarithmic pooling operator to yield a normalisable (proper) density.
-In addition, log-linear pools enjoy the~\textit{external Bayesianity} property, which guarantees that whether one combines the expert opinions before or after observing evidence does not affect the resulting pooled distribution.
+In addition, log-linear pools enjoy the~\textit{external Bayesianity} property (Remark~\ref{rmk:properties_EB}), which guarantees that whether one combines the expert opinions before or after observing evidence does not affect the resulting pooled distribution.
 \begin{remark}
- \textbf{External Bayesianity~\citep{Genest1984}}. If the expert opinions are given by densities $f_i(\theta)$ and one observes data $x$ such that one can specify a likelihood $l(x \mid \theta)$, combining the set of posteriors $p_i(\theta \mid x) \propto  l(x \mid \theta)f_i(\theta) $ yields the same distribution as combining the densities $f_i$ to obtain a prior $\pi(\theta)$ and then combine it with $l(x \mid \theta)$ to obtain a posterior $p(\theta \mid x) \propto l(x \mid \theta)\pi(\theta)$.
+\label{rmk:properties_EB}
+ \textbf{External Bayesianity~\citep{Genest1984}}.
+ If the expert opinions are given by densities $f_i(\theta)$ and one observes data $x$ such that one can specify a likelihood $l(x \mid \theta)$, combining the set of posteriors $p_i(\theta \mid x) \propto  l(x \mid \theta)f_i(\theta) $ yields the same distribution as combining the densities $f_i$ to obtain a prior $\pi(\theta)$ and then combine it with $l(x \mid \theta)$ to obtain a posterior $p(\theta \mid x) \propto l(x \mid \theta)\pi(\theta)$.
 \end{remark}
 \begin{proof}
  The proof of this fact is trivial and is given here for completeness.
@@ -118,8 +121,8 @@ In addition, log-linear pools enjoy the~\textit{external Bayesianity} property, 
  \end{align*}
  where the second line follows from $\sum_{i=0}^K \alpha_i = 1$.
 \end{proof}
-Much less trivially,~\cite{Genest1984} show that the logarithmic pooling operator in~\ref{eq:logpool} is the~\textbf{only} aggregation (pooling) operator that enjoys external Bayesianity.
-Moreover, the logarithmic pooling operator has the relative propensity consistency (RPC) property, whereby the pooled opinion preserves relative judgments from the experts.
+Much less trivially,~\cite{Genest1984} show that the logarithmic pooling operator in~(\ref{eq:logpool}) is the~\textbf{only} aggregation (pooling) operator that enjoys external Bayesianity.
+Moreover, the logarithmic pooling operator has the relative propensity consistency (RPC) property (Remark~\ref{rmk:properties_RPC}), whereby the pooled opinion preserves relative judgments from the experts.
 \begin{remark}
 \label{rmk:properties_RPC}
 \textbf{Relative propensity consistency~\citep{Genest1984}}.
@@ -137,17 +140,23 @@ for all $\boldsymbol \xi_1, \boldsymbol \xi_2$.
 \end{remark}
 We refer the reader to~\cite{Genest1984} for a proof.
 Informally, this property says that if all experts consider a particular event $A$ more probable than another event $B$, then the pooled opinion should be consistent with these relative judgments. 
-\cite{Genest1984} show that for mild conditions on $\mathcal{X}$, namely $|\mathcal{X}| \geq 3$, the logarithmic pooling operator is the only pooling operator with RPC.
+\cite{Genest1984} show that for mild conditions on $\mathcal{X}$, namely $|\mathcal{X}| \geq 3$, the logarithmic pooling operator is the only pooling operator with RPC (see also Lemma~\ref{lem:RPC_representation} in the Appendix).
+
 Another desirable property of the logarithmic pooling operator is log-concavity.
 Log-concavity of the pooled prior may be important to consider in order to guarantee unimodality and certain conditions on tail behaviour (see~\cite{Bagnoli2005}).
-\begin{lemma}
-\label{lem:concavity}
+This motivates the following theorem, which is, to the best of our knowledge, a new result:
+\begin{theo}
+\label{thm:concavity}
 \textbf{Log-concavity}. 
 If $\mathbf{F}_{\theta}$ is a set of log-concave distributions, then $\pi(\theta\mid \boldsymbol \alpha)$ is also log-concave.
-Moreover, logarithmic pooling is the only pooling operator that will always produce a log-concave density.
-\end{lemma}
-This result is new and we give a proof in the Appendix.
-Lemma~\ref{lem:concavity} tells us that logarithmic pooling is the only aggregation method to universally preserve log-concavity, for any configuration of the weights ($\boldsymbol{\alpha}$).
+Moreover, logarithmic pooling is the~\underline{only} pooling operator that will always produce a log-concave density if all the elements of $\mathbf{F}_{\theta}$  are log-concave.
+\end{theo}
+\begin{proof}
+ See the Appendix.
+\end{proof} 
+Theorem~\ref{thm:concavity} tells us that logarithmic pooling is the only aggregation method to universally preserve log-concavity, for any configuration of the weights ($\boldsymbol{\alpha}$).
+This universality result is important because it holds for any set of log-concave distributions, $\mathbf{F}_{\theta}$.
+In contrast, a linear pool of $K$ Gaussian distributions with common mean, for example, would produce a log-concave pooled distribution for any $\boldsymbol{\alpha}$, but this would fail if the means were different.
 
 \subsection{Exponential family}
 \label{sec:expofamily}
@@ -186,7 +195,7 @@ These expressions allow for easy computation of information measures for a broad
 \subsubsection{Conjugate priors to the exponential family}
 \label{sec:conjugexpofamily}
 
-A conjugate prior family for $f(y|\theta)$, given in (\ref{eq:exponentialfamily}), is the following
+A conjugate prior family for $f(y|\theta)$ (\ref{eq:exponentialfamily}), has the following form~\citep{Diaconis1979}:
 \begin{equation}
 \label{eq:priorEF}
 g(\theta | a, b) = K(a,b) e^{\theta a - b s(\theta)} \: ,
@@ -271,35 +280,39 @@ Formally, we want to find $\hat{\boldsymbol\alpha}$ such that
  \hat{\boldsymbol\alpha}:= \argmax_{\boldsymbol\alpha} H_{\pi}(\theta; \boldsymbol\alpha).
 \end{equation}
 
-This approach, however, does not result in a convex optimisation problem, therefore one is not guaranteed to find a unique solution -- see Remark~\ref{remark:uniqueness} for intuition as to why.
+This approach, however, does not result in a convex optimisation problem, therefore one is not guaranteed to find a unique solution -- see Remark~\ref{rmk:uniqueness} for intuition as to why.
 
 \subsubsection{Minimising Kullback-Leibler divergence}
 \label{sec:minKL}
 
 One could also wish to choose the pooling weights so as to minimise the total Kullback-Leibler divergence between the pooled distribution, $\pi$, and each distribution in $\mathbf{F}_{\theta}$.
+Let $E_i[g]$ be the expectation of a measurable function $g: \boldsymbol{\Theta} \to \mathbb{R}$ with respect to each density $f_i$.
 We can define a loss function such that
 \begin{align}
 \nonumber
-L(\boldsymbol\alpha) &= \sum_{i=0}^K  \text{KL}(\pi || f_i), \\
+L(\boldsymbol\alpha) &= \sum_{i=0}^K  \text{KL}(f_i || \pi ), \\
 \label{eq:KLexpanded}
-     &= - (K+1) \sum_{i=0}^K\alpha_i\mathbb{E}_\pi [\log f_i ]  - \sum_{i=0}^K \mathbb{E}_\pi\left[\log f_i\right] - \log t(\boldsymbol\alpha), 
+     &= - (K+1)\log t(\boldsymbol\alpha) - (K+1) \sum_{i=0}^K\alpha_i E_i [\log f_i ]  + \sum_{i=0}^K \mathbb{E}_i\left[\log f_i\right], 
 \end{align}
 and we want to find 
 \begin{equation}
 \label{eq:argminKL}
     \hat{\boldsymbol\alpha}:= \:\argmin_{\boldsymbol\alpha} L(\boldsymbol\alpha).   
 \end{equation}
-Fortunately, this set up leads to a unique solution.
-% [DO WE NEED UNIQUENESS?] \todo{If one want to look at the individual weights, then uniqueness would be an important property. } % TODO: decide on this. I think we do want uniqueness, yes.
-
+Fortunately, this set up leads to a unique solution, a result we summarise in Remark~\ref{rmk:uniqueness}.
 \begin{remark}
-\label{remark:uniqueness}
-\textbf{Uniqueness}~\citep{Rufo2012A}.
+\label{rmk:uniqueness}
+\textbf{Uniqueness} .
  The distribution obtained following~(\ref{eq:argminKL}) is unique, i.e., there is only one aggregated prior $\pi(\theta \mid \boldsymbol\alpha)$ that minimizes $L(\boldsymbol\alpha)$.
 \end{remark}
-One can get some intuition into the proof by noting that minimising~(\ref{eq:KLexpanded}) is equivalent to maximising $\ln t(\boldsymbol\alpha) = \ln\int_{\boldsymbol\Theta}\prod_{i=0}^{K}f_i(\theta)^{\alpha_i}\, d\theta$. 
-\cite{Rufo2012A} show that $t(\boldsymbol\alpha)$ is concave, therefore the problem in~(\ref{eq:argminKL}) has a unique solution.
+\begin{proof}
+We begin by noting that the second term in~(\ref{eq:KLexpanded}) is a linear combinations of the weights, and hence we may restrict attention only to the first term -- the third term does not depend on $\boldsymbol{\alpha}$.
+Next, recall that minimising~(\ref{eq:KLexpanded}) is equivalent to maximising $\log t(\boldsymbol\alpha) = \log\int_{\boldsymbol\Theta}\prod_{i=0}^{K}f_i(\theta)^{\alpha_i}\, d\theta$.
+Proposition 3.1 in~\cite{Rufo2012A} states that $t(\boldsymbol\alpha)$ is log-concave, therefore any optimisation problem which involves minimising $-\log t(\boldsymbol{\alpha})$ is convex.
+We thus conclude that the problem in~(\ref{eq:argminKL}) has a unique solution.
+\end{proof}
 By contrast, the problem in~(\ref{eq:argmaxEnt}) requires one to minimise $\ln t(\boldsymbol\alpha)$, hence lacking a sufficient condition for the existence of a unique solution.
+Likewise, using  the loss function $L^\prime(\boldsymbol\alpha) = \sum_{i=0}^K  \text{KL}(\pi ||f_i )$ would not lead to a unique solution.
 See Section~\ref{sec:computation_opt} for implementation details.
 
 \subsection{Hierarchical modelling of the weights}
@@ -308,7 +321,7 @@ See Section~\ref{sec:computation_opt} for implementation details.
 As discussed by~\cite{Poole2000} and others~\citep{Zhong2015,Li2017}, estimating the weights would be of interest since this would allow one to assess the reliability of each source of information (expert).
 \cite{Li2017} explore the idea of computing the pooled distribution for several values of the weights.
 Whilst informative, this approach has two issues: (a) it does not scale well with increasing the number of distributions being combined, $K$, and; (b) it fails to account for any (posterior) dependence between model parameters and the weights.
-In this section we propose placing a hierarchical prior on the weights, allowing for standard Bayesian inference about these quantities.
+In this section we propose placing a hierarchical prior on the weights, allowing for standard Bayesian inference on these quantities.
 
 A natural choice for a prior distribution for $\boldsymbol\alpha$ is the $(K+1)-$dimensional Dirichlet distribution
 \begin{equation}
@@ -392,6 +405,7 @@ In the original paper,~\cite[sec. 3.4]{Poole2000} propose a sampling-importance-
 where $t\left(\boldsymbol \alpha^{(i)}\right) = \left( \int_{\Phi} q_1^\ast(\phi)^{\alpha^{(i)}} q_2(\phi)^{1-\alpha^{(i)}} d\phi \right)^{-1}$ is computed using standard quadrature methods;
  \item (Re)Sample $l$ values from $\boldsymbol \theta_k$ according to the weights $\boldsymbol w_k$.
 \end{enumerate}
+The quadrature-based normalisation in step in 4 can be replaced with an importance sampling or MCMC estimate when the dimension of $\phi$ or $\theta$ is bigger than 1, but this is not explored here.
 
 \section{Applications}
 \label{sec:apps}
@@ -965,16 +979,16 @@ where $\mathbb{E}_{0}[\cdot]$ is the expectation w.r.t $f_0$ and (\ref{eq:expect
 Since $\forall j$ we have $\mathbb{E}_{0}[X_j]^{\alpha_j} = \left(\int_{\boldsymbol\Theta}f_0(\theta)\frac{f_j(\theta)}{f_0(\theta)}\, d\theta\right)^{\alpha_j}=1^{\alpha_j}$, Theorem~\ref{thm:normalisation} is proven.
 \end{proof}
 
-To establish Lemma~\ref{lem:concavity}, we will need the following result from~\cite{Genest1984}.
+To establish Theorem~\ref{thm:concavity}, we will need the following result from~\cite{Genest1984}.
 \begin{lemma}
 \label{lem:RPC_representation}
 \textbf{Representation of a pooling operator with RPC}~\citep[eq. 3.1]{Genest1984}.
-The only relative propensity consistent operator can always be represented by
+The \underline{only} relative propensity consistent operator can \underline{always} be represented by
 \[ \mathcal{T} \left( \boldsymbol F_\theta \right)(\theta) = \boldsymbol B\left( \boldsymbol F_\theta \right) c(\theta) \prod_{i=0}^K \left[f_i(\theta) \right]^{w_i},\]
-with $\boldsymbol B\left( \boldsymbol F_\theta \right) > 0$, $c(\theta) >0$  and $w_0, w_1, \ldots, w_K \geq 0$ arbitrary. 
+with $\boldsymbol B\left( \boldsymbol F_\theta \right) > 0$, $c(\theta) >0$  and $\alpha_0, \alpha_1, \ldots, \alpha_K \geq 0$ arbitrary. 
 \end{lemma}
 We refer the reader to~\cite{Genest1984} for the proof.
-Now we can state the proof of Lemma~\ref{lem:concavity}.
+Now we can state the proof of Theorem~\ref{thm:concavity}.
 \begin{proof}
 First, we will show by direct calculation that logarithmic pooling (LP) leads to a log-concave distribution.
 Notice that each $f_i$ can be written as $ f_i(\theta) \propto e^{\nu_i(\theta)}$, where $\nu_i(\cdot)$ is a concave function.
@@ -988,14 +1002,15 @@ We can then write
 We will now show that LP is the only operator that guarantees log-concavity when $\boldsymbol F_\theta$ is a set of concave distributions.
 First, recall that LP is the only pooling operator that enjoys RPC (Remark~\ref{rmk:properties_RPC}).
 With the goal of obtaining a contradiction, suppose that there exists a pooling operator $\mathcal{T}$ that is log-concave but does not enjoy RPC.
- From Lemma~\ref{lem:RPC_representation}, we know that, under this assumption, $\mathcal{T}$ cannot be written in the form $\boldsymbol B(\boldsymbol F_\theta) c(\theta) \prod_{i=0}^K f_i(\theta)^{w_i} $.
+ From Lemma~\ref{lem:RPC_representation}, we know that, under this assumption, $\mathcal{T}$ cannot be written in the form $\boldsymbol B(\boldsymbol F_\theta) c(\theta) \prod_{i=0}^K f_i(\theta)^{\alpha_i} $.
 But every non-negative log-concave function $g(\theta)$ can be represented as
  \begin{equation}
  \label{eq:lc_rep}
   g(\theta) = a \cdot c(\theta) \cdot h(\theta),
  \end{equation}
 with $a \geq 0$ and $c(\theta)$ and $h(\theta)$ non-negative and log-concave, but otherwise arbitrary.
-Under the assumptions on $\boldsymbol F_\theta$, we have that $h(\theta) := \prod_{i=0}^K f_i(\theta)^{w_i}$ is non-negative and log-concave.
+Under the assumptions on $\boldsymbol F_\theta$, we have that $h(\theta) := \prod_{i=0}^K f_i(\theta)^{\alpha_i}$ is non-negative and log-concave.
+Since $c(\theta)$ is bound to be positive, it may very well be (log-)concave.
 Therefore $\mathcal{T}$ can in fact be represented in the form of Lemma~\ref{lem:RPC_representation}, contradicting our initial assumption that $\mathcal{T}$ can at same time be log-concave but not enjoy RPC.  
 \end{proof}
 
@@ -1146,6 +1161,5 @@ The KL divergence is
  \label{eq:KL_Poisson}
  & = \lambda^\star \left[ \sum_{k = 0}^K \alpha_k \log(\lambda_k) - \log(\lambda_i) \right] + \lambda_i - \lambda^\star.
 \end{align}
-
 
 \end{document} 
