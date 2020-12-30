@@ -54,7 +54,7 @@ colnames(AlphasBeta.tbl) <- paste("alpha", 0:(length(av)-1), sep = "")
 ######################################################
 alphaEqual <- rep(1/K, K)
 
-ab.Equal.star <- pool.par(alphaEqual, av, bv)
+ab.Equal.star <- pool_par(alphaEqual, av, bv)
 # Prior
 (PaperBeta.tbl[1, 1:3] <- stat.beta(ab.Equal.star))
 # Posterior
@@ -78,7 +78,7 @@ a.ent <- optim(c(0, 0, 0), optentbeta.inv, ap = av, bp = bv)
 alphaMaxEnt.opt <- alpha.01(a.ent$par)
 (AlphasBeta.tbl[1,] <- alphaMaxEnt.opt)
 
-ab.MaxEnt.star <- pool.par(alphaMaxEnt.opt, av, bv)
+ab.MaxEnt.star <- pool_par(alphaMaxEnt.opt, av, bv)
 
 # Prior
 (PaperBeta.tbl[2, 1:3] <- stat.beta(ab.MaxEnt.star))
@@ -111,7 +111,7 @@ a.kl <- optim(c(0, 0, 0), optklbeta.inv, ap = av, bp = bv)
 alphaKL.opt <- alpha.01(a.kl$par)
 (AlphasBeta.tbl[2, ] <- alphaKL.opt)
 
-ab.KL.star <- pool.par(alphaKL.opt, av, bv)
+ab.KL.star <- pool_par(alphaKL.opt, av, bv)
 
 # Prior
 (PaperBeta.tbl[3, 1:3] <- stat.beta(ab.KL.star))
@@ -196,8 +196,8 @@ post.alpha.exp.cred <- apply(alphas.exp, 2, quantile, probs = c(.025, .975))
 (AlphasBeta.tbl[3, ] <- post.alpha.dir)
 (AlphasBeta.tbl[4, ] <- post.alpha.exp)
 
-ab.Hier.star.dir <- pool.par(post.alpha.dir, av, bv)
-ab.Hier.star.exp <- pool.par(post.alpha.exp, av, bv)
+ab.Hier.star.dir <- pool_par(post.alpha.dir, av, bv)
+ab.Hier.star.exp <- pool_par(post.alpha.exp, av, bv)
 
 ######################################################
 ############## Results

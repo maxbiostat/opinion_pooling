@@ -1,30 +1,37 @@
-# Luiz Max Carvalho (2019)
+# Luiz Max Carvalho e al. (2020)
 
-source("pooling_aux.r")
-source("beta_elicitator.r")
+source("../pooling_aux.r")
+source("../beta_elicitator.r")
+source("one_right_many_wrong_beta_aux.r")
 
 library(rstan)
 rstan_options(auto_write = TRUE)
 options(mc.cores = 4)
 
-compiled.dirichlet <- stan_model("stan/posterior_beta_Dirichlet_pooled.stan")
-compiled.logisticNormal <- stan_model("stan/posterior_beta_logisticNormal_pooled.stan")
+compiled.dirichlet <- stan_model("../stan/posterior_beta_Dirichlet_pooled.stan")
+compiled.logisticNormal <- stan_model("../stan/posterior_beta_logisticNormal_pooled.stan")
 
-# x <- 50
-# n <- 100
-# cv <- .57
+# x <- 5
+# n <- 10
+# cv <- .75
+
 do_experiment <- function(cv, x, n){
   evidence.info <-  paste("x=", x, ",", "n=", n, sep = "")
   
-  pars <- get_parameter_vectors(cv_correct = cv)
+  pars <- get_parameter_vectors_mean_cv(cv_correct = cv)
   K <- length(pars$av)
   X <- rep(1, K) ## Dirichlet parameter
   
   ## Marginal likelihoods
-  marginal.likelihoods <- rep(NA, K)
-  for (k in 1:K){ marginal.likelihoods[k] <- ml_beta(yi = x, ni = n, a = pars$av[k], b = pars$bv[k]) }
-  
-  alphapp <- marginal.likelihoods/sum(marginal.likelihoods)
+  require(matrixStats)
+  log.marginal.likelihoods <- rep(NA, K)
+  for (k in 1:K){ 
+    log.marginal.likelihoods[k] <- ml_beta(yi = x, ni = n,
+                                       a = pars$av[k], b = pars$bv[k], log = TRUE)
+  }
+  logS <- matrixStats::logSumExp(log.marginal.likelihoods)
+  alphapp <- exp(log.marginal.likelihoods-logS)
+  marginal.likelihoods <- exp(log.marginal.likelihoods)
   
   pars.pool.pp <- pool_par(alpha = alphapp, a = pars$av, b = pars$bv)
   
@@ -69,6 +76,7 @@ do_experiment <- function(cv, x, n){
   post.alpha.cred.flexdirichlet <- apply(alphas.flexdirichlet, 2, quantile, probs = c(.025, .975))
   
   ## Logistic normal 
+
   
   flexlogisticNormal.posterior <- sampling(compiled.logisticNormal, data = betadata.stan,
                                            refresh = 0, control = list(adapt_delta = .99, max_treedepth = 15))
@@ -128,7 +136,7 @@ per_cv <- function(cv){
   return(do.call(rbind, out))
 }
 
-cvs <- seq(0.001, .6, length.out = 25)
+cvs <- seq(0.001, .1, length.out = 25)
 system.time(
   simu.one.correct <- do.call(rbind, lapply(cvs, per_cv))
 )
@@ -139,12 +147,12 @@ library(ggplot2)
 mal_ratios <- ggplot(data = simu.one.correct, aes(x = cv, y = mal_ratio)) +
   geom_line() +
   scale_x_continuous("Coefficient of variation") + 
-  scale_y_continuous("Marginal likelihood ratio") + 
+  scale_y_log10("Marginal likelihood ratio") + 
   facet_grid(.~data) +
   theme_bw(base_size = 16)
 
 mal_ratios
-ggsave(filename = "../plots/MaLs_ratios_oneCorrect.pdf", plot = mal_ratios)
+ggsave(filename = "plots/beta_MaLs_ratios_oneCorrect.pdf", plot = mal_ratios)
 
 weight_ratios <- ggplot(data = simu.one.correct, aes(x = cv, y = alpha_ratio, colour = prior)) +
   geom_line(size = 1.5) +
@@ -165,7 +173,7 @@ weight_ratios_expert2 <- ggplot(data = subset(simu.one.correct, max_index_priors
 
 weight_ratios_expert2
 
-ggsave(filename = "../plots/weight_ratios_oneCorrect.pdf",
+ggsave(filename = "plots/beta_weight_ratios_oneCorrect.pdf",
        plot = weight_ratios_expert2)
 
 
@@ -187,4 +195,4 @@ radar_alphas <- ggplot(data = subset(simu.one.correct, cv %in% cvs[round(seq(1, 
   )
 radar_alphas
 
-ggsave(filename = "../plots/radar_plots_oneCorrect.pdf", plot = radar_alphas)
+ggsave(filename = "plots/beta_radar_plots_oneCorrect.pdf", plot = radar_alphas)

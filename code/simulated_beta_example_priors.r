@@ -1,12 +1,15 @@
-# Leo Bastos & Luiz Max Carvalho (2019)
-# This example was taken from Savchuk and Martz (1994)
-
 source("pooling_aux.r")
+source("beta_elicitator.r")
 
-a0 <- 18.1 ; b0 <- .995
-a1 <- 3.44 ; b1 <- .860 
-a2 <- 8.32 ; b2 <- .924
-a3 <- 1.98 ; b3 <- .848
+# p0 <- elicit_beta_mean_cv(m0 = 5/10, v0 = 1/100); a0 <- p0$a ; b0 <- p0$b
+# p1 <- elicit_beta_mean_cv(m0 = 5/10, v0 = 1/10); a1 <- p1$a ; b1 <- p1$b
+# p2 <- elicit_beta_mean_cv(m0 = 5/10, v0 = 1/5); a2 <- p2$a ; b2 <- p2$b
+# p3 <- elicit_beta_mean_cv(m0 = 5/10, v0 = 1/50); a3 <- p3$a ; b3 <- p3$b
+
+p0 <- elicit_beta_mean_cv(m0 = 5/10, cv = .5); a0 <- p0$a ; b0 <- p0$b
+p1 <- elicit_beta_mean_cv(m0 = 5/10, cv = .25); a1 <- p1$a ; b1 <- p1$b
+p2 <- elicit_beta_mean_cv(m0 = 5/10, cv = .125); a2 <- p2$a ; b2 <- p2$b
+p3 <- elicit_beta_mean_cv(m0 = 5/10, cv = .0625); a3 <- p3$a ; b3 <- p3$b
 
 av <- c(a0, a1, a2, a3)
 bv <- c(b0, b1, b2, b3)
@@ -36,8 +39,8 @@ if(export){
 }
 
 ## Observed data
-y <- 9
-n <- 10
+y <- 100
+n <- 1000
 
 ## Marginal likelihoods
 
@@ -97,7 +100,7 @@ expert_priors <- ggplot(expert.densities.df, aes(x = theta, y = dens,
   theme_bw(base_size = 20)
 
 expert_priors
-ggsave(expert_priors, filename = "../plots/expert_densities_Savchuk.pdf")
+ggsave(expert_priors, filename = "../plots/expert_densities_SimuBetas.pdf")
 
 ###### Equal weights
 
@@ -253,6 +256,7 @@ round(AlphasBeta.tbl, 3)
 
 round(PaperBeta.tbl, 2)
 round(AlphasBeta.tbl, 2)
+
 ####### Plotting
 
 posterior_experts <- data.frame(
@@ -282,7 +286,7 @@ radar_alphas <- ggplot(data = posterior_experts,
   )
 radar_alphas
 
-ggsave(plot = radar_alphas, filename = "../plots/alphas_radar_Savchuk.pdf")
+ggsave(plot = radar_alphas, filename = "../plots/alphas_radar_SimuBetas.pdf")
 
 
 #############
@@ -319,4 +323,37 @@ method_priors <- ggplot(method.densities.df, aes(x = theta, y = dens,
   theme_bw(base_size = 16)
 
 method_priors
-ggsave(method_priors, filename = "../plots/method_prior_densities_Savchuk.pdf")
+ggsave(method_priors, filename = "../plots/method_prior_densities_SimuBetas.pdf")
+
+#### Testing a simple Monte Carlo approximation of the marginal posterior mean of alpha
+logkernel <- function(alpha, data){
+  y <- data[1]
+  n <- data[2]
+  ppars <- pool_par(alpha, a = av, b = bv)
+  ans <- lbeta(a = ppars[1] + y, b = ppars[2] + n-y) - lbeta(a = ppars[1], b = ppars[2]) 
+  return(ans)
+}
+
+lZ.dirichlet <- matrixStats::logSumExp(apply(alpha.MC.dirichlet, 1, logkernel, data = c(y, n)))-log(M) 
+lZ.logisticNormal <- matrixStats::logSumExp(apply(alpha.MC.logisticNormal, 1, logkernel, data = c(y, n)))-log(M) 
+
+lZ.dirichlet + lchoose(n, y)
+bridgesampling::bridge_sampler(dirichlet.posterior)
+
+lZ.logisticNormal + lchoose(n, y)
+bridgesampling::bridge_sampler(logisticNormal.posterior)
+
+phi <- function(alpha, data, lZ){
+  y <- data[1]
+  n <- data[2]
+  ppars <- pool_par(alpha, a = av, b = bv)
+  ans <- log(alpha) + lbeta(a = ppars[1] + y, b = ppars[2] + n-y) - lbeta(a = ppars[1], b = ppars[2]) - lZ
+  ans <- exp(ans)
+  return(ans)
+}
+
+(post.phi.dirichlet <- rowMeans(apply(alpha.MC.dirichlet, 1, phi, data = c(y, n), lZ  = lZ.dirichlet)) )
+(post.phi.logisticNormal <- rowMeans(apply(alpha.MC.logisticNormal, 1, phi, data = c(y, n), lZ = lZ.logisticNormal)) )
+
+colMeans(alphas.dirichlet)
+colMeans(alphas.logisticNormal)

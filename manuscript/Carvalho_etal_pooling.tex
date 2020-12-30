@@ -1,4 +1,4 @@
-\documentclass[a4paper, notitlepage, 10pt]{article}
+\documentclass[a4paper, notitlepage, 11pt]{article}
 \usepackage{geometry}
 % WSC 2015 configs
 \fontfamily{times}
@@ -22,33 +22,34 @@
 \usepackage[pdftex]{lscape}
 \usepackage[utf8]{inputenc}
 % Title Page
-\title{\vspace{-9ex}\centering \bf On the choice of weights for the logarithmic pooling of probability distributions}
+\title{\vspace{-9ex}\centering \bf Combining probability distributions: Extending the logarithmic pooling approach
+}
+% On the choice of weights for the logarithmic pooling of probability distributions
 \author{
 Luiz Max F. de Carvalho$^{a}$, Daniel A. M. Villela$^b$, Flavio Coelho$^a$ \& Leonardo S. Bastos$^b$ \\
-a -- School of Applied Mathematics, Getulio Vargas Foundation (FGV)\\
+a -- School of Applied Mathematics, Get\'ulio Vargas Foundation (FGV)\\
 b -- Program for Scientific Computing (PROCC), Oswaldo Cruz Foundation. \\
 }
 \DeclareMathOperator*{\argmin}{arg\,min}
 \DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator\supp{supp}
 \newtheorem{theo}{Theorem}[]
 \newtheorem{proposition}{Proposition}[]
 \newtheorem{remark}{Remark}[]
 \newtheorem{lemma}{Lemma}[]
 \setcounter{theo}{0} % assign desired value to theorem counter
+\doublespacing
 \begin{document}
 \maketitle
 
 \begin{abstract}
-% Combining different prior distributions is an important issue in decision theory and Bayesian inference.
-% Logarithmic pooling is a popular method to aggregate expert opinions by using a set of weights that reflect the reliability of each information source.
-% The resulting pooled distribution however depends heavily on set of weights given to each opinion/prior.
-% In this paper we explore% three
-% approaches to assigning weights to opinions.
-% Two methods are stated in terms of optimisation problems and a third one uses a hierarchical prior that accounts for uncertainty on the weights. 
-% We explore several examples of interest, such as proportion and rate estimation and combining Normal distributions.
-%TODO: more on the examples, make them prominent
-
-% The Bayesian melding method concerns drawing inference about a deterministic model by combining a natural prior on quantities of interest (inputs and/or outputs) with the prior \textit{induced} by the model through logarithmic pooling.
+Combining distributions is an important issue in decision theory and Bayesian inference.
+Logarithmic pooling is a popular method to aggregate expert opinions by using a set of weights that reflect the reliability of each information source.
+However, the resulting pooled distribution depends heavily on set of weights given to each opinion/prior and thus careful consideration must be given to the choice of weights.
+In this paper we review and extend the statistical theory of logarithmic pooling, focusing on the assignment of the weights using a hierarchical prior distribution. 
+We explore several statistical applications, such as the estimation of survival probabilities, meta-analysis and Bayesian melding of deterministic models of population growth and epidemics.
+We show that it is possible learn the weights from data, although identifiability issues may arise for some configurations of priors and data.
+Furthermore, we show how the hierarchical approach leads to posterior distributions that are able to accommodate prior-data conflict in complex models.
 
 Key-words: logarithmic pooling; expert opinion; hierarchical modelling; Bayesian melding. 
 \end{abstract}
@@ -56,28 +57,29 @@ Key-words: logarithmic pooling; expert opinion; hierarchical modelling; Bayesian
 \section{Introduction}
 \label{sec:intro}
 
-Combining probability distributions is a topic of general interest, both in the statistical~\citep{West1984, Genest1986A, Genest1986B} and decision theory literatures~\citep{Genest1984,French1985,Guardoni2002}.
+Combining probability distributions is a topic of general interest, both in the statistical~\citep{West1984, Genest1986A, Genest1986B} and decision theory literatures~\citep{Genest1984,French1985,Pennock1997,Guardoni2002}.
 On the theoretical front, studying opinion pooling operators may give important insights on consensus belief formation and group decision making~\citep{West1984,Genest1986B,Guardoni2002}.
 Among the various opinion pooling operators proposed in the literature, logarithmic pooling has enjoyed much popularity, mainly due to its many desirable properties such as relative propensity consistency (RPC) and external Bayesianity (EB)~\citep{Genest1986A} -- see below. 
-In a practical setting, logarithmic pooling finds use in a range of fields, from engineering~\citep{Lind1988, Savchuk1994} to wildlife conservation~\citep{Poole2000} and infectious disease modelling~\citep{Coelho2009}. 
+In a practical setting, logarithmic pooling finds use in a wide range of fields, from engineering~\citep{Lind1988,Savchuk1994} to wildlife conservation~\citep{Poole2000} and infectious disease modelling~\citep{Coelho2009}. 
 
-A common situation of interest is combining expert opinions about a quantity of interest $\theta \in \mathbf{\Theta} \subseteq \mathbb{R}^p$ when they can be represented as (proper) probability distributions.
-Combining these opinions using logarithmic pooling requires assigning weights to each of the experts, which represent the (relative) reliability of each opinion~\citep{Genest1984}.
-This requirement naturally leads to the question of how to choose the weights in a meaningful way, according to some well-accepted optimality criterion.
+A common situation of interest is combining expert opinions about a quantity of interest $\theta \in \mathbf{\Theta} \subseteq \mathbb{R}^p$ when these opinions can be represented as (proper) probability distributions.
+Combining these opinions using logarithmic pooling requires assigning weights to each of the experts, which represent the (relative) reliability of each opinion~\citep{Genest1984,French1985}.
+This requirement naturally leads to the question of how to choose the weights in a meaningful way, according to some well-accepted (optimality) criterion.
 There are a few proposals in the literature that build methods using different approaches.
 One proposal is to maximise the entropy the pooled distribution~\citep{Myung1996}, whereas another one is to minimise Kullback-Leibler (KL) divergence between the pooled distribution and the individual opinions~\citep{Abbas2009} or between the pooled (prior) distribution and the posterior distribution~\citep{Rufo2012A,Rufo2012B}.
 
-These approaches, while moving away from the problem of arbitrarily assigning the weights, arrive at single point solutions, similar to point estimates in Statistical theory.
-Albeit acknowledging that these approaches have merit, we argue that in many settings, where one has substantial prior information on the relative reliabilities of the information sources (experts), it would be desirable to incorporate this information into the pooling procedure while accommodating uncertainty about the weights.
+While moving away from the problem of arbitrarily assigning the weights, these approaches arrive at single point solutions, similar to point estimates in statistical theory.
+While we acknowledge that these approaches have merit, we argue that in many settings it would be desirable to incorporate  information on the relative reliabilities of the experts into the pooling procedure while accommodating uncertainty about the weights.
 Moreover, assigning a probability distribution over the weights allows one to obtain a posterior distribution using a Bayesian procedure, which in turn enables learning about the weights from data~\citep{Poole2000}.
 Therefore, it makes possible to sequentially update knowledge about the reliability of each expert/source in the face of new data.
 
 In this paper we discuss previous approaches for assigning the weights based on optimality criteria and study assigning hierarchical priors to the weights in order to learn about them from data.
 This paper is organised as follows: in Section~\ref{sec:background} we introduce the necessary concepts and notation on logarithmic pooling, as well as some its key properties.
 We also prove a new result about log-concavity of the pooled distribution when all distributions are log-concave.
-In Section~\ref{sec:weights} we present different approaches to choose the weights, two methods based on optimality criteria, namely maximising the entropy of the pooled prior and minimising Kullback-Leibler divergence between the pooled distribution and the expert distributions.
+In Section~\ref{sec:weights} we present different approaches to choosing the weights, two methods based on optimality criteria, namely maximising the entropy of the pooled prior and minimising Kullback-Leibler divergence between the pooled distribution and the expert distributions.
 In addition we also lay out an approach hierarchical modelling of the weights.
 Section~\ref{sec:apps} contains applications of logarithmic pooling to reliability analysis (Sections~\ref{sec:survivalProbs} and~\ref{sec:learning_rate}), meta-analysis (Section~\ref{sec:metaAnalysis}) and Bayesian melding (Section~\ref{sec:melding_apps}).
+We conclude with a discussion of our results in light of the statistical literature in Section~\ref{sec:discussion}.
 
 
 \section{Logarithmic pooling: properties and applications}
@@ -86,8 +88,8 @@ Section~\ref{sec:apps} contains applications of logarithmic pooling to reliabili
 In this section we introduce the necessary theory and notation and motivate the use of the logarithmic pooling operator by presenting some of its desirable properties.
 
 First let us define the logarithmic pooling (LP) operator.
-Let $\mathbf{F}_{\theta} := \{f_0(\theta), f_1(\theta), f_2(\theta), \ldots, f_K(\theta)\}$ be a set of (densities of) prior distributions representing the opinions of $K+1$ experts and let $\boldsymbol\alpha :=\{\alpha_0, \alpha_1, \alpha_2, \ldots, \alpha_K \}$ be the vector of weights, such that $\alpha_i > 0\: \forall i$ and $\sum_{i=0}^K \alpha_i = 1$.
-The log-pooled prior is
+Let $\mathbf{F}_{\theta} := \{f_0(\theta), f_1(\theta), \ldots, f_K(\theta)\}$ be a set of (densities of) distributions representing the opinions of $K+1$ experts and let $\boldsymbol\alpha :=\{\alpha_0, \alpha_1, \alpha_2, \ldots, \alpha_K \}$ be the vector of weights, such that $\alpha_i > 0\: \forall i$ and $\sum_{i=0}^K \alpha_i = 1$.
+The log-pooled density is
 \begin{equation}
 \label{eq:logpool}
  \mathcal{LP}(\mathbf{F_\theta}, \boldsymbol\alpha) := \pi(\theta \mid \boldsymbol\alpha) = t(\boldsymbol\alpha) \prod_{i=0}^K f_i(\theta)^{\alpha_i},
@@ -100,8 +102,8 @@ While \citet{Poole2000} provide a proof for the case of two densities (see Theor
 \begin{theo}
 \label{thm:normalisation}
 \textbf{Normalisation~\citep{Genest1986A}}. 
-Let $A$ be a $(K+1)$-dimensional open simplex on $[0,1]$.
-For all $\boldsymbol\alpha \in A$ there exists a constant $t(\boldsymbol\alpha)$ such that $\int_{\boldsymbol\Theta}\pi(\theta \mid \boldsymbol \alpha)\, d\theta = 1$.
+Let $\mathcal{A}$ be a $(K+1)$-dimensional open simplex on $[0,1]$.
+For all $\boldsymbol\alpha \in \mathcal{A}$ there exists a constant $t(\boldsymbol\alpha)$ such that $\int_{\boldsymbol\Theta}\pi(\theta \mid \boldsymbol \alpha)\, d\theta = 1$.
 \end{theo}
 We give a simple proof using H\"{o}lder's inequality in the Appendix.
 This result ensures any (finite) number of proper distributions can be combined using the logarithmic pooling operator to yield a normalisable (proper) density.
@@ -112,7 +114,7 @@ In addition, log-linear pools enjoy the~\textit{external Bayesianity} property (
  If the expert opinions are given by densities $f_i(\theta)$ and one observes data $x$ such that one can specify a likelihood $l(x \mid \theta)$, combining the set of posteriors $p_i(\theta \mid x) \propto  l(x \mid \theta)f_i(\theta) $ yields the same distribution as combining the densities $f_i$ to obtain a prior $\pi(\theta)$ and then combine it with $l(x \mid \theta)$ to obtain a posterior $p(\theta \mid x) \propto l(x \mid \theta)\pi(\theta)$.
 \end{remark}
 \begin{proof}
- The proof of this fact is trivial and is given here for completeness.
+%  The proof of this fact is trivial and is given here for completeness.
  Combining the posteriors $p_i(\cdot)$ gives
  \begin{align*}
   p^\prime (\theta \mid x, \boldsymbol \alpha) &\propto \prod_{i = 0}^K \left[  l(x \mid \theta)f_i(\theta) \right]^{\alpha_i},\\
@@ -121,7 +123,8 @@ In addition, log-linear pools enjoy the~\textit{external Bayesianity} property (
  \end{align*}
  where the second line follows from $\sum_{i=0}^K \alpha_i = 1$.
 \end{proof}
-Much less trivially,~\cite{Genest1984} show that the logarithmic pooling operator in~(\ref{eq:logpool}) is the~\textbf{only} aggregation (pooling) operator that enjoys external Bayesianity.
+% Much less trivially,~
+\cite{Genest1984} show that the logarithmic pooling operator in~(\ref{eq:logpool}) is the~\textbf{only} aggregation (pooling) operator that enjoys external Bayesianity.
 Moreover, the logarithmic pooling operator has the relative propensity consistency (RPC) property (Remark~\ref{rmk:properties_RPC}), whereby the pooled opinion preserves relative judgments from the experts.
 \begin{remark}
 \label{rmk:properties_RPC}
@@ -140,30 +143,32 @@ for all $\boldsymbol \xi_1, \boldsymbol \xi_2$.
 \end{remark}
 We refer the reader to~\cite{Genest1984} for a proof.
 Informally, this property says that if all experts consider a particular event $A$ more probable than another event $B$, then the pooled opinion should be consistent with these relative judgments. 
-\cite{Genest1984} show that for mild conditions on $\mathcal{X}$, namely $|\mathcal{X}| \geq 3$, the logarithmic pooling operator is the only pooling operator with RPC (see also Lemma~\ref{lem:RPC_representation} in the Appendix).
+\cite{Genest1984} show that for mild conditions on $\mathcal{X}$, namely $|\mathcal{X}| \geq 3$, the logarithmic pooling operator is the only pooling operator with RPC (see also Lemma~\ref{lem:RPC_representation} in Appendix~\ref{sec:appendix_proofs}).
 
 Another desirable property of the logarithmic pooling operator is log-concavity.
-Log-concavity of the pooled prior may be important to consider in order to guarantee unimodality and certain conditions on tail behaviour (see~\cite{Bagnoli2005}).
+Log-concavity of the pooled prior may be important to consider in order to guarantee unimodality and certain conditions on tail behaviour -- see~\cite{Bagnoli2005}.
 This motivates the following theorem, which is, to the best of our knowledge, a new result:
 \begin{theo}
 \label{thm:concavity}
 \textbf{Log-concavity}. 
 If $\mathbf{F}_{\theta}$ is a set of log-concave distributions, then $\pi(\theta\mid \boldsymbol \alpha)$ is also log-concave.
-Moreover, logarithmic pooling is the~\underline{only} pooling operator that will always produce a log-concave density if all the elements of $\mathbf{F}_{\theta}$  are log-concave.
+Moreover, logarithmic pooling is the~\underline{only} pooling operator that will \underline{always} produce a log-concave density when all the elements of $\mathbf{F}_{\theta}$  are log-concave.
 \end{theo}
 \begin{proof}
  See the Appendix.
 \end{proof} 
 Theorem~\ref{thm:concavity} tells us that logarithmic pooling is the only aggregation method to universally preserve log-concavity, for any configuration of the weights ($\boldsymbol{\alpha}$).
 This universality result is important because it holds for any set of log-concave distributions, $\mathbf{F}_{\theta}$.
-In contrast, a linear pool of $K$ Gaussian distributions with common mean, for example, would produce a log-concave pooled distribution for any $\boldsymbol{\alpha}$, but this would fail if the means were different.
+In contrast, a linear pool of $K + 1$ Gaussian distributions with common mean, $\pi_{\text{linear}}(\theta) = \sum_{i=0}^K \alpha_i f_i(\theta)$ , would produce a log-concave pooled distribution for any $\boldsymbol{\alpha}$, but this would potentially fail if the means were different.
 
 \subsection{Exponential family}
 \label{sec:expofamily}
 
 The exponential family of probability distributions finds widespread in the modelling of empirical phenomena.
 In this section we give expressions for the entropy and Kullback-Leibler divergence for the pooled distributions. 
-Suppose we are interested in a random variable, $Y$, from an exponential family with parameter $\theta$ and probability density function (pdf) given by
+These will be useful in applications presented later in the paper.
+
+Suppose we are interested in a random variable $Y$ whose distribution belongs to the exponential family with parameter $\theta$ and probability density function (pdf) given by
 \begin{equation}
 \label{eq:exponentialfamily}
 f(y|\theta) = h(y) e^{\theta y - s(\theta)}.
@@ -187,10 +192,10 @@ where $\mathbb{E}_{\pi}\left[ g(Y) \right]$ is the expectation of a $\pi$-measur
 The Kullback-Leibler divergence between the pooled distribution (\ref{eq:pooldistEF}) and each distribution in $\mathbf{F}_{y}$ can be written as:
 \begin{equation}
 \label{eq:KLdistEF}
-KL(\pi || f_i )  =  - H_\pi(Y; \boldsymbol\alpha) - \mathbb{E}_\pi[\log h_i(Y)] - \theta_i \mathbb{E}_\pi[Y] + s_i(\theta_i).
+\operatorname{KL}(\pi || f_i )  =  - H_\pi(Y; \boldsymbol\alpha) - \mathbb{E}_\pi[\log h_i(Y)] - \theta_i \mathbb{E}_\pi[Y] + s_i(\theta_i).
 \end{equation}
 
-These expressions allow for easy computation of information measures for a broad class of distributions, which will be useful in the remainder of this paper (see also the Appendix).
+These expressions allow for easy computation of information measures for a broad class of distributions, which will be useful in the remainder of this paper (see also Appendix~\ref{sec:appendix_common_poolings}).
 
 \subsubsection{Conjugate priors to the exponential family}
 \label{sec:conjugexpofamily}
@@ -203,7 +208,7 @@ g(\theta | a, b) = K(a,b) e^{\theta a - b s(\theta)} \: ,
 where $K(a,b)$ is a normalising constant.
 Similar to the above, let $\mathbf{G}_{\theta}$ be a set of log-conjugate prior distributions representing the opinions of $K+1$ experts, and $g_i(\theta) = g(\theta | a_i, b_i)$ from equation (\ref{eq:priorEF}).
 
-The log-pooled prior is also a conjugate prior for $f(y|\theta)$ with hyperparameters given by a weighted mean of the experts hyperparameters, i.e., $\pi(\theta|\boldsymbol\alpha) = g(\theta | a^*, b^* )$, where $a^* = \sum_{i=0}^K \alpha_i a_i$ and $b^* = \sum_{i=0}^K \alpha_i b_i$.
+The log-pooled prior is also a conjugate prior for $f(y|\theta)$ with hyperparameters given by a weighted mean of the experts's hyperparameters, i.e., $\pi(\theta|\boldsymbol\alpha) = g(\theta | a^*, b^* )$, where $a^* = \sum_{i=0}^K \alpha_i a_i$ and $b^* = \sum_{i=0}^K \alpha_i b_i$.
 % \begin{equation}
 % \label{eq:poolpriorEF}
 % \pi(\theta|\boldsymbol\alpha) = g(\theta | a^*, b^*) \: ,
@@ -247,32 +252,37 @@ Standard Bayesian inference may then follow,  leading to the posterior
  p_{\Theta}(\theta) \propto \tilde{q}_{\Theta}(\theta) L_1(\theta) L_2(M(\theta)),
 \end{equation}
 which enjoys all the properties of usual posterior distributions.
-The method allows standard Bayesian inference to be carried out about all quantities of interest in the model, which makes it attractive to application in policy making~\citep{Alkema2008}, where proper acknowledgement of uncertainty is crucial.
+The method allows standard Bayesian inference to be carried out about all quantities of interest in the model, which makes it attractive to application in policy making~\citep{Alkema2008}, where proper acknowledgment of uncertainty is crucial.
 
-In~\cite{Poole2000} (Section 6.2), the authors fix $\alpha = 1/2$, justifying their choice by the fact that while the weights should reflect the reliability of each expert (information source), in the case of their Bayesian melding analysis one is combining distributions based on different bodies of evidence, but assessed by the same expert.
-Since this need not be the case in all applications, in this paper we relax this restriction, modelling $\alpha$ through a hyperprior instead. 
+In~\cite{Poole2000} (Section 6.2 therein), the authors fix $\alpha = 1/2$, justifying their choice by the fact that while the weights should reflect the reliability of each expert (information source).
+In their Bayesian melding analysis, one is combining distributions based on different bodies of evidence, but assessed by the same expert.
+Another option is to fix $\alpha = 1-\epsilon$, with $\epsilon$ small~\citep{Alkema2007}.
+This can be useful when the prior distribution on outputs is uniform, as it still enforces the constraint, but keeps the prior information about the inputs.
+Here we relax the restriction of fixing the weight, instead modelling $\alpha$ through a hyperprior -- see Sections~\ref{sec:bowhead} and~\ref{sec:SIR_flu}. 
 
 \section{Assigning the weights in logarithmic pooling}
 \label{sec:weights}
 
-The weights, $\boldsymbol \alpha$, play a key role on the logarithmic pooling and hence their choice is critical.
+The weights ($\boldsymbol \alpha$) play a key role on the logarithmic pooling and hence their choice is critical.
 Building on work by~\cite{Poole2000,Rufo2012A,Rufo2012B} and~\cite{Abbas2009}, we now move on to study three approaches to assigning the weights in logarithmic pooling.
 The first two approaches are based on optimality criteria and a third method proposes assigning a (hyper)prior to the weights.
 
 \subsection{Choosing weights based on optimality criteria}
 
+The first set of approaches we will consider attempt to assign the weights by achieving an optimality condition using only information contained in the expert distributions themselves, without reference to any external information such as observed data.
+
 \subsubsection{Maximising entropy}
 \label{sec:maxent}
 
-In a context of near complete uncertainty about the relative reliabilities of the experts (information sources) it may be desirable to combine the prior distributions such that $\pi(\theta)$ is maximally uninformative. %% LM: this can be highly problematic...
-Such approach would ensure that, given the constraints imposed by $\mathbf{F}_{\theta}$, the pooled distribution is the one which best represents the current state of knowledge~\citep{Jaynes1957,Savchuk1994}.
+In a context of near complete uncertainty about the relative reliabilities of the experts (information sources) it may be desirable to combine the prior distributions such that $\pi(\theta)$ is maximally diffuse. %% LM: this can be highly problematic...
+According to its proponents, such an approach would ensure that, given the constraints imposed by $\mathbf{F}_{\theta}$, the pooled distribution is the one which best represents the current state of knowledge~\citep{Jaynes1957,Savchuk1994}.
 In order to choose $\boldsymbol\alpha$ so as to maximise prior 
 diffuseness, one can maximise the entropy of the log-pooled prior, i.e.
 \begin{align}
 \nonumber
-H_{\pi}(\theta; \boldsymbol\alpha) &= E_{\pi}\left[-\log \pi(\theta) \right] =-\int_{\boldsymbol\Theta}\pi(\theta)\log\pi(\theta)\, d\theta,\\
+H_{\pi}(\theta; \boldsymbol\alpha) &= \mathbb{E}_{\pi}\left[-\log \pi(\theta) \right] =-\int_{\boldsymbol\Theta}\pi(\theta)\log\pi(\theta)\, d\theta,\\
 \label{eq:entropypiB}
-&= -\sum_{i=0}^{K} \alpha_i E_{\pi}[\log f_i] - \log t(\boldsymbol\alpha).
+&= -\sum_{i=0}^{K} \alpha_i \mathbb{E}_{\pi}[\log f_i] - \log t(\boldsymbol\alpha).
 \end{align}
 Formally, we want to find $\hat{\boldsymbol\alpha}$ such that
 \begin{equation}
@@ -281,6 +291,8 @@ Formally, we want to find $\hat{\boldsymbol\alpha}$ such that
 \end{equation}
 
 This approach, however, does not result in a convex optimisation problem, therefore one is not guaranteed to find a unique solution -- see Remark~\ref{rmk:uniqueness} for intuition as to why.
+A possible resolution to the non-uniqueness of the maximum entropy solution would be to add further constraints, for instance requiring that $E_{\pi}[\theta] = m$.
+It is however unclear which set of constraints would ensure uniqueness.
 
 \subsubsection{Minimising Kullback-Leibler divergence}
 \label{sec:minKL}
@@ -292,7 +304,7 @@ We can define a loss function such that
 \nonumber
 L(\boldsymbol\alpha) &= \sum_{i=0}^K  \text{KL}(f_i || \pi ), \\
 \label{eq:KLexpanded}
-     &= - (K+1)\log t(\boldsymbol\alpha) - (K+1) \sum_{i=0}^K\alpha_i E_i [\log f_i ]  + \sum_{i=0}^K \mathbb{E}_i\left[\log f_i\right], 
+     &= - (K+1)\log t(\boldsymbol\alpha) - (K+1) \sum_{i=0}^K\alpha_i \mathbb{E}_i [\log f_i ]  + \sum_{i=0}^K \mathbb{E}_i\left[\log f_i\right], 
 \end{align}
 and we want to find 
 \begin{equation}
@@ -302,18 +314,18 @@ and we want to find
 Fortunately, this set up leads to a unique solution, a result we summarise in Remark~\ref{rmk:uniqueness}.
 \begin{remark}
 \label{rmk:uniqueness}
-\textbf{Uniqueness} .
+\textbf{Uniqueness of the minimum KL solution}.
  The distribution obtained following~(\ref{eq:argminKL}) is unique, i.e., there is only one aggregated prior $\pi(\theta \mid \boldsymbol\alpha)$ that minimizes $L(\boldsymbol\alpha)$.
 \end{remark}
 \begin{proof}
 We begin by noting that the second term in~(\ref{eq:KLexpanded}) is a linear combinations of the weights, and hence we may restrict attention only to the first term -- the third term does not depend on $\boldsymbol{\alpha}$.
 Next, recall that minimising~(\ref{eq:KLexpanded}) is equivalent to maximising $\log t(\boldsymbol\alpha) = \log\int_{\boldsymbol\Theta}\prod_{i=0}^{K}f_i(\theta)^{\alpha_i}\, d\theta$.
-Proposition 3.1 in~\cite{Rufo2012A} states that $t(\boldsymbol\alpha)$ is log-concave, therefore any optimisation problem which involves minimising $-\log t(\boldsymbol{\alpha})$ is convex.
+Proposition 3.1 in~\cite{Rufo2012A} states that $t(\boldsymbol\alpha)$ is (log-)concave, therefore any optimisation problem which involves minimising $-\log t(\boldsymbol{\alpha})$ is convex.
 We thus conclude that the problem in~(\ref{eq:argminKL}) has a unique solution.
 \end{proof}
 By contrast, the problem in~(\ref{eq:argmaxEnt}) requires one to minimise $\ln t(\boldsymbol\alpha)$, hence lacking a sufficient condition for the existence of a unique solution.
 Likewise, using  the loss function $L^\prime(\boldsymbol\alpha) = \sum_{i=0}^K  \text{KL}(\pi ||f_i )$ would not lead to a unique solution.
-See Section~\ref{sec:computation_opt} for implementation details.
+See Appendix~\ref{sec:appendix_compdetails} for implementation details.
 
 \subsection{Hierarchical modelling of the weights}
 \label{sec:hierPrior}
@@ -321,7 +333,7 @@ See Section~\ref{sec:computation_opt} for implementation details.
 As discussed by~\cite{Poole2000} and others~\citep{Zhong2015,Li2017}, estimating the weights would be of interest since this would allow one to assess the reliability of each source of information (expert).
 \cite{Li2017} explore the idea of computing the pooled distribution for several values of the weights.
 Whilst informative, this approach has two issues: (a) it does not scale well with increasing the number of distributions being combined, $K$, and; (b) it fails to account for any (posterior) dependence between model parameters and the weights.
-In this section we propose placing a hierarchical prior on the weights, allowing for standard Bayesian inference on these quantities.
+In this section we propose placing a hierarchical prior on the weights, allowing for standard Bayesian inference about these quantities.
 
 A natural choice for a prior distribution for $\boldsymbol\alpha$ is the $(K+1)-$dimensional Dirichlet distribution
 \begin{equation}
@@ -354,61 +366,34 @@ where $\psi(\cdot)$ is the digamma function, and $\psi'(\cdot)$ is the trigamma 
 The marginal prior for $\theta$,
 \begin{equation}
 \label{eq:marginalbeta}
-\pi(\theta) = \int_{\mathcal{A}} \pi(\theta \mid \boldsymbol\alpha) \pi_A(\boldsymbol\alpha)d\boldsymbol\alpha,
+\tilde{\pi}(\theta) = \int_{\mathcal{A}} \pi(\theta \mid \boldsymbol\alpha) \pi_A(\boldsymbol\alpha)d\boldsymbol\alpha,
 \end{equation}
 can also be efficiently approximated through Monte Carlo sampling when $\pi$ can be written in closed-form.
 Even when it cannot be expressed analytically, it is still possible to sample from the marginal prior by using quadrature-based methods for computing $t(\boldsymbol\alpha)$ when $\theta$ is unidimensional (see Discussion).
 
-\subsection{Computational details}
-\label{sec:computation}
+Concerning posterior inference, the marginal posterior for $\theta$ can be obtained through standard methods and shall not be discussed further.
+The next object to consider is the marginal posterior for the weights, $p(\boldsymbol\alpha \mid \boldsymbol{x})$, which can be obtained through
+\begin{align}
+\nonumber
+ p(\boldsymbol\alpha \mid \boldsymbol{x}) &= \int_{\boldsymbol\Theta} p(\boldsymbol\alpha, \theta \mid \boldsymbol{x})\,d\theta, \\
+ \nonumber
+ &= \int_{\boldsymbol\Theta} \frac{L(\boldsymbol{x} \mid \theta) \pi(\theta \mid \boldsymbol\alpha)\pi_A(\boldsymbol\alpha)}{c(\boldsymbol{x})}\,d\theta,\\
+ \nonumber
+ &= \frac{\pi_A(\boldsymbol\alpha)}{c(\boldsymbol{x})} \int_{\boldsymbol\Theta} L(\boldsymbol{x} \mid \theta) \pi(\theta \mid \boldsymbol\alpha)\,d\theta,\\
+ \label{eq:marginal_posterior_alpha}
+ &\propto \pi_A(\boldsymbol\alpha) \kappa(\boldsymbol\alpha, \boldsymbol{x}),
+\end{align}
+where $c(\boldsymbol{x}) := \int_{\mathcal{A}}\int_{\boldsymbol\Theta} p(\boldsymbol\alpha, \theta \mid \boldsymbol{x})\,d\theta\,d\boldsymbol{\alpha}$.
 
-The analyses presented in this paper necessitated numerical optimisation to find the weights based on optimality criteria and Markov chain Monte Carlo (MCMC) to approximate posterior distributions.
-All computations were carried out in the R~\citep{R2019} statistical computing environment, version 3.6.0. 
-We provide implementations using the Stan~\citep{Carpenter2017} probabilistic programming language and R code for the methods, figures and tables presented in this paper can also be found at~\url{https://github.com/maxbiostat/opinion_pooling}.
-
-\subsubsection{Optimisation procedures}
-\label{sec:computation_opt}
-
-In this section we give more detail on the optimisation procedures used to solve the problems in Sections~\ref{sec:maxent} and~\ref{sec:minKL}.
-Since both problems are numerically unstable, we employ an strategy that starts the optimisation routine from $J = 1000$ overdispersed points in the unconstrained space, $\mathbb{R}^K$, obtained through the unit simplex transform~\citep{Betancourt2012}.
-The procedure then picks the overall lowest/highest optimised value in order to avoid local minima/maxima.
-We draw the initial values from a normal distribution with mean $0$ and variance $100^2$ and then employ the \verb|optim()| function to optimise the target functions (maximum entropy or minimum KL) using the L-BFGS algorithm~\citep{Byrd1995} with default settings.
-We then choose the minimum/maximum achieved over the $J$ starting points in order to improve the chances of achieving a global optimum.
-
-\subsubsection{Markov chain Monte Carlo \textit{via} Stan}
-\label{sec:computation_mcmc}
-
-Most of the posterior distributions discussed in this paper cannot be computed in closed-form and therefore we resort to Hamiltonian Monte Carlo~\citep{Neal2011}, in particular the No-U-Turn (NUTS) dynamic implementations available in Stan~\citep{Hoffman2014,Betancourt2017}.
-
-For most computations, we employed four independent chains of $4000$ iterations each with the first $2000$ discarded as warm-up/burn-in.
-Some models presented more challenging target distributions and we increased the number of iterations to $10 000$.
-For all results reported, Monte Carlo error (MCSE) was well below 1\% the posterior standard deviation for all parameters, allowing for accurate computation of the relevant expectations.
-In order to cope with challenging posterior geometry and ensure accurate computation, we used an acceptance probability of $0.99$ (\verb|adapt_delta = 0.99|, in Stan parlance) and up to $2^{15}$ leapfrog steps (\verb|max_treedepth = 15|).
-All potential scale reduction factors ($\hat{R}$, \cite{Gelman1992}) were below $1.01$, indicating no convergence problems.
-
-\subsubsection{Sampling-importance-resampling}
-\label{sec:spIR}
-
-In the context of Bayesian melding, while it is possible to employ HMC, it is sometimes preferable to employ custom algorithms that can better deal with the constraints imposed by the deterministic model.
-In the original paper,~\cite[sec. 3.4]{Poole2000} propose a sampling-importance-resampling (SpIR) algorithm to sample from the posterior in~(\ref{eq:BMpoolposterior}), which we extend here to in order to accommodate varying weights.
-\begin{enumerate}
-\setcounter{enumi}{-1}
- \item Draw $k$ values from  $q_1(\theta)$, constructing $\boldsymbol \theta_k = (\theta^{(1)}, \theta^{(2)}, \ldots, \theta^{(k)} )$;
- \item Similarly, sample $\boldsymbol \alpha_k$ from $\pi(\boldsymbol \alpha)$;
- \item For each $\theta^{(i)} \in \boldsymbol\theta_k$ run the model to compute $\psi^{(i)} = M(\theta^{(i)})$, constructing $\boldsymbol \phi_k$;
- \item Obtain a density estimate of $q_1^\star(\phi)$ from  $\boldsymbol \phi_k$;
- \item Form the importance weights 
- \begin{equation}
- \label{eq:SpIRweights}
-  w_i = t\left(\boldsymbol \alpha^{(i)}\right) \left(\frac{q_2(M(\theta^{(i)}))}{q_1^\star(M(\theta^{(i)}))}\right)^{1 - \boldsymbol \alpha^{(i)}} L_1(\theta^{(i)}) L_2(M(\theta^{(i)})),
- \end{equation}
-where $t\left(\boldsymbol \alpha^{(i)}\right) = \left( \int_{\Phi} q_1^\ast(\phi)^{\alpha^{(i)}} q_2(\phi)^{1-\alpha^{(i)}} d\phi \right)^{-1}$ is computed using standard quadrature methods;
- \item (Re)Sample $l$ values from $\boldsymbol \theta_k$ according to the weights $\boldsymbol w_k$.
-\end{enumerate}
-The quadrature-based normalisation in step in 4 can be replaced with an importance sampling or MCMC estimate when the dimension of $\phi$ or $\theta$ is bigger than 1, but this is not explored here.
+In some situations, in particular the conjugate situation discussed in Section~\ref{sec:conjugexpofamily} and exemplified in the Applications section below, it is possible to write down $\kappa(\boldsymbol\alpha, \boldsymbol{x})$ in closed-form.
+This is very convenient because the posterior expectation of the weights, $E_p[\boldsymbol\alpha \mid \boldsymbol{x}]$, becomes $E_{\pi_A}[\boldsymbol\alpha \kappa(\boldsymbol\alpha, \boldsymbol{x})]$, i.e., the expectation of a known function with respect to the prior on the weights.
+This expectation can be easily and accurately approximated with simple Monte Carlo techniques rather than MCMC -- see Section~\ref{sec:learning_rate} for example applications.
 
 \section{Applications}
 \label{sec:apps}
+
+In this section we shall present a wide range of applications for logarithmic pooling, from prior elicitation to meta-analysis to Bayesian melding.
+Computational details, along with instructions to get reproducible code, are given in  Appendix~\ref{sec:appendix_compdetails}.
 
 \subsection{Elicitation: combining expert priors on survival probabilities}
 \label{sec:survivalProbs}
@@ -419,15 +404,15 @@ The experts express their opinion as prior means for the survival probability, w
 From the vector of prior means $\mathbf{m} = \{ m_0 = 0.95, m_1 = 0.80, m_2 = 0.90, m_3 = 0.70 \}$, the authors obtain the parameters of the Beta distributions for each expert,  $\mathbf{a} = \{ a_0 = 18.10, a_1 = 3.44 , a_2 = 8.32, a_3 = 1.98 \}$ and  $\mathbf{b} = \{ b_0 = 0.955 , b_1 = 0.860, b_2 = 0.924, b_3 = 0.848\}$.
 Furthermore, an experiment is conducted and $y = 9$ successes out of $n = 10$ trials are observed.
 Thus, in this application we are able to estimate the posterior distribution for the survival probability and also, with  the hierarchical modelling approach, the posterior distribution for the weights in face of the observed data.
-For the hierarchical priors, we employ a $\text{Dirichlet}(1/10, 1/10, 1/10, 1/10)$ and a moment-matching logistic-normal priors (see Section~\ref{sec:learning_rate} for a justification).
+For the hierarchical priors, we employ a $\text{Dirichlet}(1/10, 1/10, 1/10, 1/10)$ and a moment-matching logistic-normal priors (see Section~\ref{sec:learning_rate} for justification).
 
-The probability density of the survival probability for each expert is given by
-$$f_i(\theta;a_i, b_i) = \frac{1}{\mathcal{B}(a_i, b_i)} \theta^{a_i-1}(1-\theta)^{b_i-1},$$
-where $\mathcal{B}(a,b)= \Gamma(a)\Gamma(b)/\Gamma(a + b)$ is the Beta function.
+The probability distribution of the survival probability for the $i$-th expert is a Beta distribution with (hyper)parameters $a_i$ and $b_i$.
+% $$f_i(\theta;a_i, b_i) = \frac{1}{\mathcal{B}(a_i, b_i)} \theta^{a_i-1}(1-\theta)^{b_i-1},$$
+% where $\mathcal{B}(a,b)= \Gamma(a)\Gamma(b)/\Gamma(a + b)$ is the Beta function.
 The log-pooled distribution for $\theta$ is then
 \begin{align}
 \nonumber
-\pi(\theta) & = t(\boldsymbol\alpha)\prod_{i=0}^{K}f_i(\theta;a_i,b_i)^{\alpha_i},\\
+\pi(\theta) & \propto \prod_{i=0}^{K}f_i(\theta;a_i,b_i)^{\alpha_i},\\
 \nonumber
             & \propto \prod_{i=0}^{K} \left(\theta^{a_i-1}(1-\theta)^{b_i-1} \right)^{\alpha_i},\\
 \label{eq:betabern}
@@ -443,34 +428,49 @@ And the KL divergence between $\pi(\theta)$ and $f_i(\theta)$  is
 \begin{equation}
 \begin{split}
  \label{eq:KLbeta}
- d_i = KL(\pi || f_i) = \ln\left(\frac{\mathcal{B}(a_i, b_i)}{\mathcal{B}(a^*, 
-b^*)}\right) & + (a^* - a_i) \psi(a^*)+ (b^* - b_i)\psi(b^*) \\
- &- (a^*-a_i + b^* - b_i)\psi(a^*+b^*).
+ d_i = KL(f_i || \pi) = \ln\left(\frac{\mathcal{B}(a^*, b^*)}{\mathcal{B}(a_i, 
+b_i)}\right) & + (a_i - a^*) \psi(a_i)+ (b_i - b^*)\psi(b_i) \\
+ &- (a_i-a^* + b_i - b^*)\psi(a_i + b_i).
 \end{split}
 \end{equation}
+In this conjugate setting, the posteriors associated with each expert are also Beta distributions with
+parameters $a_i^\prime = a_i + y$ and $b_i^\prime = b_i + (n-y)$.
+This allows us to employ the maximum entropy and minimum KL procedures to combine these posterior distributions and thus make the weights comparable with the posterior means obtained with the hierarchical priors.
 
-Table~\ref{tab:alphasBeta} lists the weights proposed by the methods discussed above, as well as the solution found by~\cite{Rufo2012B} (Section 5.2).
-We note that the weights from maximum entropy, minimum KL divergence and using the method by~\cite{Rufo2012B} use only information contained in the collection of expert distributions $\boldsymbol F_{\theta}$, while the results for the hierarchical priors are posterior means obtained after observing data.
-Maximising the entropy of the pooled distribution lead to the degenerate solution $\boldsymbol \alpha = \{0, 0, 0, 1 \}$, which gives all the weight to the most diffuse prior distribution -- $\text{Beta}(1.98, 0.848)$.
+Our analysis of this example is thus split into two: weights for the priors and for the posteriors.
+Before observing any data, we can employ the optimisation procedures discussed above to obtain weights only taking into account information encoded in the expert priors themselves.
+To these optimisation procedures we add the technique of~\cite{Rufo2012B} which seeks to minimise KL distance between the pooled prior and the Jeffreys's posterior.
+When data are available, we can then use maximum entropy and minimum KL to obtain the weights in the same fashion as before, but now  also estimate the posterior distribution of weights using a hierarchical prior.
+Finally, for this example we can also compute the integrated (marginal) likelihood of each expert, meaning that we can, assuming one of the experts is correct, compute ``model'' probabilities by normalising the marginal likelihoods (see Section~\ref{sec:learning_rate}, below).
+
+In Table~\ref{tab:alphasBeta} we present weights obtained with the optimisation methods for the priors, including the solution found by~\cite{Rufo2012B} (Section 5.2 therein).
+With regard to the posteriors, we show maximum entropy, minimum KL along with posterior means of the weights under two prior distributions (Dirichlet and logistic-normal).
+% We note that the weights from maximum entropy, minimum KL divergence and using the method by~\cite{Rufo2012B} use only information contained in the collection of expert distributions $, while the results for the hierarchical priors are posterior means obtained after observing data.
+Maximising the entropy of the pooled prior -- and posterior -- lead to the degenerate solution $\boldsymbol \alpha = \{0, 0, 0, 1 \}$, which gives all the weight to the most diffuse prior distribution -- $\text{Beta}(1.98, 0.848)$.
 Since $t(\boldsymbol\alpha)$ is concave, we expect to find the maximum entropy given by the boundary conditions, which may lead to points in the border of the simplex.
-Unsurprisingly, the same solution was found by~\cite{Rufo2012B} whose method tends to favour more diffuse distributions.
+Unsurprisingly, the same solution was found by~\cite{Rufo2012B}, whose method tends to favour more diffuse distributions.
 Minimising Kullback-Leibler divergence between the pooled prior and each expert prior leads to a unique solution but in this case also suggests to discard two of the opinions.
-The hierarchical priors gave very similar posterior distributions for the weights, which assign the experts nearly equal weights.
+
+The hierarchical priors gave very similar posterior distributions for the weights, which assign the experts nearly equal weight, although the logistic-normal prior lead to results closer to the marginal likelihood-based weights.
 
 \begin{table}[ht]
 \caption{\textbf{Weights obtained using different methods for the survival probability example~\citep{Savchuk1994}.}
 $^1$ -- Kullback-Leibler; $^2$ -- Posterior mean for $\boldsymbol\alpha$.}
 \centering
-\begin{tabular}{ccccc}
-  \hline
-Method  & $\alpha_0$ & $\alpha_1$ & $\alpha_2$ & $\alpha_3$ \\ 
-  \hline
-Maximum entropy & 0.00 & 0.00 & 0.00 & 1.00 \\ 
-Minimum KL$^1$ divergence & 0.04 & 0.96 & 0.00 & 0.00 \\
-\cite{Rufo2012A} & 0.00 & 0.00 & 0.00& 1.00\\
-Dirichlet prior$^2$ & 0.26 & 0.24 & 0.27 & 0.23 \\ 
-Logistic-normal prior$^2$ & 0.27 & 0.24 & 0.31 & 0.18\\
- \hline
+\begin{tabular}{cccccc}
+\hline
+                           & Method                & $\alpha_0$   & $\alpha_1$   & $\alpha_2$   & $\alpha_3$\\
+\hline
+\multirow{3}{*}{Prior}     & Maximum entropy       & 0.00 & 0.00 & 0.00 & 1.00  \\
+                           & Minimum KL$^1$        & 0.04 & 0.96 & 0.00 & 0.00 \\
+                           & \cite{Rufo2012A}      & 0.00 & 0.00 & 0.00 & 1.00  \\
+                           &                       &      &      &      &      \\
+\multirow{5}{*}{Posterior} & Maximum entropy       & 0.00 & 0.00 & 0.00 & 1.00  \\
+                           & Minimum KL            & 0.17 & 0.83 & 0.00 & 0.00 \\
+                           & Dirichlet$^2$        & 0.26 & 0.24 & 0.27 & 0.23 \\
+                           & Logistic-normal$^2$ & 0.27 & 0.24 & 0.31 & 0.18 \\
+                           & Marginal likelihoods  & 0.27 & 0.24 & 0.30 & 0.19\\
+\hline                
 \end{tabular}
 \label{tab:alphasBeta}
 \end{table}
@@ -487,23 +487,27 @@ l_i(y_j, n_j) &= \int_{0}^{1}\mathcal{L}(\theta|y_j, n_j)\pi_i(\theta)\, d\theta
  \end{align}
 For the hierarchical priors we take the posterior mean of $(a^\star, b^\star)$ as $(a_i, b_i)$.
 Results are given in Table~\ref{tab:marglikes} and show that, apart from expert $3$ -- and hence the maximum entropy pooled prior--, all other pooled priors and individual experts' priors give similar marginal likelihoods.
-If one were to normalise the marginal likelihoods in order to form the expert weights, one would find $\boldsymbol\alpha^\prime = \{0.27, 0.24, 0.30, 0.19 \}$, which is not very different from equal weights.
-The posterior distribution for the weights estimated under both priors favours expert 1, the expert with the highest marginal likelihood.
-The logistic-normal gives expert 1 a higher weight when compared with the Dirichlet.
+
+% If one were to normalise the marginal likelihoods in order to form the expert weights, one would find $\boldsymbol\alpha^\prime = \{0.27, 0.24, 0.30, 0.19 \}$, which is not very different from equal weights.
+The posterior distribution for the weights estimated under both priors favours expert 2, the expert with the highest marginal likelihood.
+The logistic-normal gives expert 2 a higher weight when compared with the Dirichlet.
 This is connected to the increased flexibility of the logistic-normal (see Section~\ref{sec:learning_rate}).
 
-We stress that that the marginal likelihoods are not being used here as a means of selecting priors, but rather as a useful univariate summary that is informative about the compatibility with the observed data and hence informative about prior-data conflict.
-While in this example one can gain insight into prior-data conflict from just the prior means and $y/n$, in other situations it might be harder to discern which expert gave the best (prior) guess, for instance.
+We stress that that the marginal likelihoods are not being used here as a means of selecting priors, but rather as a useful univariate summary which is informative about the compatibility with the observed data and hence informative about prior-data conflict.
+While in this example one can gain insight into prior-data conflict from just the prior means and $y/n$, in other situations it might be harder to discern which expert gave the best (prior) guess.
 % In section~\ref{sec:learning_rate} we address the issue of the performance of both prior hierarchical priors and how one can update the weights  
 
 \begin{figure}[!ht]
 \begin{center}
-\subfigure[][Expert priors]{\includegraphics[scale=.35]{../plots/expert_densities_Savchuk.pdf}}
-\subfigure[][Pooled priors]{\includegraphics[scale=.35]{../plots/method_prior_densities_Savchuk.pdf}}
+\subfigure[][Expert priors]{\includegraphics[scale=.45]{../plots/expert_densities_Savchuk.pdf}}
+\subfigure[][Pooled priors]{\includegraphics[scale=.45]{../plots/method_prior_densities_Savchuk.pdf}}\\
+\subfigure[][Expert posteriors]{\includegraphics[scale=.45]{../plots/posterior_densities_Savchuk.pdf}}
+\subfigure[][Pooled posteriors]{\includegraphics[scale=.45]{../plots/method_posterior_densities_Savchuk.pdf}}
 \end{center}
 \caption{\textbf{Prior and posterior densities for the survival probability $\theta$}.
 Panel (a) shows the distributions elicited by each expert (data from~\cite{Savchuk1994}) and panel (b) shows the pooled priors and posteriors obtained using the methods discussed in this paper and the solution found by~\cite{Rufo2012B}.
-The black dashed vertical line marks the maximum likelihood estimate of $\theta$, $\hat{\theta}= 9/10$.
+Panels (c) and (d) show the corresponding plots for the posterior distributions after observing the data, $y = 9, n = 10$.
+The black dashed vertical line marks the maximum likelihood estimate $\hat{\theta}= 9/10$.
 }
 \label{fig:priors_pooled_Savchuk}
 \end{figure}
@@ -521,8 +525,8 @@ Method & Prior & Posterior  \\
  Maximum entropy &  0.70 (0.17--0.99) & 0.86 (0.63--0.98) \\ 
  Minimum KL  &  0.82 (0.42--1.00) & 0.87 (0.67--0.99) \\ 
  \cite{Rufo2012B} & 0.70 (0.17--0.99) & 0.86 (0.63--0.98)\\
- Dirichlet prior & 0.86 (0.40--1.00) & 0.89 (0.70--0.99) \\ 
- Logistic-normal prior & 0.88 (0.35--1.00) & 0.89 (0.71--0.99) \\ 
+ Dirichlet  & 0.86 (0.40--1.00) & 0.89 (0.70--0.99) \\ 
+ Logistic-normal & 0.88 (0.35--1.00) & 0.89 (0.71--0.99) \\ 
   \hline
 \end{tabular}
 \label{tab:prior_posteriorsSavchuk}
@@ -547,70 +551,6 @@ $^1$ Calculated using the posterior mean of $\boldsymbol\alpha$. }
 \label{tab:marglikes}
 \end{table}
 
-\subsection{Posterior distribution of the weights: interpretability and prior sensitivity}
-\label{sec:learning_rate}
-
-The analysis of the survival probabilities example instigates the question of how sensitive posterior inference for $\boldsymbol \alpha$ can be to prior specification and the compatibility between the expert opinions and the observed data.
-In this section we study these questions using simulated data.
-Throughout this section we will use $K = 5$ experts, who will elicit Beta distributions about a probability $p$.
-Some data $(x, n)$ will then be observed and a likelihood $L(x \mid n, p) = \text{binomial}(n, p)$ will summarise the information brought by the data.
-In what follows we will elicit the parameters of a Beta distribution on $p$ for each expert using the mean $\mu_i :=  \mathbb{E}_i[p]$ and coefficient of variation $c_i := \sqrt{\text{Var}_i(p)}/ \mu_i$.
-For more information, please see the appendix of~\cite{Coelho2015}.
-We employ four hyperpriors in our analysis: a $\text{Dirichlet}(1, 1, 1, 1, 1)$ and a more flexible $\text{Dirichlet}(1/10, 1/10, 1/10, 1/10, 1/10)$, along with the corresponding moment-matching logistic-normal priors.
-% 
-% \subsubsection{One correct expert}
-% \label{sec:one_correct}
-
-The
-% first
-setting we will investigate is when one expert provides a distribution that is significantly more compatible with the data ultimately observed.
-The idea here is to evaluate how the posterior distribution of the weights $p(\boldsymbol\alpha \mid x, n)$ supports the ``correct'' expect as we vary (a) the strength of evidence $x/n$ and (b) the coefficient of variation of the ``correct'' distribution.
-As we make the correct expert's coefficient of variation smaller, we expect the posterior support to increase.
-The intuition is that if one gives the correct answer with more certainty, one should receive more credence~\textit{a posteriori}.
-To study point (a), we evaluate the posterior weights for $x/n = \{5/10, 50/100, 500/1000, 5000/10000 \}$.
-In addition, we choose the ``true'' $p = 1/2$ and then construct $\boldsymbol\mu = \{0.1, 0.2, 0.5, 0.8, 0.9\}$ and $\boldsymbol c = \{0.1, 0.1, c_2, 0.1, 0.1 \}$, where we will vary $c_2$ between $0.001$ and $0.6$ in order to study point (b) above.
-
-In Figure~\ref{fig:one_correct_results}, we plot two quantities as a function of the coefficient of variation of the correct expert ($c_2$) for various levels of evidence $(x, n)$: (i) the ratio between the largest and second largest marginal likelihoods ($r_l$)  computed using (\ref{eq:marginalbeta}); and (ii) the ratio between the posterior means of the largest and second largest weights ($r_w$).
-The marginal likelihoods (Figure~\ref{fig:one_correct_results}a) behave as expected, with $r_l$ diminishing as $c_2$ increases, the effect more pronounced with increasing the strength of evidence ($x/n$).
-We show $r_w$ as function of $c_2$ in Figure~\ref{fig:one_correct_results}b.
-While for larger values of $c_2$ the ratio decreases as expected, for low values (high precision) it is also low, attaining a maximum at an intermediate value.
-This somewhat counter-intuitive result is a quirk of Beta distributions: for low values of $c_2$, the corresponding parameter values $a_2 = b_2$ are large compared to other $a_i, b_i$, which means that any configuration of the weights that assigns appreciable weight to expert 2 is likely to lead to a combined prior that is compatible with the data $x/n$.
-
-If $c_2$ is large, the ``correct'' distribution becomes too diffuse and a different expert is favoured.
-To convey this in Figure~\ref{fig:one_correct_results}b, we interrupt the plotted lines for values of $c_2$ at which expert 2 was not the one with the highest weight.
-The correct expert does not attain the largest posterior weight for all values of $c_2$ for three of the four hierarchical priors considered. 
-The ``flexible'' logistic-normal prior is the only one for which expert 2 is consistently favoured for all values of $c_2$ considered.
-This phenomenon is similar in nature to identifiability issues in linear mixtures, where components need to be well separated in order for it be possible to reliably recover the mixing proportions.
-The results show that the ``flexible'' logistic-normal hyperprior, i.e., a moment-matching prior to the Dirichlet(1/10, 1/10, 1/10, 1/10, 1/10), circumvents these identifiability problems and allows for better discrimination of ``correct'' expert.
-
-In conclusion, the results of this section make clear that interpreting the posterior distribution of the weights, in particular the posterior means, is not trivial or intuitive.
-We give an explicit example to illustrate the inherent problem of interpreting the weights in a log-linear mixture of beta distributions.
-Suppose we let $c_2 = 0.2$ and $c_j = 0.1$ for all $j \neq 2$, with $\boldsymbol \mu$ given as before.
-This setup leads to $\boldsymbol a = \{ 89.9, 79.8, 12.0, 19.2, 9.1\}$ and $\boldsymbol b = \{809.1, 319.2, 12.0, 4.8, 1.01\} $.
-If the data are $x = 5$ and $n = 10$, computing marginal likelihoods and normalising would lead to weights $\boldsymbol\alpha^{\prime\prime} = \{0.006, 0.095, 0.710, 0.142, 0.048\}$.
-However, by calculating $a^{\star\star} = \sum_{i = 0}^K \alpha_i^{\prime\prime} a_i = 19.75$ and $b^{\star\star} =  \sum_{i = 0}^K \alpha_i^{\prime\prime} b_i = 44.00$, we see that we obtain a pooled prior with $\mathbb{E}_\pi [p] =  0.31$, far off the ``optimal'' $1/2$.
-Even in this situation where $r_l \approx 5$, weighting experts according to their marginal likelihoods does not lead to a satisfactory solution.
-Hence we argue that there is no hope to reliably learn the weights from this data for this configuration of the expert opinions.
-If the data were, say, $x = 50, n = 100$, then one would obtain a pooled prior for which $\mathbb{E}_\pi [p] = 0.51$.
-
-Note that the goal of this section is not to address the long run (frequentist) properties of the posterior distribution $p(\boldsymbol{\alpha} \mid x, n)$, but rather to provide some insight into the potential pitfalls of the interpretation of the posterior weights even in the context of  a simple model.
-
-\begin{figure}[!ht]
-\begin{center}
-\subfigure[][Marginal likelihoods]{\includegraphics[scale=.45]{../plots/MaLs_ratios_oneCorrect.pdf}}
-\subfigure[][Weights]{\includegraphics[scale=.45]{../plots/weight_ratios_oneCorrect.pdf}}
-\end{center}
-\caption{\textbf{Marginal likelihood and weight ratios for the simulated situation with one correct expert, various strengths of evidence}.
-Panel (a) shows the ratio between the largest and second largest marginal likelihoods ($r_l$) as the correct expert's coefficient of variation ($c_2$) changes, while panel (b) shows the ratio between the largest and second largest posterior mean weights ($r_w$) in the same settings.
-Vertical tiles show the observed data and colours in panel (b) show the hyperprior on $\boldsymbol\alpha$.
-``Flexible'' priors are a Dirichlet(1/10, 1/10, 1/10, 1/10, 1/10) and the corresponding moment-matching logistic-normal.
-We interrupt the lines for values of $c_2$ for which expert 2, the correct expert, does not attain the largest posterior weight (see text). 
-}
-\label{fig:one_correct_results}
-\end{figure}
-
-% \subsubsection{Two correct experts, different precisions}
-% \label{sec:two_correct}
 \subsection{Meta-analysis: HIV prevalence among MSM populations in Brazil}
 \label{sec:metaAnalysis}
 
@@ -635,12 +575,12 @@ where $m_i = y_i/n_i$ and $v_i = m_i(1-m_i)/n_i$.
 We have
 \begin{align}
 \nonumber
-\pi(\varphi)&= t(\boldsymbol\alpha)\prod_{i=0}^{K}f_i(\varphi; m_i, v_i)^{\alpha_i},\\
+\pi(\varphi \mid \boldsymbol\alpha)&= t(\boldsymbol\alpha)\prod_{i=0}^{K}f_i(\varphi; m_i, v_i)^{\alpha_i},\\
 \nonumber
 &\propto \prod_{i=0}^{K} \left[ \exp\left(\frac{-(\varphi-m_i)^2}{2v_i}\right) \right]^{\alpha_i},\\
 &\propto \exp\left[-\frac{1}{2}\left\{\varphi\sum_{i=0}^K\frac{\alpha_i}{v_i} - 2\varphi\sum_{i=0}^K \frac{\alpha_im_i}{v_i} - \sum_{i=0}^K\frac{\alpha_im_i^2}{v_i} \right\}\right].
 \end{align}
-Completing the square shows $\pi(\varphi)$ is a normal distribution with parameters and $m^* = \frac{\sum_{i=0}^K w_im_i}{\sum_{i=0}^K w_i}$ and $v^* = [\sum_{i=0}^K w_i]^{-1}$,  where $w_i = \alpha_i/v_i$.
+Completing the square shows $\pi(\varphi)$ is the density of a normal distribution with parameters and $m^* = \frac{\sum_{i=0}^K w_im_i}{\sum_{i=0}^K w_i}$ and $v^* = [\sum_{i=0}^K w_i]^{-1}$,  where $w_i = \alpha_i/v_i$.
 The entropy function is then:
 \begin{equation}
  \label{eq:normalpoolentropy}
@@ -650,7 +590,8 @@ which achieves its maximum when $\alpha_j = 1$ for $v_j = max(v_1, v_2, \ldots, 
 The Kullback-Leibler divergence between the pooled distribution $\pi(\varphi)$ and each $f_i(\varphi)$ is then
 \begin{equation}
  \label{eq:KL_Gaussian}
- \text{KL}( \pi || f_i) = \frac{1}{2}\log\left(\frac{v_i}{v^\star}\right) + \frac{v^\star + (m^\star - m_i)^2}{2v_i} - \frac{1}{2}.
+% %  \text{KL}( \pi || f_i) = \frac{1}{2}\log\left(\frac{v_i}{v^\star}\right) + \frac{v^\star + (m^\star - m_i)^2}{2v_i} - \frac{1}{2}.\\
+  \text{KL}( f_i || \pi) = \frac{1}{2}\log\left(\frac{v^\star}{v_i}\right) + \frac{v_i + (m_i-m^\star)^2}{2v^\star} - \frac{1}{2}.
 \end{equation}
 For the second part of our analysis of this example, we will assume that set of distributions to be combined, $\boldsymbol F^{G}_\varphi$, is composed by the Gaussian distributions described above.
 
@@ -745,16 +686,102 @@ Method & Beta & Gaussian  \\
 \label{tab:prior_MSM}
 \end{table}
 
+\subsection{Posterior distribution of the weights: interpretability and prior sensitivity}
+\label{sec:learning_rate}
+
+The analysis of the survival probabilities in Section~\ref{sec:survivalProbs} instigates the question of how sensitive posterior inference for $\boldsymbol \alpha$ can be to prior specification and the compatibility between the expert opinions and the observed data.
+In this section we study these questions in simple settings using simulations.
+We employ four hyperpriors in our analyses: a $\text{Dirichlet}(1, 1, 1, 1, 1)$ and a more flexible $\text{Dirichlet}(1/10, 1/10, 1/10, 1/10, 1/10)$, along with the corresponding moment-matching logistic-normal priors.
+All computations are done with the simple Monte Carlo method outlined in the end of section~\ref{sec:hierPrior} and agree closely with solutions using MCMC (not shown).
+
+Central to the discussion here is the notion that the marginal likelihoods -- of each expert prior--, when suitably normalised, provide a gold standard for the weights, in the sense that one could do no better when learning the weights conditional on the observed data.
+We shall refer to the vector of weights obtained by dividing the marginal (integrated) likelihood of each expert by the sum of marginal likelihoods by $\boldsymbol\alpha^{\prime\prime}$.
+If each prior were a model for the data, then $\boldsymbol\alpha^{\prime\prime}$ would be the model probabilities or the Bayesian model averaging (BMA) weights.
+
+The examples explored here are highly stylised and the marginal likelihood is not usually available for comparison.
+As such, the discussion presented here should be seen as the analysis of a baseline scenario, where we have control over the ground truth and can more clearly analyse the issues of estimating and interpreting the weights in logarithmic pooling.
+Note also that the goal of this section is not to address the long run (frequentist) properties of the posterior distribution of the weights -- we provide the results of a brief experiment addressing some aspects of posterior concentration under repeated sampling in Figure~\ref{fig:concentration_results_normal}.
+Rather, the goal of the following sections is to provide some insight into the potential pitfalls of the interpretation of the posterior weights even in the context of simple models.
+
+\subsubsection{Example 1: Beta conjugate analysis}
+\label{sec:learning_rate_beta}
+
+For our first example in this section, we will use $K = 5$ experts, who will elicit Beta distributions about a probability $p$.
+Some data $(x, n)$ will then be observed and a likelihood $L(x \mid n, p) = \text{binomial}(n, p)$ will summarise the information brought by the data.
+In what follows we will elicit the parameters of a Beta distribution on $p$ for each expert using the mean $\mu_i :=  \mathbb{E}_i[p]$ and coefficient of variation $c_i := \sqrt{\text{Var}_i(p)}/ \mu_i$.
+For more information, please see the appendix of~\cite{Coelho2015}.
+
+The
+% first
+setting we will investigate is when one expert provides a distribution that is significantly more compatible with the data that are ultimately observed.
+The idea here is to evaluate how the posterior distribution of the weights $p(\boldsymbol\alpha \mid x, n)$ supports the ``correct'' expect as we vary (a) the strength of evidence $x/n$ and (b) the coefficient of variation of the ``correct'' distribution.
+As we make the correct expert's coefficient of variation smaller, we expect the posterior weight to increase.
+The intuition is that if one gives the correct answer with more certainty, one should receive more credence~\textit{a posteriori}.
+To study point (a), we evaluate the posterior weights for $x/n = \{5/10, 50/100, 500/1000, 5000/10000 \}$.
+In addition, we choose the ``true'' $p = 1/2$ and then construct $\boldsymbol{m} = \{0.1, 0.2, 0.5, 0.8, 0.9\}$ and $\boldsymbol c = \{0.1, 0.1, c_2, 0.1, 0.1 \}$, where we will vary $c_2$ between $0.001$ and $0.75$ in order to study point (b) above.
+The upper value was chosen such that this is the largest value of $c_2$ for which the weight of the ``correct'' expert in $\boldsymbol\alpha^{\prime\prime}$ is the highest weight when $x/n=5/10$.
+
+In Figure~\ref{fig:one_correct_results_beta}, we plot two quantities as a function of the coefficient of variation of the correct expert ($c_2$) for various levels of evidence $(x, n)$: (i) the ratio between the largest and second largest marginal likelihoods ($r_l$)  computed using (\ref{eq:marginalbeta}); and (ii) the ratio between the posterior means of the largest and second largest weights ($r_w$).
+The marginal likelihoods (Figure~\ref{fig:one_correct_results_beta}a) behave as expected, with $r_l$ diminishing as $c_2$ increases, the effect more pronounced with increasing the strength of evidence ($x/n$).
+We show $r_w$ as function of $c_2$ in Figure~\ref{fig:one_correct_results_beta}b.
+While for larger values of $c_2$ the ratio decreases as expected, for low values (high precision) it is also low, attaining a maximum at an intermediate value.
+This somewhat counter-intuitive result is a quirk of Beta distributions: for low values of $c_2$, the corresponding parameter values $a_2 = b_2$ are large compared to other $(a_i, b_i)$, which means that any configuration of the weights that assigns non-zero weight to expert 2 is likely to lead to a combined prior that is compatible with the data $x/n$.
+
+If $c_2$ is large, the ``correct'' distribution becomes too diffuse and a different expert is favoured.
+To convey this in Figure~\ref{fig:one_correct_results_beta}b, we interrupt the plotted lines for values of $c_2$ at which expert 2 was not the one with the highest weight.
+The correct expert does not attain the largest posterior weight for all values of $c_2$ for three of the four hierarchical priors considered. 
+The ``flexible'' logistic-normal prior is the only hyperprior for which expert 2 is consistently favoured for all values of $c_2$ considered.
+This phenomenon is similar in nature to identifiability issues in linear mixtures, where components need to be well separated in order for it be possible to reliably recover the mixing proportions~\citep{Yakowitz1968}. 
+The results show that the ``flexible'' logistic-normal hyperprior, i.e., a moment-matching prior to the $\text{Dirichlet}(1/10, 1/10, 1/10, 1/10, 1/10)$, circumvents these identifiability problems and allows for better discrimination of the ``correct'' expert.
+
+The results so far make clear that interpreting the posterior distribution of the weights, in particular the posterior means, is not necessarily trivial or intuitive.
+We give an explicit example to illustrate the inherent problem of interpreting the weights in a log-linear mixture of beta distributions.
+Suppose $c_2 = 0.2$ and $c_j = 0.1$ for all $j \neq 2$, with $\boldsymbol{m}$ given as before.
+This setup leads to $\boldsymbol a = \{ 89.9, 79.8, 12.0, 19.2, 9.1\}$ and $\boldsymbol b = \{809.1, 319.2, 12.0, 4.8, 1.01\} $.
+If the data are $x = 5$ and $n = 10$, computing marginal likelihoods and normalising would lead to weights $\boldsymbol\alpha^{\prime\prime} = \{0.006, 0.095, 0.710, 0.142, 0.048\}$.
+However, by calculating $a^{\star\star} = \sum_{i = 0}^K \alpha_i^{\prime\prime} a_i = 19.75$ and $b^{\star\star} =  \sum_{i = 0}^K \alpha_i^{\prime\prime} b_i = 44.00$, we see that we obtain a pooled prior with $\mathbb{E}_\pi [p] =  0.31$, far off the ``optimal'' $1/2$.
+Even in this situation where $r_l \approx 5$, weighting experts according to their marginal likelihoods does not lead to a satisfactory solution.
+Hence, we argue that there is no hope to reliably learn the weights from these data under this configuration of the expert opinions.
+If the data were, say, $x = 50, n = 100$, then one would obtain marginal likelihood-based weights such that the pooled ``prior'' expectation would be $\mathbb{E}_\pi [p] = 0.51$.
+
+\begin{figure}[!ht]
+\begin{center}
+\subfigure[][Ratios of marginal likelihoods]{\includegraphics[scale=.45]{../plots/beta_MaLs_ratios_oneCorrect_MC.pdf}}
+\subfigure[][Ratios of posterior weights]{\includegraphics[scale=.45]{../plots/beta_weight_ratios_oneCorrect_MC.pdf}}
+\end{center}
+\caption{\textbf{Marginal likelihood and weight ratios for the simulated situation with one correct expert, various strengths of evidence}.
+Panel (a) shows the ratio between the largest and second largest marginal likelihoods ($r_l$) as the correct expert's coefficient of variation ($c_2$) changes, while panel (b) shows the ratio between the largest and second largest posterior mean weights ($r_w$) in the same settings.
+Vertical tiles show the observed data and colours in panel (b) show the hyperprior on $\boldsymbol\alpha$.
+``Flexible'' priors are a Dirichlet(1/10, 1/10, 1/10, 1/10, 1/10) and the corresponding moment-matching logistic-normal.
+We interrupt the lines for values of $c_2$ for which expert 2, the correct expert, does not attain the largest posterior weight (see text). 
+}
+\label{fig:one_correct_results_beta}
+\end{figure}
+
+\subsubsection{Example 2: Gaussian conjugate analysis with known variance}
+\label{sec:learning_rate_Gaussian}
+
+Next, we explore an example where the mean and coefficient of variation setup above is easier to interpret.
+Consider the problem of drawing inference about the mean $\mu$ of a Gaussian distribution with known variance $\sigma^2$.
+Similar to the example above, we investigate the estimation of posterior weights under various scenarios for the expert opinions.
+For this set of experiments we generated $n=10, 100, 500$ data points from a Gaussian distribution with $\mu=3$ and  $\sigma^2 = 1$.
+We then considered $\boldsymbol{m} = \{1, 2, 3, 4, 5\}$ and $\boldsymbol c = \{0.1, 0.1, c_2, 0.1, 0.1 \}$, where we vary $c_2$ between $0.001$ and $1.5$, with this upper bound being chosen similarly to what was done above, in this case for the data set with $n=10$.
+
+Results (see Figure~\ref{fig:one_correct_results_normal}) show the same pattern as Figure~\ref{fig:one_correct_results_beta}, with the ratio of weights being small for very low cvs and then increasing with cv until it starts to decay, as expected.
+This phenomenon is rooted in the same numerical cause as what is observed for the Beta example; for very low cvs, the variance for expert 2 is really small, which in turn makes $w_2 = \alpha_2/v_2$ large for pretty much any value of $\alpha_2$.
+This in turn means that many weight configurations $\boldsymbol{\alpha}$ will lead to very similar values of the pooled hyperparameters, $m^\ast$ and $v^\ast$ and thus will not receive very different probability~\textit{a posteriori}.
+
 \subsection{Bayesian melding with varying weights}
 \label{sec:melding_apps}
 
-In their seminal paper,~\cite{Poole2000} lay out the Bayesian melding as way to achieve full Bayesian inference for deterministic models -- see also Section~\ref{sec:background_melding} above.
-In this section we explore two Bayesian melding applications and extend their approach by accommodating uncertainty about the weight $\alpha$ . 
+We now turn our attention to applications of logarithmic pooling to the statistical analysis of deterministic models.
+In their seminal paper,~\cite{Poole2000} lay out Bayesian melding as way to achieve full Bayesian inference for deterministic models -- see also Section~\ref{sec:background_melding} above.
+In this section we explore two Bayesian melding applications and extend their approach by accommodating uncertainty about the weight $\alpha$. 
 
 \subsubsection{Bowhead whale population growth}
 \label{sec:bowhead}
 
-We begin with the analysis of a non-aged-structured population deterministic model (PDM) population model for bowhead whales originally carried out by~\cite{Poole2000}.
+We begin with the analysis of a non-age-structured population deterministic model (PDM) population model for bowhead whales originally carried out by~\cite{Poole2000}.
 The model describes the annual population of bowhead whales in terms of the annual number of whales killed , $C_t$, the maximum sustainable yield rate (MSYR) and the initial bowhead population ($P_0$) as:
 \begin{equation}
 \label{eq:popmodel_bowhead}
@@ -787,13 +814,13 @@ Further details on priors and likelihoods are given in~\cite{Poole2000} and the 
 We note that when $\alpha$ is random, it is important to include all of the normalising constants that depend on it~\citep{Neuenschwander2009}, in particular the normalising constant of the expression in (\ref{eq:P1993_pool}).
 
 Here we will consider two ways of approximating (\ref{eq:bowhead_posterior}).
-First, we used the sampling importance-resampling (SpIR) algorithm described in Section~\ref{sec:spIR}.
+First, we used the sampling importance-resampling (SpIR) algorithm described in Appendix~\ref{sec:spIR}.
 This method does not rely on any parametric approximation to the induced distribution $q_1^\ast$, instead using standard kernel methods to approximate the density at any point.
 We used $k = l = 100, 000$ iterations to produce a sample from $p_{\Theta, M}$.
-We also explored an HMC implementation in Stan.
+We also explored a Hamiltonian Monte Carlo (HMC) implementation in Stan~\citep{Carpenter2017}.
 However, for this implementation we needed to approximate $q_1^\ast$ by a parametric form.
 Since $q_2$ is a normal distribution, we approximate $q_1^\ast$ by a normal distribution such that $\tilde{q}_{\Phi}$ (Equation~\ref{eq:P1993_pool}) can be written in closed-form.
-We give further discussion on this choice in the Appendix.
+We give further discussion on this choice in Appendix~\ref{sec:appendix_bowhead}.
 Since $p_{\Theta, M}$ is a challenging target distribution, we used four independent chains of  $10,000$ iterations each.
 We observed a low percentage of divergent iterations ($<$2\%), likely caused by the very challenging posterior geometry induced by high correlations between parameters.
 
@@ -815,7 +842,8 @@ We show the posterior distributions obtained by using sampling importance-resamp
 \subsubsection{Influenza in a boarding school}
 \label{sec:SIR_flu}
 
-Now, we will consider a deterministic epidemic model and how one can draw inference about a key epidemiological quantity, the basic reproductive number, $R_0$.
+Another important class of deterministic models are the ordinary differential equation-based models of disease transmission.
+Here we will consider such a deterministic epidemic model and how one can draw inference about a key epidemiological quantity, the basic reproductive number, $R_0$.
 In 1978, an anonymous source reported an influenza H1N1 epidemic at a small boarding school in England~\citep{Anonymous1978}.
 In total, 512 boys out of 763 became ill during the outbreak.
 Due to the population being isolated and having high rates of contact, many of the assumptions of compartimental epidemic models hold.
@@ -850,8 +878,8 @@ The target posterior is then
  p(\beta, \gamma, \alpha \mid Y(t)) \propto  L(Y(t)\mid \beta, \gamma, \sigma_I^2) q_1^\ast(R_0)^\alpha q_2(R_0)^{1-\alpha}\pi_A(\alpha),
 \end{equation}
 where we again let $\pi_A$ be a Beta(1,1) distribution.
-This setup is convenient because it leads to a closed-form expression for the combined prior on $R_0$ (see Appendix, Section~\ref{sec:common_poolings}), while the log-normal priors are flexible and useful in practice.
-We approximate the posterior in (\ref{eq:target_SIR}) using HMC as described above.
+This setup is convenient because it leads to a closed-form expression for the combined prior on $R_0$ (see Appendix, Section~\ref{sec:appendix_common_poolings}), while the log-normal priors are flexible and useful in practice.
+We approximate the posterior in (\ref{eq:target_SIR}) using HMC as described in Appendix~\ref{sec:appendix_compdetails}.
 
 In Figure~\ref{fig:SIR_results}a we show the posterior distribution of the pooling weight $\alpha$, which favours high values with a mean and 95\% credibility interval of 0.77 (0.21--0.99).
 The posterior distribution for $R_0$ obtained by letting $\alpha$ vary and also the resulting distributions of fixing $\alpha = 1/2$ or $\alpha = 1$ are shown in Figure~\ref{fig:SIR_results}b.
@@ -876,79 +904,90 @@ In panel (c) we show the posterior mean and 95\% credibility intervals for the p
 \label{fig:SIR_results}
 \end{figure}
 
-Our results agree somewhat with the estimate obtained by~\cite{Murray2002}, who finds $\rho = N/R_0 = 202$ and hence $R_0 = 3.78$, using purely numerical methods with no acknowledgement of uncertainty.
+Our results agree somewhat with the estimate obtained by~\cite{Murray2002}, who finds $\rho = N/R_0 = 202$ and hence $R_0 = 3.78$, using purely numerical methods with no acknowledgment of uncertainty.
 The highest estimates we obtained were for fixed $\alpha = 1$, $R_0$ = 3.02 (2.27--3.83).
-This example showcases a desirable consequence of letting $\alpha$ vary: when the ``natural'' prior $q_2$, which is normally informative, is incompatible with the data, it will receive a lower weight ($\alpha$ closer 1) and hence allow the induced prior ($q_1$), which is usually more diffuse, to dominate.
+This example showcases a desirable consequence of letting $\alpha$ vary: when the ``natural'' prior $q_2$ -- which is normally informative -- is incompatible with the data, it will receive a lower weight ($\alpha$ closer 1) and hence allow the induced prior ($q_1$), which is usually more diffuse, to dominate.
 In fact, as discussed by~\cite{Biggerstaff2014}, the spread of the 1978 boarding school epidemic is unusually fast when compared to regular seasonal Influenza and was likely caused by the lack of previous exposure of the population to the causing strain, H1N1.
 The varying $\alpha$ approach makes it possible to deal with such an outlier data set by lowering the influence of the informative prior constructed based on previous studies.
 
 \section{Discussion}
 \label{sec:discussion}
 
-First, we note that the properties in Section~\ref{sec:background} hold in more generality and the main choice of this paper, namely the choice to represent opinions as probability distributions, is not inconsequential.
-As pointed out by~\cite{French1985}, one needs not assume that all experts express their opinion on the same scale.
-This means one needs not assume that the expert opinions are encoded as probability distributions, let alone distributions in the same family.
-Since our main goal is to motivate the use of logarithmic pooling in a statistical context, we argue this provides justification for the use of probability distributions.
+In this paper we have provided an overview of statistical applications of logarithmic pooling (LP), including a new approach based on assigning a prior measure to the weights.
+In what follows we discuss our findings in light of the rich literature on log-pooling, as well as point out connections to other parts of the statistical literature on model and forecast aggregation.
 
-With regard to the construction of the pooling weights ($\boldsymbol\alpha$) based on optimality criteria of the pooled distribution, we show that these usually lead to degenerate solutions that exclude one or more experts/information sources.
-Considering the maximum entropy solutions in sections~\ref{sec:survivalProbs} and~\ref{sec:metaAnalysis} one might wonder whether maximising entropy can lead non-degenerate solutions.
-A detailed characterisation of the conditions for the existence non-degenerate solutions is beyond the scope of the present paper, but we note that any configuration of the densities $\boldsymbol F_X$ can also lead to equally good (under the loss function) degenerate solutions, which is unavoidable due to the lack of a unique solution.
-The minimum KL solutions (including the approach of~\citep{Rufo2012B}), which are unique, also lead to several experts being excluded.
+\subsection{Objections to logarithmic pooling and their counter-arguments}
 
-Of course, one might argue that excluding a few or even all experts but one is not problematic since a few experts may, when suitably combined, summarise the information provided by the whole group.
-The weights are not probabilities, but we argue that it would be preferable to have a solution that respects the so-called Cromwell's rule~\citep[pg. 91]{Lindley2013}, i.e., not assigning zero probability events that are logically impossible.
-So far we have discussed approaches that consider only the information contained in the set of probability distributions $\boldsymbol F_X$.
-But a hierarchical prior approach, which assigns a probability distribution to the weights, addresses both the issue of Cromwell's rule and the case where one has data $x$ from which the relative merits of the experts can be discerned by analysing the posterior distribution of $\boldsymbol\alpha$.
-The results in Sections~\ref{sec:survivalProbs} and~\ref{sec:learning_rate} show that it is possible to learn the weights from data, while achieving efficient inference about the quantity of interest (but see below). 
+\cite{West1984} argues that LP is strictly theoretically justifiable only when the expert opinions agree.
+Moreover, LP also violates basic coherence in other respects, for instance when one considers marginalisation or other probability manipulations. 
+\cite{Genest1986B} (pg. 124) explain, however, that these conclusions stem from the restrictive assumption that the group utility is expressed as a function of the individual utilities.
+In a statistical application context, the expert opinions are usually employed by an independent decision maker, henceforth called the analyst, and she has her own utility function which can be assumed to not depend on the individual utilities.
+Another quirk of logarithmic pools is that $\supp(\pi) = \cap_{i=0}^K \supp(f_i)$, i.e., the pooled distribution will have the smallest support amongst the distributions being combined.
+This means a single expert can make large portions of the sample space impossible under the pooled distribution.
+Again, however, the analyst can use external considerations to exclude an expert whose probability density has too narrow a support.
 
-The flexibility provided by the hierarchical prior deserves a bit more consideration.
-For the Bayesian melding method, it is usual to set the pooling weight at $\alpha = 1/2$.
-This choice leads to the so-called geometric pooling, since it is equivalent to taking the geometric mean of the densities $q_1^\ast$ and $q_2$ and is the only choice of $\alpha$ which is invariant to the re-labelling of inputs and outputs~\citep{Poole2000}.
-Since there is usually clear scientific separation between inputs and outputs, we do not feel this is adequate justification for fixing the value of $\alpha$.
-Indeed,~\cite{Poole2000} (Section 5.2) do argue that estimating $\alpha$ would be a fruitful path to explore and our results corroborate that view.
-For the bowhead example (Section~\ref{sec:bowhead}), while the large posterior uncertainty about $\alpha$ precludes definitive statements, support for $\alpha < 1/2$ makes sense because $q_1^\ast$ is very diffuse.
-By placing a lower weight on $q_1^\ast$, we favour $q_2$ as a prior for $P_{1993}$ and hence achieve a reduction  in posterior uncertainty, albeit a small one.
-We obtained $\text{Pr}(\alpha < 1/2) = 0.69$ and $0.64$ for SpIR and MCMC, respectively.
-In contrast, the SIR example (Section~\ref{sec:SIR_flu}) shows the situation in reverse, where the data are incompatible with the more informative prior.
-The posterior distribution for $\alpha$ in this example accommodates this incompatibility, favouring the induced prior which results from non-informative priors on the inputs $\alpha$ and $\beta$.
-For this example, $\text{Pr}(\alpha < 1/2)= 0.11$.
+A consequence of encoding opinions as probability densities is that representations of the same information might have different properties depending on the choice of dominating measure.
+The results of meta analysis in Section~\ref{sec:metaAnalysis} make this clear: choosing to represent the information brought by the studies as Beta distribution or a Gaussian does not affect the numerical values of means and probability intervals, but does seem to impact the optimality-based methods for choosing the weights, in particular minimum KL  (Table~\ref{tab:weights_MSM}).
+On the other hand, as shown by the agreement of the probability intervals in the bottom of Table~\ref{tab:prior_MSM}, moving away from optimality criteria and instead assigning a prior distribution to the weights largely removes dependence on specific choices of probability densities by properly accommodating uncertainty about the weights.
 
-The use of logarithmic pooling is not without its pitfalls, however.
-The meta-analysis in Section~\ref{sec:metaAnalysis} indicates that it can be very sensitive to the choice of distribution to represent expert opinion.
-This is particularly true for the optimality-based methods, specially minimising KL distance.
-Representing the distribution of HIV prevalence by a Beta or a Gaussian distribution lead to different studies being favoured by the minimum KL solution.
-The (degenerate) maximum entropy solution was the same for both representations, but it is difficult to tell how dependent this is on the differences or lack thereof between Beta and Gaussian distributions due to the lack of uniqueness and propensity to achieve degenerate solutions.
-The results in Section~\ref{sec:learning_rate} show that posterior inference for the weights only allows identifying the distribution most compatible with the data for some configurations of the set of opinions $\boldsymbol F_X$ (Figure~\ref{fig:one_correct_results}b).
-More specifically, the ability to discern the ``best'' expert is linked to the separation between the expert opinions; if the ``correct'' expert provides a distribution that is too diffuse, we loose the ability to correctly identify it.
-Importantly, of the four priors we considered here, only the logistic-normal prior with the first two moments matched to those of a Dirichlet(1/10, $\ldots$, 1/10) was flexible enough to allow correct identification over a large range of diffuseness.
-Further research is needed in order to evaluate the possibility of more flexible priors.
+One might worry about being able to learn the weights from data, since the weights depend on the likelihood only indirectly.
+Indeed, as shown in Section~\ref{sec:learning_rate}, it might not always be possible to identify the expert whose opinion is most consistent with the observed data.
+We argue, however, that this happens mostly in situations where one would not expect to learn much anyway.
+Consider the situation where the data are highly informative (e.g. Gaussian with small known variance): the likelihood will dominate the prior in the posterior, meaning that most weight configurations will lead to similar (joint) posterior densities.
+This happens unless there is substantial disagreement between the individual priors being combined and we argue it is a desirable property of LP.
 
-As a final caveat, we note that if interest lies on a multivariate quantity $\theta \in \mathbb{R}^d$, $d>1$, obtaining the normalising constant $t(\boldsymbol\alpha)$ will entail computing a high-dimensional integral, which is unfeasible to do via quadrature and would likely necessitate specially-designed MCMC methods.
 
-\section{Final remarks}
-\label{sec:conclusion}
+As a final caveat, we note that if interest lies on a multivariate quantity $\theta \in \mathbb{R}^d$, $d>1$, obtaining the normalising constant $t(\boldsymbol\alpha)$ will entail computing a high-dimensional integral, which is infeasible to do via quadrature.
+Here, importance sampling techniques can be leveraged to provide stable and accurate estimates of normalising constants (see Future directions). 
 
-In this paper, our goal was to study how to one can assign the weights in logarithmic pooling such that it can be employed in statistical analysis.
-We have shown how it can be a useful tool in constructing prior distributions, combining posterior distributions in meta-analysis and learning about the parameters of deterministic models.
-We discussed how to approach the assigning of the weights based on optimality criteria such as maximum entropy and proposed a novel hierarchical prior approach that accommodates uncertainty about the weights and allows learning about them from data whilst providing more flexible prior modelling.
-Future research will explore further applications of logarithmic pooling in statistical learning like for instance combining several posterior predictive distributions.
-Work by~\cite{Johnson2018} and~\cite{Yao2018} has focused on generalising linear pools to combine probabilistic predictions, and logarithmic pooling could be explored as possibility that preserves characteristics such as log-concavity and relative propensity consistency.
+
+\subsection{The case for (hierarchical) logarithmic pooling}
+
+We shall now argue that properties such as external Bayesianity, relative propensity consistency and log-concavity make logarithmic pooling a powerful tool for the analyst.
+
+Mainly due to the simplicity of their construction, linear mixtures are much more popular in statistical applications~\citep{Fruhwirth2019} than their log-linear cousins.
+As we hope to have shown in this paper, however, log-linear mixtures (logarithmic pooling) can be as useful or more.
+External Bayesianity means one does not need to worry about combining the priors first and then obtaining the posterior; one can simply take a set of posterior distributions computed with the same likelihood and combine them.
+
+Moreover, LP preserves log-concavity, which might be crucial in computationally demanding settings where slice sampling, variational or other algorithms that assume log-concavity are employed.
+In summary, we argue that by employing logarithmic pooling to combine probability densities, the analyst is making the best use of the available information by forming a coherent distribution, that preserves many of the features encoded by the experts in their opinions.
+
+After its theoretical properties, the strongest argument in favour of LP is by far is its adaptability.
+The extra flexibility brought on by the hierarchical prior on the weights might prove crucial in scientific applications where decision under uncertainty is a regular occurrence.
+For example, a main strength of Bayesian melding is downweighting parameter values based on implausible model outputs.
+This strength is magnified by using a hierarchical prior that allows the weight parameter to vary.
+Indeed,~\cite{Poole2000} (Section 5.2) argue that estimating $\alpha$ would be a fruitful path to explore and our results corroborate that view.
+The result in Section~\ref{sec:SIR_flu} makes clear the potential of varying-weights Bayesian melding for resolving prior-data conflict.
+In particular, for protecting the analyst from drawing strong conclusions when the ``natural'' prior on the quantity of interest is in disagreement with the information brought by the data under analysis.
+
+When comparing the hierarchical prior approach to optimality-based procedures, one might argue that excluding a few or even all experts but one is not problematic since a few experts may, when suitably combined, summarise the information provided by the whole group.
+Whilst the weights are not probabilities, we argue that it would be preferable to have a solution that respects the so-called Cromwell's rule~\citep[pg. 91]{Lindley2013}, i.e., not assigning zero probability to events that are logically possible.
+Here this means allowing for the possibility that the opinion of all experts receives non-zero weight.
+Incidentally, this should also help alleviate some of the problems discussed in the previous section.
+
+\subsection{Future directions}
+
+Future research will explore further applications of logarithmic pooling in statistical learning such as combining several posterior predictive distributions from different models fitted to the same data.
+Techniques such as Bayesian predictive synthesis~(BPS, \cite{McAlinn2018, McAlinn2019a,McAlinn2019b}) and stacking~\citep{Yao2018} have focused on generalising linear pools to combine probabilistic predictions, and logarithmic pooling could be explored as possibility that preserves characteristics such as log-concavity and relative propensity consistency.
+BPS can include logarithmic pooling as a special case, but understanding the conditions under which this holds remains an open question.
 
 Another interesting avenue for the future is studying the interaction between variable transformations and logarithmic pooling.
 An example is a situation where one has distributions about a probability $p$ but is interested in the log-odds, $\omega = \log(p/(1-p))$.
 Should the experts be judged by how reasonable their distributions look in transformed space?
+How to assign the weights in this situation?
+ 
+In a practical setting, one might have a collection of MCMC (approximate) samples from different posterior distributions.
+The statistical question then becomes how to sample from the pooled distribution by re-using these samples.
+Such task would likely necessitate specially-designed MCMC methods, and would constitute a rich area of future inquiry.
 
-In closing, we hope this paper showcases the usefulness -- and potential pitfalls -- of logarithmic pooling as a way of combining probability distributions and entices the statistical community to add it to their toolbox.
+In closing, we hope this paper (i) showcases the usefulness -- and potential pitfalls -- of logarithmic pooling as a way of combining probability distributions and (ii) entices the statistical community to add it to their toolbox.
 
+\section*{Acknowledgments}
 
-\section*{Acknowledgements}
-
-The authors would like to thank Professors Adrian Raftery, Christian Genest and Mike West, as well as  Drs. David Poole and Felipe Figueiredo for helpful suggestions.
+The authors would like to thank Professors Adrian Raftery, Christian Genest and Mike West, as well as  Drs. David Poole, Eduardo Mendes and Felipe Figueiredo for helpful suggestions.
 DAMV and LSB were supported in part by CAPES under CAPES/Cofecub project (N. 833/15).
 FCC is grateful to Funda\c{c}\~ao Getulio Vargas for funding during this 
 project.
-This study was financed in part by the Coordenação de Aperfeiçoamento de Pessoal de Nível Superior - Brasil (CAPES) Finance Code 001.
-LMC was partially supported by a postodoctoral fellowship from CAPES.
 % {\footnotesize
 \bibliography{pooling}
 % }
@@ -961,6 +1000,7 @@ LMC was partially supported by a postodoctoral fellowship from CAPES.
 \setcounter{figure}{0} 
 
 \subsection{Proofs}
+\label{sec:appendix_proofs}
 
 Here we provide a simple proof of Theorem~\ref{thm:normalisation} using H\"{o}lder's inequality.
 \begin{proof}
@@ -984,10 +1024,14 @@ To establish Theorem~\ref{thm:concavity}, we will need the following result from
 \label{lem:RPC_representation}
 \textbf{Representation of a pooling operator with RPC}~\citep[eq. 3.1]{Genest1984}.
 The \underline{only} relative propensity consistent operator can \underline{always} be represented by
-\[ \mathcal{T} \left( \boldsymbol F_\theta \right)(\theta) = \boldsymbol B\left( \boldsymbol F_\theta \right) c(\theta) \prod_{i=0}^K \left[f_i(\theta) \right]^{w_i},\]
-with $\boldsymbol B\left( \boldsymbol F_\theta \right) > 0$, $c(\theta) >0$  and $\alpha_0, \alpha_1, \ldots, \alpha_K \geq 0$ arbitrary. 
+\begin{equation}
+ \label{eq:RPC_operator}
+ \mathcal{T} \left( \boldsymbol F_\theta \right)(\theta) = \boldsymbol B\left( \boldsymbol F_\theta \right) c(\theta) \prod_{i=0}^K \left[f_i(\theta) \right]^{\alpha_i},
+\end{equation}
+with $\boldsymbol B\left( \boldsymbol F_\theta \right) > 0$, $c(\theta) >0$  and $\alpha_0, \alpha_1, \ldots, \alpha_K \geq 0$. 
 \end{lemma}
 We refer the reader to~\cite{Genest1984} for the proof.
+In short, Lemma~\ref{lem:RPC_representation} is a uniqueness result; logarithmic pooling is the only operator with RPC (Remark~\ref{rmk:properties_RPC}) and every operator with RPC can be represented as in~(\ref{eq:RPC_operator}). 
 Now we can state the proof of Theorem~\ref{thm:concavity}.
 \begin{proof}
 First, we will show by direct calculation that logarithmic pooling (LP) leads to a log-concave distribution.
@@ -1001,8 +1045,8 @@ We can then write
  
 We will now show that LP is the only operator that guarantees log-concavity when $\boldsymbol F_\theta$ is a set of concave distributions.
 First, recall that LP is the only pooling operator that enjoys RPC (Remark~\ref{rmk:properties_RPC}).
-With the goal of obtaining a contradiction, suppose that there exists a pooling operator $\mathcal{T}$ that is log-concave but does not enjoy RPC.
- From Lemma~\ref{lem:RPC_representation}, we know that, under this assumption, $\mathcal{T}$ cannot be written in the form $\boldsymbol B(\boldsymbol F_\theta) c(\theta) \prod_{i=0}^K f_i(\theta)^{\alpha_i} $.
+With the goal of obtaining a contradiction, suppose that there exists a pooling operator $\mathcal{T}$ which is log-concave but does not enjoy RPC.
+From Lemma~\ref{lem:RPC_representation}, we know that, under this assumption, $\mathcal{T}$ cannot be written in the form $\boldsymbol B(\boldsymbol F_\theta) c(\theta) \prod_{i=0}^K f_i(\theta)^{\alpha_i} $.
 But every non-negative log-concave function $g(\theta)$ can be represented as
  \begin{equation}
  \label{eq:lc_rep}
@@ -1010,11 +1054,11 @@ But every non-negative log-concave function $g(\theta)$ can be represented as
  \end{equation}
 with $a \geq 0$ and $c(\theta)$ and $h(\theta)$ non-negative and log-concave, but otherwise arbitrary.
 Under the assumptions on $\boldsymbol F_\theta$, we have that $h(\theta) := \prod_{i=0}^K f_i(\theta)^{\alpha_i}$ is non-negative and log-concave.
-Since $c(\theta)$ is bound to be positive, it may very well be (log-)concave.
+The only restriction on $c(\theta)$ is that it be positive, it may very well be (log-)concave.
 Therefore $\mathcal{T}$ can in fact be represented in the form of Lemma~\ref{lem:RPC_representation}, contradicting our initial assumption that $\mathcal{T}$ can at same time be log-concave but not enjoy RPC.  
 \end{proof}
 
-Now we move on to the exponential family results in Section~\ref{sec:expofamily}.
+We now move on to the exponential family results in Section~\ref{sec:expofamily}.
 To see that equation~(\ref{eq:entropypriorEF}) holds:
 \begin{eqnarray*} 
 H_\pi(\theta) & = & \mathbb{E}[-\log(\pi(\theta)], \\
@@ -1031,7 +1075,58 @@ KL(f_i || \pi) & = & \mathbb{E}_\pi[\log(f_i(\theta)-\log(\pi(\theta)], \\
 \end{eqnarray*}
 
 \newpage
+\subsection{Computational details}
+\label{sec:appendix_compdetails}
+
+The analyses presented in this paper necessitated numerical optimisation to find the weights based on optimality criteria and Markov chain Monte Carlo (MCMC) to approximate posterior distributions.
+All computations were carried out in the R~\citep{R2019} statistical computing environment, version 3.6.0. 
+We provide implementations using the Stan~\citep{Carpenter2017} probabilistic programming language and R code for the methods, figures and tables presented in this paper can also be found at~\url{https://github.com/maxbiostat/opinion_pooling}.
+
+\subsubsection{Optimisation procedures}
+\label{sec:computation_opt}
+
+In this section we give more detail on the optimisation procedures used to solve the problems in Sections~\ref{sec:maxent} and~\ref{sec:minKL}.
+Since both problems are numerically unstable, we employ an strategy that starts the optimisation routine from $J = 1000$ overdispersed points in the unconstrained space, $\mathbb{R}^K$, obtained through the unit simplex transform~\citep{Betancourt2012}.
+The procedure then picks the overall lowest/highest optimised value in order to avoid local minima/maxima.
+We draw the initial values from a normal distribution with mean $0$ and variance $100^2$ and then employ the \verb|optim()| function to optimise the target functions (maximum entropy or minimum KL) using the L-BFGS algorithm~\citep{Byrd1995} with default settings.
+We then choose the minimum/maximum achieved over the $J$ starting points in order to improve the chances of achieving a global optimum.
+
+\subsubsection{Markov chain Monte Carlo \textit{via} Stan}
+\label{sec:computation_mcmc}
+
+Most of the posterior distributions discussed in this paper cannot be computed in closed-form and therefore we resort to Hamiltonian Monte Carlo~\citep{Neal2011}, in particular the No-U-Turn (NUTS) dynamic implementations available in Stan~\citep{Hoffman2014,Betancourt2017}.
+
+For most computations, we employed four independent chains of $4000$ iterations each with the first $2000$ discarded as warm-up/burn-in.
+Some models presented more challenging target distributions and we increased the number of iterations to $10 000$.
+For all results reported, Monte Carlo error (MCSE) was well below 1\% the posterior standard deviation for all parameters, allowing for accurate computation of the relevant expectations.
+In order to cope with challenging posterior geometry and ensure accurate computation, we used an target  acceptance probability of $0.99$ (\verb|adapt_delta = 0.99|, in Stan parlance) and up to $2^{15}$ leapfrog steps (\verb|max_treedepth = 15|).
+All potential scale reduction factors ($\hat{R}$, \cite{Gelman1992}) were below $1.01$, indicating no convergence problems.
+
+\subsubsection{Sampling-importance-resampling}
+\label{sec:spIR}
+
+In the context of Bayesian melding, while it is possible to employ HMC, it is sometimes preferable to employ custom algorithms that can better deal with the constraints imposed by the deterministic model.
+In the original paper,~\cite[sec. 3.4]{Poole2000} propose a sampling-importance-resampling (SpIR) algorithm to sample from the posterior in~(\ref{eq:BMpoolposterior}), which we extend here to in order to accommodate varying weights.
+\begin{enumerate}
+\setcounter{enumi}{-1}
+ \item Draw $k$ values from  $q_1(\theta)$, constructing $\boldsymbol \theta_k = (\theta^{(1)}, \theta^{(2)}, \ldots, \theta^{(k)} )$;
+ \item Similarly, sample $\boldsymbol \alpha_k$ from $\pi(\boldsymbol \alpha)$;
+ \item For each $\theta^{(i)} \in \boldsymbol\theta_k$ run the model to compute $\psi^{(i)} = M(\theta^{(i)})$, constructing $\boldsymbol \phi_k$;
+ \item Obtain a density estimate of $q_1^\star(\phi)$ from  $\boldsymbol \phi_k$;
+ \item Form the importance weights 
+ \begin{equation}
+ \label{eq:SpIRweights}
+  w_i = t\left(\boldsymbol \alpha^{(i)}\right) \left(\frac{q_2(M(\theta^{(i)}))}{q_1^\star(M(\theta^{(i)}))}\right)^{1 - \boldsymbol \alpha^{(i)}} L_1(\theta^{(i)}) L_2(M(\theta^{(i)})),
+ \end{equation}
+where $t\left(\boldsymbol \alpha^{(i)}\right) = \left( \int_{\Phi} q_1^\ast(\phi)^{\alpha^{(i)}} q_2(\phi)^{1-\alpha^{(i)}} d\phi \right)^{-1}$ is computed using standard quadrature methods;
+ \item (Re)Sample $l$ values from $\boldsymbol \theta_k$ according to the weights $\boldsymbol w_k$.
+\end{enumerate}
+The quadrature-based normalisation in step in 4 can be replaced with an importance sampling or MCMC estimate when the dimension of either $\phi$ or $\theta$ is large, but this is not explored here.
+
+
+\newpage
 \subsection{Bowhead population growth model: details}
+\label{sec:appendix_bowhead}
 
 For convenience, here we will describe the priors and likelihoods used by~\cite{Poole2000} in their analysis of the bowhead whale population model, as well as some of our modelling choices.
 For $P_0$ only a shifted gamma prior is available, i.e.,
@@ -1084,7 +1179,7 @@ We show the posterior distributions obtained by SpIR for $P_0$, MSYR, ROI and $P
 
 \newpage
 \subsection{Pooling of common distributions}
-\label{sec:common_poolings}
+\label{sec:appendix_common_poolings}
 
 In the main text we give the pooled distributions if one assumes a set of Beta (Section~\ref{sec:survivalProbs}) or Gaussian (Section~\ref{sec:metaAnalysis}) distributions as the expert opinions.
 In this section we give further results for the pooling of commonly used distributions.
@@ -1110,7 +1205,7 @@ Noticing (\ref{eq:gammapois}) is the kernel of a gamma distribution with paramet
 H_{\pi}(\lambda; \boldsymbol\alpha) = a^* - \log b^* + \log \Gamma(a^*) + (1-a^*)\psi(a^*),
 \end{equation}
 where $\psi(\cdot)$ is the digamma function.
-The Kullback-Liebler divergence between the pooled density $\pi$ and each density is:
+The Kullback-Leibler divergence between the pooled density $\pi$ and each density is:
 \begin{equation}
  \label{eq:KLgamma}
  \text{KL}(\pi || f_i) = (a_i-a^*)\psi(a_i) - \log\Gamma(a_i) + \log\Gamma(a^*) + a^*\left(\log\frac{b_i}{b^*}\right) + \frac{a_i}{b_i}(b^*-b_i).
@@ -1161,5 +1256,39 @@ The KL divergence is
  \label{eq:KL_Poisson}
  & = \lambda^\star \left[ \sum_{k = 0}^K \alpha_k \log(\lambda_k) - \log(\lambda_i) \right] + \lambda_i - \lambda^\star.
 \end{align}
+\newpage
+\subsection{Supplementary figures}
 
+\begin{figure}[!ht]
+\begin{center}
+\subfigure[][Ratios of marginal likelihoods]{\includegraphics[scale=.45]{../plots/normal_MaLs_ratios_oneCorrect_MC.pdf}}
+\subfigure[][Ratios of posterior weights]{\includegraphics[scale=.45]{../plots/normal_weight_ratios_oneCorrect_MC.pdf}}
+\end{center}
+\caption{\textbf{Marginal likelihood and weight ratios for the simulated situation with one correct expert, various strengths of evidence, Gaussian example}.
+Panel (a) shows the ratio between the largest and second largest marginal likelihoods ($r_l$) as the correct expert's coefficient of variation ($c_2$) changes, while panel (b) shows the ratio between the largest and second largest posterior mean weights ($r_w$) in the same settings.
+Vertical tiles show the observed data and colours in panel (b) show the hyperprior on $\boldsymbol\alpha$.
+``Flexible'' priors are a Dirichlet(1/10, 1/10, 1/10, 1/10, 1/10) and the corresponding moment-matching logistic-normal.
+We interrupt the lines for values of $c_2$ for which expert 2, the correct expert, does not attain the largest posterior weight (see Section~\ref{sec:learning_rate_Gaussian}). 
+}
+\label{fig:one_correct_results_normal}
+\end{figure}
+
+
+\begin{figure}[!ht]
+\begin{center}
+\subfigure[][Marginal posterior of $\alpha_0$]{\includegraphics[scale=.45]{../plots/marginal_distribution_alpha0.pdf}}
+\subfigure[][Posterior concentration, uniform prior]{\includegraphics[scale=.55]{../plots/concentration_rates_normal.pdf}}\\
+\subfigure[][Posterior concentration, $\operatorname{Beta}(1/10, 1/10)$ prior]{\includegraphics[scale=.55]{../plots/concentration_rates_normal_flexible.pdf}}
+\end{center}
+\caption{\textbf{Posterior concentration for the weights in a two-expert setting, Gaussian conjugate analysis with known variance ($\sigma^2$)}.
+In this experiment we set the expert hyperparameters to $m_0 = 1$ $v_0 = (1/4)^2$, $m_1 = 2$, $v_1 = (1/2)^2$ and the true data-generating parameters at $\mu = 2$ and $\sigma^2 = 1^2$.
+In panel (a) we show the marginal posterior of $\alpha_0$ for various sample sizes under a Beta prior for $\alpha_0$ with parameters $a = b = 1$.
+Panel (b) shows the posterior mean of $\alpha_0$ versus sample size under repeated sampling, using 100 simulated data sets per sample size. 
+Bands correspond to the 95\% quantiles of the sampling distribution of the posterior mean.
+In this experiment the prior on $\alpha_0$ is a uniform prior over $(0, 1)$.
+For comparison we show the BMA weight for expert 0, computed from the marginal likelihoods.
+In panel (c) we show the same experiment, but using the ``flexible'' prior discussed in the main text, corresponding to a $\operatorname{Beta}(1/10, 1/10)$ prior on $\alpha_0$.
+}
+\label{fig:concentration_results_normal}
+\end{figure}
 \end{document} 

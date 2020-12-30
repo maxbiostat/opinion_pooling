@@ -1,4 +1,3 @@
-# Leo Bastos & Luiz Max Carvalho (2019)
 # This example was taken from Malta et al. (2010)
 
 source("pooling_aux.r")

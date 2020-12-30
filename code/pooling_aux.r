@@ -1,7 +1,7 @@
 ######################## Pooling-related functions #############
 pool_par <- function(alpha, a, b){
   if(any(alpha <0)) stop("weights must be non-negative")
-  if(!identical(sum(alpha), 1)) stop("weights do not sum to 1")
+  if(!all.equal(sum(alpha), 1)) stop("weights do not sum to 1")
   # takes an alpha vector and vectors with the K a and b parameters
   # returns a vector with the parameters of the pooled beta/gamma prior
   c(crossprod(a, alpha), crossprod(b, alpha))
@@ -290,6 +290,14 @@ get_ratio <- function(x) {
   y <- x[order(x, decreasing = TRUE)]
   y[1]/y[2]
 }
+get_ratio_correctExpert <- function(x) {
+  ## outputs the ratio of the largest and second largest values in a vector x
+  y <- x[-3][order(x[-3], decreasing = TRUE)]
+  x[3]/y[1]
+}
+
+
+
 #### Plotting
 require(ggplot2)
 coord_radar <- function (theta = "x", start = 0, direction = 1) 
@@ -510,4 +518,34 @@ optklgauss <- function(alpha, mp, vp, type){
 optklgauss_inv <- function(alpha.inv, mp, vp, type = "pf"){
   alpha <- alpha_01(alpha.inv)
   sum(optklgauss(alpha, mp, vp, type))
+}
+normal_mean_marg_like <- function(y, sigma,  m, v, log = TRUE){
+  s2 <- sum(y^2)
+  xbar <- mean(y)
+  n <- length(y)
+  sigmasq <- sigma^2
+  ###
+  lt1 <- log(sigma) - (n/2 * log(2*pi*sigmasq) + 1/2 * log(n*v + sigmasq) )
+  lt2 <- -s2/(2*sigmasq) - m^2/(2*v)
+  lt3 <- ( (v*n^2*xbar^2)/sigmasq + (sigmasq*m^2)/v + 2*n*xbar*m)/(2*(n*v + sigmasq))
+  ###
+  ans <- lt1 + lt2 + lt3
+  if(!log) ans <- exp(ans)
+  return(ans)
+}
+get_normal_weights <- function(obs, sigma, ms, vs){
+  require(matrixStats)
+  K <- length(ms)
+  mls <- rep(NA, K)
+  for (k in 1:K){
+    mls[k] <- normal_mean_marg_like(y = obs, sigma = sigma, m = ms[k], v = vs[k])
+  }
+  logS <-  matrixStats::logSumExp(mls)
+  return(
+    list(
+      mls = mls,
+      # weights_1 = exp(mls)/(sum(exp(mls))),
+      weights = exp(mls-logS)
+    )
+  )
 }

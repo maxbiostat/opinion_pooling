@@ -1,14 +1,14 @@
 source("pooling_aux.r")
 source("beta_elicitator.r")
+source("one_right_many_wrong_aux.r")
 
 ###########################
-
 
 x <- 50
 n <- 100
 cv <- .2
 
-expert.pars <- get_parameter_vectors(cv)
+expert.pars <- get_parameter_vectors_mean_cv(cv)
 
 lapply(expert.pars, round , 2)
 
@@ -35,3 +35,4 @@ beta_sd(pars.pool.pp[1], pars.pool.pp[2])
 plot_densities(expert.pars)
 
 curve(dbeta(x, shape1 = pars.pool.pp[1], shape2 = pars.pool.pp[2] ), lwd = 3, lty = 2, add = TRUE, col = "grey50")
+

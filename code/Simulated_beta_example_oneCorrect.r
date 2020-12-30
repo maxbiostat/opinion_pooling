@@ -1,7 +1,7 @@
-# Luiz Max Carvalho (2019)
 
 source("pooling_aux.r")
 source("beta_elicitator.r")
+source("one_right_many_wrong_beta_aux.r")
 
 library(rstan)
 rstan_options(auto_write = TRUE)
@@ -16,7 +16,7 @@ compiled.logisticNormal <- stan_model("stan/posterior_beta_logisticNormal_pooled
 do_experiment <- function(cv, x, n){
   evidence.info <-  paste("x=", x, ",", "n=", n, sep = "")
   
-  pars <- get_parameter_vectors(cv_correct = cv)
+  pars <- get_parameter_vectors_mean_cv(cv_correct = cv)
   K <- length(pars$av)
   X <- rep(1, K) ## Dirichlet parameter
   
@@ -145,7 +145,7 @@ mal_ratios <- ggplot(data = simu.one.correct, aes(x = cv, y = mal_ratio)) +
   theme_bw(base_size = 16)
 
 mal_ratios
-ggsave(filename = "../plots/MaLs_ratios_oneCorrect.pdf", plot = mal_ratios)
+ggsave(filename = "../plots/beta_MaLs_ratios_oneCorrect.pdf", plot = mal_ratios)
 
 weight_ratios <- ggplot(data = simu.one.correct, aes(x = cv, y = alpha_ratio, colour = prior)) +
   geom_line(size = 1.5) +
@@ -166,7 +166,7 @@ weight_ratios_expert2 <- ggplot(data = subset(simu.one.correct, max_index_priors
 
 weight_ratios_expert2
 
-ggsave(filename = "../plots/weight_ratios_oneCorrect.pdf",
+ggsave(filename = "../plots/beta_weight_ratios_oneCorrect.pdf",
        plot = weight_ratios_expert2)
 
 
@@ -188,4 +188,4 @@ radar_alphas <- ggplot(data = subset(simu.one.correct, cv %in% cvs[round(seq(1, 
   )
 radar_alphas
 
-ggsave(filename = "../plots/radar_plots_oneCorrect.pdf", plot = radar_alphas)
+ggsave(filename = "../plots/beta_radar_plots_oneCorrect.pdf", plot = radar_alphas)
