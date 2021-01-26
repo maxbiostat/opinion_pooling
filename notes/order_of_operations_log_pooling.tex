@@ -1,4 +1,4 @@
-''\documentclass[a4paper, notitlepage, 10pt]{article}
+\documentclass[a4paper, notitlepage, 10pt]{article}
 \usepackage{geometry}
 % WSC 2015 configs
 \fontfamily{times}
@@ -21,11 +21,13 @@
 \usepackage[utf8]{inputenc}
 
 % Title Page
-\title{\vspace{-9ex}\centering \bf Transform then pool or pool and then transform?}
+\title{\vspace{-9ex}\centering \bf  Harmonising domain-knowledge through logarithmic pooling\\
+\large Transform then pool or pool and then transform?}
 \author{
 Luiz Max F. de Carvalho\\
 % Program for Scientific Computing (PROCC), Oswaldo Cruz Foundation. \\
 % Institute of Evolutionary Biology, University of Edinburgh.\\
+School of Applied Mathematics, Get\'ulio Vargas Foundation.
 }
 \DeclareMathOperator*{\argmin}{arg\,min}
 \DeclareMathOperator*{\argmax}{arg\,max}
@@ -35,6 +37,7 @@ Luiz Max F. de Carvalho\\
 \newtheorem{corollary}{Corollary}[]
 \newtheorem{definition}{Definition}[]
 \setcounter{theo}{0} % assign desired value to theorem counter
+
 \begin{document}
 \maketitle
 
@@ -43,16 +46,19 @@ In this note I discuss the order of operations between transforming and pooling 
 I give an explicit example where both procedures lead to the same density even when the transform is not invertible and also discuss an example where the transform-then-pool and pool-then-transform with a non-invertible transform lead to distributions in the same family which are nonetheless distinct.
 The lesson to be learned is that while the order of operations usually matters, it may not, depending on the distributions under consideration.
 
-Key-words: logarithmic pooling; transformations; log-normal. 
+% Key-words: logarithmic pooling; transformations; log-normal. 
 \end{abstract}
 
 \section*{TODO}
 \begin{itemize}
  \item Get rid of all abuse of notation. 
  The statement $ \phi(\mathcal{LP}(\mathbf{F_X}, \boldsymbol\alpha)) = \pi_{Y}(y | \boldsymbol\alpha)$ is an abomination.
- \item Clearly establish the conditions under which $\phi()$ produces a pushforward measure that admits Radon-Nikodym derivatives. 
+ \item Start stuff from 1 (rather than 0) and change $\boldsymbol\alpha$ to $\boldsymbol{w}$;
+ \item Clearly establish the conditions under which $\phi()$ produces a pushforward measure that admits Radon-Nikodym derivatives with respect to a sensible dominating measure. 
  Without this, it becomes meaningless to talk about ``induce-then-pool''; you can only pool proper probability densities and thus one needs to guarantee said densities in fact exist.
- \item Maybe formulate a measure-theoretic version of LP to deal with the difficulties above.
+ \item Maybe formulate a measure-theoretic version of LP to deal with the difficulties above;
+ \item Explore a simple case where one wants to put a prior on a ``derived quantity'';
+ \item 
 \end{itemize}
 
 
@@ -225,7 +231,7 @@ It is not hard to show that  $\pi_U(U | \boldsymbol\alpha) := \mathcal{LP}(\math
  w_{iU} &:=  \frac{\alpha_i}{\sigma_{iU}^2}.
 \end{align}
 See~\cite{Carvalho2019} for a proof.
-Analagously, $\pi_V(V | \boldsymbol\alpha) := \mathcal{LP}(\mathbf{G}_{V}, \boldsymbol \alpha) =  \text{log-normal}(\mu_V^\ast, v_V^\ast)$.
+Analogously, $\pi_V(V | \boldsymbol\alpha) := \mathcal{LP}(\mathbf{G}_{V}, \boldsymbol \alpha) =  \text{log-normal}(\mu_V^\ast, v_V^\ast)$.
 Then $\pi_Z(Z |  \boldsymbol \alpha) = \text{log-normal}(\mu_Z^{\ast}, v_Z^{\ast})$, with
 \begin{align}
 \nonumber
@@ -275,7 +281,6 @@ L(\boldsymbol\alpha) &= \sum_{i=0}^K \text{KL}(  \pi_{Y} || h_i), \\
 This procedure therefore choses weights for each expert by how coherent the prior provided by each expert is with the pool-then-Transform -- procedure (a) -- prior in the transformed space induced by $\phi(\cdot)$.
 When $\phi()$ is invertible, Remark~\ref{rmk:invariance} tells us that this procedure is the same as minimising the KL divergence between $\pi_X$ and each $f_i$, since the Kullback-Leibler divergence is invariant under invertible differentiable transformations.
 Thus, in the probability/log-odds example mentioned above, the decision maker would not need to worry about the distributions on the log-odds induced by $\phi$, since it is invertible.
-
 
 \section*{Acknowledgements}
 

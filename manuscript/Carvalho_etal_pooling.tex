@@ -38,7 +38,7 @@ b -- Program for Scientific Computing (PROCC), Oswaldo Cruz Foundation. \\
 \newtheorem{remark}{Remark}[]
 \newtheorem{lemma}{Lemma}[]
 \setcounter{theo}{0} % assign desired value to theorem counter
-\doublespacing
+% \doublespacing
 \begin{document}
 \maketitle
 
@@ -66,7 +66,7 @@ A common situation of interest is combining expert opinions about a quantity of 
 Combining these opinions using logarithmic pooling requires assigning weights to each of the experts, which represent the (relative) reliability of each opinion~\citep{Genest1984,French1985}.
 This requirement naturally leads to the question of how to choose the weights in a meaningful way, according to some well-accepted (optimality) criterion.
 There are a few proposals in the literature that build methods using different approaches.
-One proposal is to maximise the entropy the pooled distribution~\citep{Myung1996}, whereas another one is to minimise Kullback-Leibler (KL) divergence between the pooled distribution and the individual opinions~\citep{Abbas2009} or between the pooled (prior) distribution and the posterior distribution~\citep{Rufo2012A,Rufo2012B}.
+One proposal is to maximise the entropy of the pooled distribution~\citep{Myung1996}, whereas another one is to minimise Kullback-Leibler (KL) divergence between the pooled distribution and the individual opinions~\citep{Abbas2009} or between the pooled (prior) distribution and the posterior distribution~\citep{Rufo2012A,Rufo2012B}.
 
 While moving away from the problem of arbitrarily assigning the weights, these approaches arrive at single point solutions, similar to point estimates in statistical theory.
 While we acknowledge that these approaches have merit, we argue that in many settings it would be desirable to incorporate  information on the relative reliabilities of the experts into the pooling procedure while accommodating uncertainty about the weights.
@@ -110,19 +110,19 @@ This result ensures any (finite) number of proper distributions can be combined 
 In addition, log-linear pools enjoy the~\textit{external Bayesianity} property (Remark~\ref{rmk:properties_EB}), which guarantees that whether one combines the expert opinions before or after observing evidence does not affect the resulting pooled distribution.
 \begin{remark}
 \label{rmk:properties_EB}
- \textbf{External Bayesianity~\citep{Genest1984}}.
+ \textbf{External Bayesianity~\citep{Genest1984B,Genest1984}}.
  If the expert opinions are given by densities $f_i(\theta)$ and one observes data $x$ such that one can specify a likelihood $l(x \mid \theta)$, combining the set of posteriors $p_i(\theta \mid x) \propto  l(x \mid \theta)f_i(\theta) $ yields the same distribution as combining the densities $f_i$ to obtain a prior $\pi(\theta)$ and then combine it with $l(x \mid \theta)$ to obtain a posterior $p(\theta \mid x) \propto l(x \mid \theta)\pi(\theta)$.
 \end{remark}
-\begin{proof}
-%  The proof of this fact is trivial and is given here for completeness.
- Combining the posteriors $p_i(\cdot)$ gives
- \begin{align*}
-  p^\prime (\theta \mid x, \boldsymbol \alpha) &\propto \prod_{i = 0}^K \left[  l(x \mid \theta)f_i(\theta) \right]^{\alpha_i},\\
-  &\propto   l(x \mid \theta) \prod_{i = 0}^K f_i(\theta)^{\alpha_i},\\
-  &=  \frac{l(x \mid \theta)\pi(\theta \mid \boldsymbol \alpha)}{m^{\prime}(x)} \equiv   p(\theta \mid x, \boldsymbol \alpha),
- \end{align*}
- where the second line follows from $\sum_{i=0}^K \alpha_i = 1$.
-\end{proof}
+ The proof of this fact is trivial and is omitted here.
+% \begin{proof}
+%  Combining the posteriors $p_i(\cdot)$ gives
+%  \begin{align*}
+%   p^\prime (\theta \mid x, \boldsymbol \alpha) &\propto \prod_{i = 0}^K \left[  l(x \mid \theta)f_i(\theta) \right]^{\alpha_i},\\
+%   &\propto   l(x \mid \theta) \prod_{i = 0}^K f_i(\theta)^{\alpha_i},\\
+%   &=  \frac{l(x \mid \theta)\pi(\theta \mid \boldsymbol \alpha)}{m^{\prime}(x)} \equiv   p(\theta \mid x, \boldsymbol \alpha),
+%  \end{align*}
+%  where the second line follows from $\sum_{i=0}^K \alpha_i = 1$.
+% \end{proof}
 % Much less trivially,~
 \cite{Genest1984} show that the logarithmic pooling operator in~(\ref{eq:logpool}) is the~\textbf{only} aggregation (pooling) operator that enjoys external Bayesianity.
 Moreover, the logarithmic pooling operator has the relative propensity consistency (RPC) property (Remark~\ref{rmk:properties_RPC}), whereby the pooled opinion preserves relative judgments from the experts.
@@ -254,8 +254,7 @@ Standard Bayesian inference may then follow,  leading to the posterior
 which enjoys all the properties of usual posterior distributions.
 The method allows standard Bayesian inference to be carried out about all quantities of interest in the model, which makes it attractive to application in policy making~\citep{Alkema2008}, where proper acknowledgment of uncertainty is crucial.
 
-In~\cite{Poole2000} (Section 6.2 therein), the authors fix $\alpha = 1/2$, justifying their choice by the fact that while the weights should reflect the reliability of each expert (information source).
-In their Bayesian melding analysis, one is combining distributions based on different bodies of evidence, but assessed by the same expert.
+In~\cite{Poole2000} (Section 6.2 therein), the authors fix $\alpha = 1/2$, justifying their choice by the fact that while the weights should reflect the reliability of each expert (information source), in the specific context of Bayesian melding one is combining distributions based on different bodies of evidence, but assessed by the same expert.
 Another option is to fix $\alpha = 1-\epsilon$, with $\epsilon$ small~\citep{Alkema2007}.
 This can be useful when the prior distribution on outputs is uniform, as it still enforces the constraint, but keeps the prior information about the inputs.
 Here we relax the restriction of fixing the weight, instead modelling $\alpha$ through a hyperprior -- see Sections~\ref{sec:bowhead} and~\ref{sec:SIR_flu}. 
@@ -332,7 +331,7 @@ See Appendix~\ref{sec:appendix_compdetails} for implementation details.
 
 As discussed by~\cite{Poole2000} and others~\citep{Zhong2015,Li2017}, estimating the weights would be of interest since this would allow one to assess the reliability of each source of information (expert).
 \cite{Li2017} explore the idea of computing the pooled distribution for several values of the weights.
-Whilst informative, this approach has two issues: (a) it does not scale well with increasing the number of distributions being combined, $K$, and; (b) it fails to account for any (posterior) dependence between model parameters and the weights.
+Whilst informative, this approach has two issues: (a) it does not scale well with increasing the number $K$ of distributions being combined, and; (b) it fails to account for any (posterior) dependence between model parameters and the weights.
 In this section we propose placing a hierarchical prior on the weights, allowing for standard Bayesian inference about these quantities.
 
 A natural choice for a prior distribution for $\boldsymbol\alpha$ is the $(K+1)-$dimensional Dirichlet distribution
@@ -348,7 +347,7 @@ A more flexible prior for $\boldsymbol\alpha$ is the logistic-normal distributio
  \label{eq:aitchinsonprior}
  \pi_A(\boldsymbol\alpha \mid \boldsymbol \mu, \boldsymbol \Sigma) = \frac{1}{|2\pi \boldsymbol \Sigma|^{\frac{1}{2}}}\frac{1}{\prod_{i=0}^K \alpha_i}
   \exp\left(
-     \left(\log\left(\frac{\boldsymbol \alpha_{-K}}{\alpha_K}\right) - \boldsymbol \mu\right)^T
+     \left(\log\left(\frac{\boldsymbol \alpha_{-K}}{\alpha_K}\right) - \boldsymbol \mu\right)^\top
      {\boldsymbol \Sigma}^{-1}
      \left(\log\left(\frac{\boldsymbol \alpha_{-K}}{\alpha_K}\right) - \boldsymbol \mu\right)
      \right),
@@ -399,7 +398,7 @@ Computational details, along with instructions to get reproducible code, are giv
 \label{sec:survivalProbs}
 
 The first example we consider is combining expert opinions about probabilities and proportions.
-We analyse an example proposed by~\cite{Savchuk1994} (also discussed in~\cite{Rufo2012B}) in which four experts are required supply prior information about the survival probability $\theta$ of a certain unit.
+We analyse an example proposed by~\cite{Savchuk1994} (also discussed in~\cite{Rufo2012B}) in which four experts are required to supply prior information about the survival probability $\theta$ of a certain unit.
 The experts express their opinion as prior means for the survival probability, which~\cite{Savchuk1994} then use to construct prior distributions with maximum variance given the restriction on the means.
 From the vector of prior means $\mathbf{m} = \{ m_0 = 0.95, m_1 = 0.80, m_2 = 0.90, m_3 = 0.70 \}$, the authors obtain the parameters of the Beta distributions for each expert,  $\mathbf{a} = \{ a_0 = 18.10, a_1 = 3.44 , a_2 = 8.32, a_3 = 1.98 \}$ and  $\mathbf{b} = \{ b_0 = 0.955 , b_1 = 0.860, b_2 = 0.924, b_3 = 0.848\}$.
 Furthermore, an experiment is conducted and $y = 9$ successes out of $n = 10$ trials are observed.
@@ -446,12 +445,12 @@ Finally, for this example we can also compute the integrated (marginal) likeliho
 In Table~\ref{tab:alphasBeta} we present weights obtained with the optimisation methods for the priors, including the solution found by~\cite{Rufo2012B} (Section 5.2 therein).
 With regard to the posteriors, we show maximum entropy, minimum KL along with posterior means of the weights under two prior distributions (Dirichlet and logistic-normal).
 % We note that the weights from maximum entropy, minimum KL divergence and using the method by~\cite{Rufo2012B} use only information contained in the collection of expert distributions $, while the results for the hierarchical priors are posterior means obtained after observing data.
-Maximising the entropy of the pooled prior -- and posterior -- lead to the degenerate solution $\boldsymbol \alpha = \{0, 0, 0, 1 \}$, which gives all the weight to the most diffuse prior distribution -- $\text{Beta}(1.98, 0.848)$.
-Since $t(\boldsymbol\alpha)$ is concave, we expect to find the maximum entropy given by the boundary conditions, which may lead to points in the border of the simplex.
+Maximising the entropy of the pooled prior -- and posterior -- led to the degenerate solution $\boldsymbol \alpha = \{0, 0, 0, 1 \}$, which gives all the weight to the most diffuse prior distribution -- $\text{Beta}(1.98, 0.848)$.
+Since $t(\boldsymbol\alpha)$ is concave, we expect to find the maximum entropy given by the boundary conditions, which may lead to points at the frontier of the simplex.
 Unsurprisingly, the same solution was found by~\cite{Rufo2012B}, whose method tends to favour more diffuse distributions.
 Minimising Kullback-Leibler divergence between the pooled prior and each expert prior leads to a unique solution but in this case also suggests to discard two of the opinions.
 
-The hierarchical priors gave very similar posterior distributions for the weights, which assign the experts nearly equal weight, although the logistic-normal prior lead to results closer to the marginal likelihood-based weights.
+The hierarchical priors gave very similar posterior distributions for the weights, which assign the experts nearly equal weight, although the logistic-normal prior led to results closer to the marginal likelihood-based weights.
 
 \begin{table}[ht]
 \caption{\textbf{Weights obtained using different methods for the survival probability example~\citep{Savchuk1994}.}
@@ -775,7 +774,7 @@ This in turn means that many weight configurations $\boldsymbol{\alpha}$ will le
 \label{sec:melding_apps}
 
 We now turn our attention to applications of logarithmic pooling to the statistical analysis of deterministic models.
-In their seminal paper,~\cite{Poole2000} lay out Bayesian melding as way to achieve full Bayesian inference for deterministic models -- see also Section~\ref{sec:background_melding} above.
+In their seminal paper,~\cite{Poole2000} lay out Bayesian melding as a way to achieve full Bayesian inference for deterministic models -- see also Section~\ref{sec:background_melding} above.
 In this section we explore two Bayesian melding applications and extend their approach by accommodating uncertainty about the weight $\alpha$. 
 
 \subsubsection{Bowhead whale population growth}
@@ -904,7 +903,7 @@ In panel (c) we show the posterior mean and 95\% credibility intervals for the p
 \label{fig:SIR_results}
 \end{figure}
 
-Our results agree somewhat with the estimate obtained by~\cite{Murray2002}, who finds $\rho = N/R_0 = 202$ and hence $R_0 = 3.78$, using purely numerical methods with no acknowledgment of uncertainty.
+Our results agree partially with the estimate obtained by~\cite{Murray2002}, who finds $\rho = N/R_0 = 202$ and hence $R_0 = 3.78$, using purely numerical methods with no acknowledgment of uncertainty.
 The highest estimates we obtained were for fixed $\alpha = 1$, $R_0$ = 3.02 (2.27--3.83).
 This example showcases a desirable consequence of letting $\alpha$ vary: when the ``natural'' prior $q_2$ -- which is normally informative -- is incompatible with the data, it will receive a lower weight ($\alpha$ closer 1) and hence allow the induced prior ($q_1$), which is usually more diffuse, to dominate.
 In fact, as discussed by~\cite{Biggerstaff2014}, the spread of the 1978 boarding school epidemic is unusually fast when compared to regular seasonal Influenza and was likely caused by the lack of previous exposure of the population to the causing strain, H1N1.
