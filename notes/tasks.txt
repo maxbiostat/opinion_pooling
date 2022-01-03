@@ -1,5 +1,0 @@
-> enxugar e juntar exemplos MSM e Savchuk 
-> pool de Poisson no appendix
-> motivate choosing weights
-> Bayesian melding intro
-> beta distribution no appendix
