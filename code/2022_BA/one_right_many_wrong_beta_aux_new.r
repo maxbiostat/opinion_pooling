@@ -1,4 +1,5 @@
 get_parameter_vectors_mean_cv <- function(cv_correct, cv_wrong = .1){
+  
   pars_0 <- logPoolR:::elicit_beta_mean_cv(m0 = .1, cv = cv_wrong)
   pars_1 <- logPoolR:::elicit_beta_mean_cv(m0 = .5, cv = cv_correct) # big shot
   pars_2 <- logPoolR:::elicit_beta_mean_cv(m0 = .9, cv = cv_wrong)
@@ -12,6 +13,7 @@ get_parameter_vectors_mean_cv <- function(cv_correct, cv_wrong = .1){
 }
 #
 plot_densities <- function(pars, lg = TRUE, add = FALSE, main = ""){
+  
   av <- pars$av
   bv <- pars$bv
   K <- length(av)
