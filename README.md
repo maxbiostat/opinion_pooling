@@ -22,3 +22,5 @@ We explore several statistical applications, such as the estimation of survival 
 We show that it is possible learn the weights from data, although identifiability issues may arise for some configurations of priors and data.
 Furthermore, we show how the hierarchical approach leads to posterior distributions that are able to accommodate prior-data conflict in complex models.
 [[ArXiV]](https://arxiv.org/abs/1502.04206) 
+
+See [**logPoolR**](https://github.com/maxbiostat/logPoolR) for the core R routines employed here.
